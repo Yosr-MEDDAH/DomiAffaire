@@ -27,7 +27,7 @@ export class ResetPasswordComponent {
     }
   }
 
-  paswordMatch() {
+  passwordMatch() {
     if (this.password === this.confirmPassword) {
       this.router.navigate(['/login']);
     } else {

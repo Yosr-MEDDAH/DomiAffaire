@@ -146,20 +146,12 @@
                 You must be at least 18 years old.
               </div>
 
-              <!-- Next button -->
               <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
-                <!-- <button
-                  class="btn btn-primary py-3 px-4"
-                  type="button"
-                  (click)="goToStep(2)"
-                  [disabled]="signupForm.get('firstName')!.invalid || signupForm.get('lastName')!.invalid || signupForm.get('birthDate')!.invalid"
-                >
-                  Next
-                </button> -->
                 <button
                   class="btn btn-primary py-3 px-4"
                   type="button"
                   (click)="goToStep(2)"
+                  [disabled]="signupForm.get('firstName')!.invalid || signupForm.get('lastName')!.invalid || signupForm.get('birthDate')!.invalid"
                 >
                   Next
                 </button>
@@ -237,7 +229,6 @@
                 Phone Number must be exactly 8 digits long.
               </div>
 
-              <!-- Buttons for navigation -->
               <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                 <button
                   class="btn btn-secondary py-3 px-4 mr-2"
@@ -250,17 +241,10 @@
                   class="btn btn-primary py-3 px-4"
                   type="button"
                   (click)="goToStep(3)"
-                >
-                  Next
-                </button>
-                <!-- <button
-                  class="btn btn-primary py-3 px-4"
-                  type="button"
-                  (click)="goToStep(3)"
                   [disabled]="signupForm.get('email')!.invalid || signupForm.get('phoneNumber')!.invalid"
                 >
                   Next
-                </button> -->
+                </button>
               </div>
             </ng-container>
 
@@ -288,11 +272,9 @@
               >
                 Invalid code. Please try again.
               </div>
-              <!-- Loading icon and message during code verification -->
               <div *ngIf="verifyingCode" class="text-primary">
                 <i class="fas fa-spinner fa-spin"></i> Verifying code...
               </div>
-              <!-- Buttons for navigation -->
               <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                 <button
                   class="btn btn-secondary py-3 px-4 mr-2"
@@ -523,7 +505,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Buttons for navigation -->
               <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                 <button
                   class="btn btn-secondary py-3 px-4 mr-2"
