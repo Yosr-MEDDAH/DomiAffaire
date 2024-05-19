@@ -1,0 +1,348 @@
+<div class="content">
+  <div class="grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-12 lg:col-span-3 2xl:col-span-2">
+      <h2 class="intro-y text-lg font-medium mr-auto mt-2">
+        Consultation Requests
+      </h2>
+      <div class="intro-y box bg-primary p-5 mt-6">
+        <button
+          type="button"
+          routerLink="/chat"
+          class="btn text-slate-600 dark:text-slate-300 w-full bg-white dark:bg-darkmode-300 dark:border-darkmode-300 mt-1"
+        >
+          <i class="w-4 h-4 mr-2 fa-regular fa-comments"></i> View Your Chats
+        </button>
+        <div
+          class="border-t border-white/10 dark:border-darkmode-400 mt-6 pt-6 text-white"
+        >
+          <a
+            routerLink="/accountant/in-progress-consultations"
+            class="flex items-center px-3 py-2 rounded-md bg-white/10 dark:bg-darkmode-700 font-medium"
+          >
+            <i class="w-4 h-4 mr-2 fa-solid fa-inbox"></i> Inbox
+          </a>
+          <a
+            routerLink="/accountant/accepted-consultations"
+            class="flex items-center px-3 py-2 mt-2 rounded-md"
+          >
+            <i class="w-4 h-4 mr-2 fa-regular fa-circle-check"></i> Accepted
+          </a>
+          <a
+            routerLink="/accountant/rejected-consultations"
+            class="flex items-center px-3 py-2 mt-2 rounded-md"
+          >
+            <i class="w-4 h-4 mr-2 fa-solid fa-ban"></i> Rejected
+          </a>
+          <a
+            routerLink="/accountant/validated-consultations"
+            class="flex items-center px-3 py-2 mt-2 rounded-md"
+          >
+            <i class="w-4 h-4 mr-2 fa-solid fa-clock-rotate-left"></i>
+            Consultation Requests History
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-12 lg:col-span-9 2xl:col-span-10">
+      <div class="intro-y flex flex-col-reverse sm:flex-row items-center">
+        <div class="w-full sm:w-auto relative mr-auto mt-3 sm:mt-0">
+          <i
+            class="fa-solid fa-magnifying-glass w-4 h-4 absolute my-auto inset-y-0 ml-3 left-0 z-10 text-slate-500"
+          ></i>
+          <input
+            type="text"
+            class="form-control w-full sm:w-64 box px-10"
+            placeholder="Search mail"
+          />
+        </div>
+        <div class="w-full sm:w-auto flex">
+          <button class="btn btn-primary shadow-md mr-2">
+            Print
+          </button>
+        </div>
+      </div>
+
+      <div class="intro-y inbox box mt-5">
+        <div
+          class="p-5 flex flex-col-reverse sm:flex-row text-slate-500 border-b border-slate-200/60"
+        >
+          <div
+            class="flex items-center mt-3 sm:mt-0 border-t sm:border-0 border-slate-200/60 pt-5 sm:pt-0 mt-5 sm:mt-0 -mx-5 sm:mx-0 px-5 sm:px-0"
+          >
+            Filters
+            <div class="dropdown ml-1" data-tw-placement="bottom-start">
+              <button class="dropdown-toggle w-5 h-5 block">
+                <i class="w-5 h-5 fa-solid fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu w-32">
+                <ul class="dropdown-content">
+                  <li><a href="" class="dropdown-item">All</a></li>
+                  <li><a href="" class="dropdown-item">None</a></li>
+                  <li><a href="" class="dropdown-item">Accepted</a></li>
+                  <li><a href="" class="dropdown-item">Rejected</a></li>
+                  <li><a href="" class="dropdown-item">Validated</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overflow-x-auto sm:overflow-x-visible">
+          <div class="intro-y" *ngIf="inProgressConsultations && inProgressConsultations.length>0;else noConsultation">
+            <div *ngFor="let item of inProgressConsultations"
+              class="inbox__item inbox__item--active inline-block sm:block text-slate-600 dark:text-slate-500 bg-slate-100 dark:bg-darkmode-400/70 border-b border-slate-200/60 dark:border-darkmode-400"
+            >
+              <div class="flex px-5 py-3">
+                <div class="w-72 flex-none flex items-center mr-5">
+                  <button
+                    (click)="openAcceptModal(item.id)"
+                    class="flex-none ml-4 flex items-center justify-center btn btn-outline-success"
+                  >
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button
+                    (click)="openRejectModal(item.id)"
+                    class="flex-none ml-2 flex items-center justify-center btn btn-secondary"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+
+                  <div class="w-6 h-6 flex-none image-fit relative ml-5">
+                    <img
+                      alt="user image"
+                      class="rounded-full"
+                      [src]="'data:image/png;base64,' + item.sentBy.image"
+                    />
+                  </div>
+                  <div class="inbox__item--sender truncate ml-3">
+                    {{ item.sentBy.firstName }} {{ item.sentBy.lastName }}
+                  </div>
+                </div>
+
+                <div class="w-64 sm:w-auto truncate">
+                  <span
+                    class="inbox__item--highlight"
+                    [innerHTML]="truncateText(item.details)"
+                  ></span>
+                </div>
+
+                <div class="inbox__item--time whitespace-nowrap ml-auto pl-10">
+                  <div>{{ item.sentAt | date : "MMM d, y" }}</div>
+                  <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                    {{ item.sentAt | date : "hh:mm a" }}
+                  </div>
+                </div>
+                <button
+                  class="text-primary whitespace-nowrap ml-5"
+                  (click)="openDetailsModal(item)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-circle-info"></i> Details
+                </button>
+              </div>
+            </div>
+          </div>
+          <ng-template #noConsultation>
+            <div class=" intro-y col-span-12 overflow-auto 2xl:overflow-visible text-center">
+              <div class="alert alert-primary-soft mb-1">There is no consultation requests in your inbox..</div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isDetailsModalOpen" class="modal-overlay">
+  <div
+    class="modal-content"
+    [ngClass]="isDarkModeEnabled() ? 'modal-dark' : 'modal-light'"
+  >
+    <span class="close" (click)="closeDetailsModal()">&times;</span>
+
+    <div
+      class="intro-y flex flex-col sm:flex-row items-center justify-between mt-8"
+    >
+      <h2 class="text-lg font-medium">Consultation Request Details</h2>
+    </div>
+
+    <div class="intro-y grid grid-cols-12 gap-5 mt-5">
+      <div class="col-span-12 lg:col-span-8 2xl:col-span-6">
+        <div class="box p-5 rounded-md">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-xl font-bold">
+                Subject: {{ selectedConsultation.subject }}
+              </h3>
+              <div class="flex items-center text-slate-500 text-xs">
+                Sent:
+                <a class="ml-1 font-medium mr-3">{{
+                  selectedConsultation.sentAt | date : "MMM d, y 'At' h:mm a"
+                }}</a>
+                <span class="ml-5">
+                  Sent By:
+                  <span class="font-medium">{{
+                    selectedConsultation.sentBy.firstName
+                  }}  {{
+                    selectedConsultation.sentBy.lastName
+                  }}</span>
+                 </span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5">
+            <div class="flex items-center">
+              <i
+                class="w-4 h-4 text-slate-500 mr-2 fa-solid fa-clipboard-list"
+              ></i>
+              <span>Details:</span>
+            </div>
+            <div class="mt-3 p-3 border rounded-md">
+              <span [innerHTML]="selectedConsultation.details"></span>
+            </div>
+          </div>
+          <div class="mt-3">
+            <label class="form-label">Other infromations</label>
+            <div class="input-group" *ngIf="selectedConsultation.proposedDate">
+              <div id="input-group-3" class="input-group-text">
+                Proposed Date
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Unit"
+                aria-describedby="input-group-3"
+                [value]="
+                  selectedConsultation.proposedDate
+                    | date : 'MMM d, y At h:mm a'
+                "
+                readonly
+              />
+            </div>
+            <div class="sm:grid grid-cols-2 gap-2 mt-3">
+              <div class="input-group mt-2 sm:mt-0">
+                <div id="input-group-4" class="input-group-text">
+                  Draft Status
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Wholesale"
+                  aria-describedby="input-group-4"
+                  [value]="selectedConsultation.draftStatus"
+                  readonly
+                />
+              </div>
+              <div
+                class="input-group mt-2 sm:mt-0"
+                *ngIf="selectedConsultation.budget"
+              >
+                <div id="input-group-5" class="input-group-text">Budget</div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Bulk"
+                  aria-describedby="input-group-5"
+                  [value]="selectedConsultation.budget + ' Dinars'"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center mt-3">
+            <span
+            class="bg-pending/20 text-pending rounded px-2 ml-1"
+              
+              >{{ selectedConsultation.status }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isAcceptModalOpen" class="modal-overlay">
+  <div
+    class="modal-content"
+  >
+    <span class="close" (click)="closeAcceptModal()">&times;</span>
+
+    <div class="intro-y grid grid-cols-11 gap-5 mt-5">
+      <div class="col-span-12 lg:col-span-4 2xl:col-span-3">
+        <div class="box p-5 rounded-md font-bold text-center">
+          <p class="mb-5">Are you sure you want to accept this consultation request?</p>
+          <button
+            class="btn btn-primary mr-5"
+            (click)="confirmAccept()"
+            type="button"
+          >
+            Yes
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="closeAcceptModal()"
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isRejectModalOpen" class="modal-overlay">
+  <div
+    class="modal-content"
+  >
+    <span class="close" (click)="closeRejectModal()">&times;</span>
+
+    <div class="intro-y grid grid-cols-11 gap-5 mt-5">
+      <div class="col-span-12 lg:col-span-4 2xl:col-span-3">
+        <div class="box p-5 rounded-md font-bold text-center">
+          <p class="mb-5">Are you sure you want to reject this consultation request?</p>
+          <button
+            class="btn btn-primary mr-5"
+            (click)="confirmReject()"
+            type="button"
+          >
+            Yes
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="closeRejectModal()"
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isConversationModalOpen" class="modal-overlay">
+  <div
+    class="modal-content"
+  >
+    <span class="close" (click)="closeConversationModal()">&times;</span>
+
+    <div class="intro-y grid grid-cols-11 gap-5 mt-5">
+      <div class="col-span-12 lg:col-span-4 2xl:col-span-3">
+        <div class="box p-5 rounded-md text-center font-bold">
+          <p class="mb-5">Do you want to start a conversation with this user?</p>
+          <button
+            class="btn btn-primary mr-5"
+            (click)="startConversation()"
+            type="button"
+          >
+            Yes
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="closeConversationModal()"
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,172 @@
+.creation-content {
+    margin-top: 100px;
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 5px;
+  }
+  
+  .content-dark {
+    background-color: #222430;
+    box-shadow: 0px 0px 10px rgba(245, 244, 243, 0.479);
+  }
+  
+  .content-light {
+    background-color: #fefefe;
+  }
+  
+  .blog-content {
+    width: 66.66%;
+    padding: 20px;
+  }
+  
+  .documents {
+    width: 33.33%;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  .documents-dark {
+    background-color: #303447;
+  }
+  .documents-light {
+    background-color: #f5ede3;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .text {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .document-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .document-link {
+    display: flex;
+    align-items: center;
+    color: #0366d6;
+    text-decoration: none;
+    margin-bottom: 5px;
+  }
+  
+  .document-link i {
+    margin-right: 5px;
+  }
+  .timeline {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .timeline ul {
+    padding: 0;
+  }
+  
+  .timeline li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  
+  .timeline li:nth-child(odd) .step {
+    order: 1;
+  }
+  
+  .timeline li:nth-child(even) .step {
+    order: 2;
+  }
+  
+  .step {
+    flex: 1;
+  }
+  .step-icon {
+    margin-right: 10px;
+  }
+  .step-icon i {
+    font-size: 24px;
+    color: #28a745; /* Green color, change it as needed */
+  }
+  .step h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .step-content {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .step-image {
+    width: 100px;
+    margin-right: 20px;
+  }
+  
+  .step p {
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: justify; 
+  }
+  
+  .link {
+    color: #0366d6; 
+  }
+  .document-name {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .download-dark {
+    color: white;
+  }
+  .download-light {
+    color: rgb(35, 33, 33);
+  }
+  @media screen and (max-width: 600px) {
+  
+      .creation-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .blog-content {
+        width: 100%; /* Set width to 100% to occupy full width */
+        order: 1; /* Move blog-content above documents */
+      }
+    
+      .documents {
+        width: 100%; /* Set width to 100% to occupy full width */
+        order: 2; /* Move documents below blog-content */
+      }
+    .step-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .step-content img {
+      width: 80%; /* Make the image larger */
+      margin-bottom: 10px; /* Add some space between the image and the paragraph */
+    }
+  
+    .text {
+      padding: 20px; /* Add some padding to the text content for better spacing */
+    }
+  }
+  
+  

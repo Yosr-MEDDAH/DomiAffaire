@@ -1,0 +1,360 @@
+<div class="content">
+  <form [formGroup]="domiciliationForm" (ngSubmit)="submitForm()">
+    <label>Legal Form</label>
+    <select formControlName="legalForm">
+      <option value="Corporation">Corporation</option>
+      <option value="Natural person">Natural Person</option>
+    </select>
+    <div *ngIf="domiciliationForm.get('legalForm')!.value === 'Natural person'">
+      <label for="companyStatus">Company Status</label>
+      <select id="companyStatus" formControlName="companyStatus">
+        <option value="In Process">In Process</option>
+        <option value="Transfer">Transfer</option>
+      </select>
+      <ng-container
+        *ngIf="domiciliationForm.get('companyStatus')!.value === 'In Process'"
+      >
+        <div>
+          <label for="cin">CIN</label>
+          <input id="cin" type="text" formControlName="cin" />
+        </div>
+        <div>
+          <label for="cinFile">CIN File</label>
+          <input
+            id="cinFile"
+            type="file"
+            formControlName="cinFile"
+            (change)="onFileSelected($event, 'cin')"
+          />
+        </div>
+        <div>
+          <label for="denomination">Denomination</label>
+          <input id="denomination" type="text" formControlName="denomination" />
+          <small
+            >If you don't have a denomination yet, visit this website 'bla bla
+            bla'</small
+          >
+        </div>
+        <div>
+          <label for="denominationFile">Denomination File</label>
+          <input
+            id="denominationFile"
+            type="file"
+            formControlName="denominationFile"
+            (change)="onFileSelected($event, 'denomination')"
+          />
+        </div>
+        <div>
+          <label for="pack">Pack</label>
+          <select id="pack" formControlName="pack">
+            <option *ngFor="let pack of packs" [value]="pack.id">
+              {{ pack.designation }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="paymentMode">Payment Mode</label>
+          <select id="paymentMode" formControlName="paymentMode">
+            <option value="Quarter">Quarter</option>
+            <option value="Semester">Semester</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </div>
+      </ng-container>
+      <ng-container
+        *ngIf="domiciliationForm.get('companyStatus')!.value === 'Transfer'"
+      >
+        <div>
+          <label for="cin">CIN</label>
+          <input id="cin" type="text" formControlName="cin" />
+        </div>
+        <div>
+          <label for="cinFile">CIN File</label>
+          <input
+            id="cinFile"
+            type="file"
+            formControlName="cinFile"
+            (change)="onFileSelected($event, 'cin')"
+          />
+        </div>
+        <div>
+          <label for="denomination">Denomination</label>
+          <input id="denomination" type="text" formControlName="denomination" />
+          <small
+            >If you don't have a denomination yet, visit this website 'bla bla
+            bla'</small
+          >
+        </div>
+        <div>
+          <label for="denominationFile">Denomination File</label>
+          <input
+            id="denominationFile"
+            type="file"
+            formControlName="denominationFile"
+            (change)="onFileSelected($event, 'denomination')"
+          />
+        </div>
+        <div>
+          <label for="pack">Pack</label>
+          <select id="pack" formControlName="pack">
+            <option *ngFor="let pack of packs" [value]="pack.id">
+              {{ pack.designation }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="paymentMode">Payment Mode</label>
+          <select id="paymentMode" formControlName="paymentMode">
+            <option value="Quarter">Quarter</option>
+            <option value="Semester">Semester</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </div>
+      </ng-container>
+    </div>
+    <div *ngIf="domiciliationForm.get('legalForm')!.value === 'Corporation'">
+      <label for="companyStatus">Company Status</label>
+      <select id="companyStatus" formControlName="companyStatus">
+        <option value="In Process">In Process</option>
+        <option value="Transfer">Transfer</option>
+      </select>
+
+      <ng-container
+        *ngIf="domiciliationForm.get('companyStatus')!.value === 'In Process'"
+      >
+        <div>
+          <label for="cin">CIN</label>
+          <input id="cin" type="text" formControlName="cin" />
+        </div>
+        <div>
+          <label for="cinFile">CIN File</label>
+          <input
+            id="cinFile"
+            type="file"
+            formControlName="cinFile"
+            (change)="onFileSelected($event, 'cin')"
+          />
+        </div>
+        <div>
+          <label for="denomination">Denomination</label>
+          <input id="denomination" type="text" formControlName="denomination" />
+          <small
+            >If you don't have a denomination yet, visit this website 'bla bla
+            bla'</small
+          >
+        </div>
+        <div>
+          <label for="denominationFile">Denomination File</label>
+          <input
+            id="denominationFile"
+            type="file"
+            formControlName="denominationFile"
+            (change)="onFileSelected($event, 'denomination')"
+          />
+        </div>
+        <div>
+          <label for="draftStatus">Draft Status</label>
+          <select id="draftStatus" formControlName="draftStatus">
+            <option value="" disabled selected>Select a draft status</option>
+            <option value="SARL">
+              SARL ( Société à responsabilité limitée )
+            </option>
+            <option value="SUARL">
+              SUARL ( Entreprise unipersonnelle à responsabilité limitée )
+            </option>
+            <option value="SA">SA ( Société anonyme )</option>
+            <option value="EI">EI ( Entrepreneur individuel )</option>
+          </select>
+        </div>
+        <div>
+          <label for="shareCapital">Share Capital</label>
+          <input
+            id="shareCapital"
+            type="number"
+            formControlName="shareCapital"
+          />
+        </div>
+        <div>
+          <label for="management">Management</label>
+          <input id="management" type="text" formControlName="management" />
+        </div>
+        <div>
+          <label for="extractRNE">Extract RNE</label>
+          <input
+            id="extractRNE"
+            type="file"
+            formControlName="extractRNE"
+            (change)="onFileSelected($event, 'extractRne')"
+          />
+        </div>
+        <div>
+          <label for="pack">Pack</label>
+          <select id="pack" formControlName="pack">
+            <option *ngFor="let pack of packs" [value]="pack.id">
+              {{ pack.designation }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="paymentMode">Payment Mode</label>
+          <select id="paymentMode" formControlName="paymentMode">
+            <option value="Quarter">Quarter</option>
+            <option value="Semester">Semester</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </div>
+      </ng-container>
+
+      <ng-container
+        *ngIf="domiciliationForm.get('companyStatus')!.value === 'Transfer'"
+      >
+        <div>
+          <label for="cin">CIN</label>
+          <input id="cin" type="text" formControlName="cin" />
+        </div>
+        <div>
+          <label for="cinFile">CIN File</label>
+          <input
+            id="cinFile"
+            type="file"
+            formControlName="cinFile"
+            (change)="onFileSelected($event, 'cin')"
+          />
+        </div>
+        <div>
+          <label for="denomination">Denomination</label>
+          <input id="denomination" type="text" formControlName="denomination" />
+          <small
+            >If you don't have a denomination yet, visit this website 'bla bla
+            bla'</small
+          >
+        </div>
+        <div>
+          <label for="denominationFile">Denomination File</label>
+          <input
+            id="denominationFile"
+            type="file"
+            formControlName="denominationFile"
+            (change)="onFileSelected($event, 'denomination')"
+          />
+        </div>
+        <div>
+          <label for="draftStatus">Draft Status</label>
+          <select id="draftStatus" formControlName="draftStatus">
+            <option value="" disabled selected>Select a draft status</option>
+            <option value="SARL">
+              SARL ( Société à responsabilité limitée )
+            </option>
+            <option value="SUARL">
+              SUARL ( Entreprise unipersonnelle à responsabilité limitée )
+            </option>
+            <option value="SA">SA ( Société anonyme )</option>
+            <option value="EI">EI ( Entrepreneur individuel )</option>
+          </select>
+        </div>
+        <div>
+          <label for="shareCapital">Share Capital</label>
+          <input
+            id="shareCapital"
+            type="number"
+            formControlName="shareCapital"
+          />
+        </div>
+        <div>
+          <label for="management">Management</label>
+          <input id="management" type="text" formControlName="management" />
+        </div>
+        <div>
+          <label for="extractRNE">Extract RNE</label>
+          <input
+            id="extractRNE"
+            type="file"
+            formControlName="extractRNE"
+            (change)="onFileSelected($event, 'extractRne')"
+          />
+        </div>
+        <div>
+          <label for="pack">Pack</label>
+          <select id="pack" formControlName="pack">
+            <option *ngFor="let pack of packs" [value]="pack.id">
+              {{ pack.designation }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="paymentMode">Payment Mode</label>
+          <select id="paymentMode" formControlName="paymentMode">
+            <option value="Quarter">Quarter</option>
+            <option value="Semester">Semester</option>
+            <option value="Annually">Annually</option>
+          </select>
+        </div>
+        <div>
+          <label for="oldDraftStatus">Old Draft Status</label>
+          <select id="oldDraftStatus" formControlName="oldDraftStatus">
+            <option value="" disabled selected>Select a draft status</option>
+            <option value="SARL">
+              SARL ( Société à responsabilité limitée )
+            </option>
+            <option value="SUARL">
+              SUARL ( Entreprise unipersonnelle à responsabilité limitée )
+            </option>
+            <option value="SA">SA ( Société anonyme )</option>
+            <option value="EI">EI ( Entrepreneur individuel )</option>
+          </select>
+        </div>
+        <div>
+          <label for="oldLegalForm">Old Legal Form</label>
+          <select id="oldLegalForm"  formControlName="oldLegalForm">
+            <option value="Corporation">Corporation</option>
+            <option value="Natural person">Natural Person</option>
+          </select>
+        </div>
+        <div>
+          <label for="oldShareCapital">Old Share Capital</label>
+          <input
+            id="oldShareCapital"
+            type="number"
+            formControlName="oldShareCapital"
+          />
+        </div>
+        <div>
+          <label for="oldManagement">Old Management</label>
+          <input
+            id="oldManagement"
+            type="text"
+            formControlName="oldManagement"
+          />
+        </div>
+        <div>
+          <label for="pvChangeAddress">PV Change Address</label>
+          <input
+            id="pvChangeAddress"
+            type="file"
+            formControlName="pvChangeAddress"
+            (change)="onFileSelected($event, 'pvChangeAddress')"
+          />
+        </div>
+        <div>
+          <label for="oldBusinessLicence">Old Business Licence</label>
+          <input
+            id="oldBusinessLicence"
+            type="file"
+            formControlName="oldBusinessLicence"
+            (change)="onFileSelected($event, 'oldBussinessLicence')"
+          />
+        </div>
+        <div>
+          <label for="oldExistenceDeclaration">Old Existence Declaration</label>
+          <input
+            id="oldExistenceDeclaration"
+            type="file"
+            formControlName="oldExistenceDeclaration"
+            (change)="onFileSelected($event, 'oldExistenceDeclaration')"
+          />
+        </div>
+      </ng-container>
+    </div>
+    <button type="submit" [disabled]="domiciliationForm.invalid">submit</button>
+  </form>
+</div>

@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hello/components/my_button.dart';
 import 'package:hello/components/my_textfield.dart';
 import 'package:hello/components/square_tile.dart';
+import 'package:hello/services/auth_service.dart';
 import 'package:hello/pages/auth_page.dart';
 // pour pouvoir utiliser le contexte
 import 'dart:ui';
 
 class LoginPage extends StatelessWidget {
+  AuthService authService = AuthService();
+
   LoginPage({Key? key});
 
   // contrôleurs de saisie de texte
@@ -14,21 +17,20 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   // méthode pour connecter l'utilisateur
-  void signUserIn(BuildContext context) {
-    // Vérifiez les identifiants (exemple simplifié)
+  void signUserIn(BuildContext context) async {
     String email = emailController.text;
     String password = passwordController.text;
-    // Vérifiez si les identifiants sont corrects (exemple simplifié)
-    if (email == "user@example.com" && password == "password") {
-      // Si les identifiants sont corrects, naviguez vers la page AuthPage
-      Navigator.pushReplacement(
+    try {
+    Map<String, dynamic> response = await authService.login(email, password);
+    // Handle successful login, e.g., navigate to next page
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => AuthPage(username: email),
       ),
     );
-    }else {
-    // Sinon, affichez un message d'erreur (exemple simplifié)
+  }catch (e) {
+    // Handle login error, e.g., show error dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -47,7 +49,38 @@ class LoginPage extends StatelessWidget {
       },
     );
   }
+    // Vérifiez si les identifiants sont corrects (exemple simplifié)
+    // if (email == "user@example.com" && password == "password") {
+    //   // Si les identifiants sont corrects, naviguez vers la page AuthPage
+    //   Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => AuthPage(username: email),
+    //   ),
+    // );
+    // }else {
+    // Sinon, affichez un message d'erreur (exemple simplifié)
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text("Erreur de connexion"),
+    //       content: Text("Identifiants incorrects. Veuillez réessayer."),
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () {
+    //             Navigator.of(context).pop();
+    //           },
+    //           child: Text("OK"),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
+  
+  
+  
 
   @override
   Widget build(BuildContext context) {
