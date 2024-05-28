@@ -1,0 +1,73 @@
+<div class="content">
+  <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Blogs</h2>
+    <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
+      <button class="btn btn-rounded-primary shadow-md mr-2"
+      routerLink="/client/favorite-blogs"
+      >
+        Visit saved blogs
+      </button>
+    </div>
+  </div>
+  <div class="intro-y grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 md:col-span-6 box"
+      *ngFor="let item of blogs"
+    >
+      <div
+        class="h-[320px] before:block before:absolute before:w-full before:h-full before:top-0 before:left-0 before:z-10 before:bg-gradient-to-t before:from-black/90 before:to-black/10 image-fit"
+      >
+        <img
+          alt=""
+          class="rounded-t-md"
+          [src]="'data:image/png;base64,' + item.image.fileData"
+        />
+        <div class="absolute w-full flex items-center px-5 pt-6 z-10">
+          <div class="w-10 h-10 flex-none image-fit">
+            <img
+              alt="Midone - HTML Admin Template"
+              class="rounded-full"
+              [src]="'data:image/png;base64,' + item.createdBy.image"
+            />
+          </div>
+          <div class="ml-3 text-white mr-auto">
+            <ng-container
+              *ngIf="item.createdBy.userRole === 'ADMIN'; else notAdmin"
+            >
+              <a href="" class="font-medium">{{ item.createdBy.name }}</a>
+            </ng-container>
+            <ng-template #notAdmin>
+              <span
+                >{{ item.createdBy.firstName }}
+                {{ item.createdBy.lastName }}</span
+              >
+            </ng-template>
+
+            <div class="text-xs mt-0.5">
+              {{ item.createdAt | date : "hh:mm a" }}
+              {{ item.createdAt | date : "MMM d, y" }}
+            </div>
+          </div>
+          <div>
+            <a (click)="toggleSave(item)">
+              <i
+                [class.fa-solid]="isBlogSaved(item.id)"
+                [class.fa-regular]="!isBlogSaved(item.id)"
+                class="fa-bookmark w-4 h-4 text-white"
+              ></i>
+            </a>
+          </div>
+        </div>
+        <div class="absolute bottom-0 text-white px-5 pb-6 z-10">
+          <span class="bg-white/20 px-2 py-1 rounded">{{
+            item.category.name
+          }}</span>
+          <a class="block font-medium text-xl mt-3">{{ item.title }}</a>
+        </div>
+      </div>
+      <div class="p-5 text-slate-600 dark:text-slate-500">
+        <span [innerHTML]="item.content"></span>
+      </div>
+    </div>
+  </div>
+</div>

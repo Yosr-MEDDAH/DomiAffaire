@@ -1,0 +1,56 @@
+<div class="content">
+  <div class="intro-y news xl:w-3/5 p-5 box mt-8" *ngIf="blog">
+    <!-- BEGIN: Blog Layout -->
+    <h2 class="intro-y font-medium text-xl sm:text-2xl">{{ blog.title }}</h2>
+    <div
+      class="intro-y text-slate-600 dark:text-slate-500 mt-3 text-xs sm:text-sm"
+    >
+      {{ blog.createdAt | date : "MMM d, y" }}
+      <span class="mx-1">•</span>
+      <a class="text-primary" href="">{{ blog.category.name }}</a>
+    </div>
+    <div class="intro-y mt-6">
+      <div class="news__preview image-fit">
+        <img
+          alt="Blog Image"
+          class="rounded-md"
+          [src]="'data:image/png;base64,' + blog.image.fileData"
+        />
+      </div>
+    </div>
+    
+    <div class="intro-y text-justify leading-relaxed">
+      <p class="mb-5" [innerHTML]=" blog.content ">
+        
+      </p>
+    </div>
+    <div
+      class="intro-y flex text-xs sm:text-sm flex-col sm:flex-row items-center mt-5 pt-5 border-t border-slate-200/60 dark:border-darkmode-400"
+    >
+      <div class="flex items-center">
+        <div class="w-12 h-12 flex-none image-fit">
+          <img
+            alt="Author Avatar"
+            class="rounded-full"
+            [src]="'data:image/png;base64,' + blog.createdBy.image"
+          />
+        </div>
+        <div class="ml-3 mr-auto">
+          <a href="" class="font-medium"
+            ><ng-container
+              *ngIf="blog.createdBy.userRole === 'ADMIN'; else notAdmin"
+            >
+              <a href="" class="font-medium">By {{ blog.createdBy.name }}</a>
+            </ng-container>
+            <ng-template #notAdmin>
+              <span
+                >By {{ blog.createdBy.firstName }}
+                {{ blog.createdBy.lastName }}</span
+              >
+            </ng-template></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

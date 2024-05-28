@@ -1,0 +1,24 @@
+<div class="content">
+    <div class="intro-y flex items-center mt-8">
+      <h2 class="text-lg font-medium mr-auto">FAQ</h2>
+      
+    </div>
+    <div class="grid grid-cols-12 gap-6">
+      <div class="intro-y col-span-12 lg:col-span-8 xl:col-span-9">
+        <div class="intro-y box mt-5" *ngFor="let item of faq">
+          <div class="question" (click)="toggleAccordion(item.id)">
+            <div class="question-container">
+              <div class="question-text">
+                <h2 class="font-medium text-primary">{{ item.question }}</h2>
+              </div>
+            </div>
+            <div id="collapse{{ item.id }}" class="answer">
+              <p>{{ item.answer }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
