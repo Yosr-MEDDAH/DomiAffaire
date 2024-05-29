@@ -30,8 +30,8 @@
       </div>
       <div class="flex justify-center">
         <div class="relative text-5xl font-semibold mt-8 mx-auto">
-          <span class="absolute text-2xl top-0 left-0 -ml-5 w-5">
-            <img src="assets/dist/images/dinar-icon.png" />
+          <span class="absolute text-2xl top-0 right-0 -mr-5  w-5">
+        DT
           </span>
           {{ item.price }}
         </div>
@@ -97,7 +97,9 @@
         </svg>
       </div>
       <div class="p-8">
-        <h2 class="text-lg font-medium mb-4">{{ isEdit ? 'Edit Pack' : 'New Pack' }}</h2>
+        <h2 class="text-lg font-medium mb-4">
+          {{ isEdit ? "Edit Pack" : "New Pack" }}
+        </h2>
         <form [formGroup]="packForm" (ngSubmit)="onSubmit()">
           <div>
             <label for="designation">Designation</label>
@@ -155,7 +157,9 @@
     <h2>Confirm Pack Deletion</h2>
     <p>Are you sure you want to remove this pack?</p>
     <div class="text-center mt-5">
-      <button class="btn btn-danger mr-3" (click)="removePack()">Yes, remove</button>
+      <button class="btn btn-danger mr-3" (click)="removePack()">
+        Yes, remove
+      </button>
       <button class="btn btn-secondary" (click)="confirmModal()">Cancel</button>
     </div>
   </div>

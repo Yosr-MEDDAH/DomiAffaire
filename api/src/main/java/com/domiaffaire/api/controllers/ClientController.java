@@ -185,14 +185,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping("/all-chats/{id}")
-    public ResponseEntity<?> findChatById(@PathVariable String id){
-        try {
-            return ResponseEntity.ok().body(service.getChatById(id));
-        } catch (ChatNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
-        }
-    }
+
 
     @GetMapping("/chat/messages/{id}")
     public ResponseEntity<?> findChatMessages(@PathVariable String id){

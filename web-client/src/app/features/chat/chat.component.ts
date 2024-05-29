@@ -1,5 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit,ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  QueryList,
+  AfterViewInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChatMessage } from 'src/app/core/models/chatMessage';
 import { AccountantServiceService } from 'src/app/core/services/accountant-service.service';
@@ -7,21 +13,21 @@ import { AuthServiceService } from 'src/app/core/services/auth.service';
 import { ChatService } from 'src/app/core/services/chat.service';
 import { ClientService } from 'src/app/core/services/client.service';
 
-
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent implements OnInit , AfterViewInit{
+export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
-
+  senderImage: any;
+  receiverImage: any;
   chatId: any;
   messageInput: string = '';
   userId: string = '';
   messageList: any[] = [];
   userImage: any = '';
-  chatsList:any
+  chatsList: any;
   constructor(
     private chatService: ChatService,
     private authService: AuthServiceService,
@@ -33,9 +39,9 @@ export class ChatComponent implements OnInit , AfterViewInit{
     this.chatId = this.route.snapshot.paramMap.get('id');
     this.getUserID();
     this.chatService.joinRoom(this.chatId);
-    this.listenForMessages();
+    // this.listenForMessages();
     // this.getAllMessages();
-    
+    this.getChat(this.chatId);
   }
 
   ngAfterViewInit(): void {
@@ -48,15 +54,22 @@ export class ChatComponent implements OnInit , AfterViewInit{
 
   scrollToBottom(): void {
     try {
-      if (this.messageItems && this.messageItems.last && this.messageItems.last.nativeElement) {
-        this.messageItems.last.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      if (
+        this.messageItems &&
+        this.messageItems.last &&
+        this.messageItems.last.nativeElement
+      ) {
+        this.messageItems.last.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
       }
     } catch (err) {
       console.error(err);
     }
   }
   sendMessage() {
-     const chatMessage = {
+    const chatMessage = {
       content: this.messageInput,
       user: this.userId,
       messageId: '',
@@ -64,7 +77,9 @@ export class ChatComponent implements OnInit , AfterViewInit{
     this.chatService.sendMessage(this.chatId, this.userId, chatMessage);
     this.messageInput = '';
   }
-
+  getImage(userId: string): string {
+    return userId === this.userId ? `data:image/png;base64,${this.senderImage}` : `data:image/png;base64,${this.receiverImage}`;
+  }
   // listenForMessages() {
   //   this.chatService.getMessageSubject().subscribe((messages: ChatMessage[]) => {
   //     this.messageList = [...this.messageList, ...messages.map((item: ChatMessage) => ({
@@ -77,25 +92,30 @@ export class ChatComponent implements OnInit , AfterViewInit{
   listenForMessages() {
     const processedMessageIds: Set<string> = new Set();
   
-    this.chatService.getMessageSubject().subscribe((messages: ChatMessage[]) => {
-      messages.forEach((message: ChatMessage) => {
-        // Check if the message has already been processed
-        if (!processedMessageIds.has(message.messageId)) {
-          this.messageList = [
-            ...this.messageList,
-            {
-              ...message,
-              message_side: message.user === this.userId ? 'right' : 'left',
-            }
-          ];
-          // Add the message ID to the set of processed IDs
-          processedMessageIds.add(message.messageId);
-        }
+    this.chatService
+      .getMessageSubject()
+      .subscribe((messages: ChatMessage[]) => {
+        messages.forEach((message: ChatMessage) => {
+          // Check if the message has already been processed
+          if (!processedMessageIds.has(message.messageId)) {
+            const isSender = message.user === this.userId;
+            this.messageList = [
+              ...this.messageList,
+              {
+                ...message,
+                message_side: isSender ? 'right' : 'left',
+                image: isSender ? this.senderImage : this.receiverImage
+              },
+            ];
+            // Add the message ID to the set of processed IDs
+            processedMessageIds.add(message.messageId);
+          }
+        });
+        console.log(this.messageList);
       });
-      console.log(this.messageList);
-    });
   }
   
+
   // listenForMessages() {
   //   this.chatService.getMessageSubject().subscribe((messages: ChatMessage[]) => {
   //     // Iterate through new messages
@@ -112,9 +132,6 @@ export class ChatComponent implements OnInit , AfterViewInit{
   //     }
   //   });
   // }
-  
-  
-  
 
   getUserID() {
     const email = this.authService.getEmail();
@@ -123,8 +140,9 @@ export class ChatComponent implements OnInit , AfterViewInit{
         this.clientService.getClientData(email).subscribe({
           next: (data: any) => {
             this.userId = data.id;
+            // this.senderImage = data.image;
             this.getAllMessages();
-            this.getAllChats()
+            this.getAllChats();
           },
           error: (err) => {
             console.error('Error getting client data', err);
@@ -135,7 +153,7 @@ export class ChatComponent implements OnInit , AfterViewInit{
           next: (data: any) => {
             this.userId = data.id;
             this.getAllMessages();
-            this.getAllChats()
+            this.getAllChats();
           },
           error: (err) => {
             console.error('Error getting accountant data', err);
@@ -145,45 +163,61 @@ export class ChatComponent implements OnInit , AfterViewInit{
     }
   }
 
+  getAllMessages() {
+    const email = this.authService.getEmail();
+    if (email) {
+      const messageObservable = this.authService.LoggedInUser()
+        ? this.chatService.getClientMessages(this.chatId)
+        : this.chatService.getAccountantMessages(this.chatId);
 
-getAllMessages() {
-  const email = this.authService.getEmail();
-  if (email) {
-    const messageObservable = this.authService.LoggedInUser()
-      ? this.chatService.getClientMessages(this.chatId)
-      : this.chatService.getAccountantMessages(this.chatId);
-
-    messageObservable?.subscribe({
+      messageObservable?.subscribe({
+        next: (data: any) => {
+          this.messageList = data.map((item: any) => ({
+            ...item,
+            message_side: item.sender.id === this.userId ? 'right' : 'left',
+            image: item.sender.id === this.userId ? this.senderImage : this.receiverImage
+          }));
+          console.log(this.messageList);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.log(err);
+        },
+      });
+    }
+  }
+  getAllChats() {
+    const email = this.authService.getEmail();
+    if (email) {
+      const chats = this.authService.LoggedInUser()
+        ? this.chatService.getAllChatsAuthClient()
+        : this.chatService.getAllChatsAuthAccountant();
+      chats.subscribe({
+        next: (data: any) => {
+          this.chatsList = data;
+          console.log(this.chatsList);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.log(err);
+        },
+      });
+    }
+  }
+  getChat(id: any) {
+    this.chatService.getChat(id).subscribe({
       next: (data: any) => {
-        this.messageList = data.map((item: any) => ({
-          ...item,
-          message_side: item.sender.id === this.userId ? 'right' : 'left',
-        }));
-        console.log(this.messageList);
+        console.log(data);
+        if (data.client.id === this.userId) {
+          this.receiverImage = data.accountant.image;
+          this.senderImage = data.client.image;
+        } else {
+          this.senderImage = data.accountant.image;
+          this.receiverImage = data.client.image;
+        }
+        this.listenForMessages();
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
       },
     });
   }
-}
-getAllChats(){
-  const email = this.authService.getEmail();
-  if (email) {
-    const chats= this.authService.LoggedInUser()
-      ? this.chatService.getAllChatsAuthClient()
-      : this.chatService.getAllChatsAuthAccountant();
-      chats.subscribe({
-        next: (data: any) => {
-          this.chatsList=data;
-          console.log(this.chatsList);
-        },
-        error: (err: HttpErrorResponse) => {
-          console.log(err);
-        },
-      })
-  }
-}
-
-
 }

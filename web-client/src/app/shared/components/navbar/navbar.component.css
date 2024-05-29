@@ -73,19 +73,16 @@
   .menu-item {
     color: greenyellow;
   }
-
-
-
 }
 .user-image {
   width: 30px;
-  height: 30px; 
-  border-radius: 50%; 
+  height: 30px;
+  border-radius: 50%;
   margin-right: 5px;
 }
 .user-info {
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
 }
 .notification-badge {
   margin-left: 10px;
@@ -95,6 +92,4 @@
   padding-left: 3px;
   padding-right: 3px;
   font-size: 10px;
-
 }
-

@@ -4,7 +4,7 @@ class="max-w-full md:max-w-none rounded-[30px] md:rounded-[35px_35px_0_0] px-4 m
 >
 
 <div class="intro-y mt-5 grid grid-cols-12 gap-5">
-  <div class="col-span-12 lg:col-span-4 2xl:col-span-3 box mt-5 px-5 pb-5 pt-5 lg:pb-0">
+  <!-- <div class="col-span-12 lg:col-span-4 2xl:col-span-3 box mt-5 px-5 pb-5 pt-5 lg:pb-0">
     <div class="title">Chat List</div>
     <ul class="list">
       <li class="intro-x cursor-pointer box relative flex items-center p-5" *ngFor="let chat of chatsList">
@@ -14,7 +14,7 @@ class="max-w-full md:max-w-none rounded-[30px] md:rounded-[35px_35px_0_0] px-4 m
       <span *ngIf="chat.client.id===userId">{{chat.accountant.firstName}} {{chat.accountant.lastName}}</span>
       </li>
     </ul>
-  </div>
+  </div> -->
   <div class=" intro-y col-span-12 lg:col-span-8 2xl:col-span-9 box mt-5  chat_window">
   <div class="top_menu">
     <div class="title">
@@ -35,7 +35,9 @@ class="max-w-full md:max-w-none rounded-[30px] md:rounded-[35px_35px_0_0] px-4 m
       [ngClass]="item.message_side"
     >
       <div class="avatar">
-        <img [src]="'data:image/png;base64,' + userImage" alt="" />
+        <img [src]="'data:image/png;base64,' + item.image" alt="" class="rounded-full" />
+        <!-- <img [src]="getImage(item.user)" alt="" /> -->
+        <!-- <img [src]="'data:image/png;base64,' + userImage" alt="" /> -->
       </div>
       <div class="text_wrapper">
         <div class="text">{{ item.content }}</div>

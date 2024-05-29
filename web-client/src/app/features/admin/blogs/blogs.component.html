@@ -55,7 +55,18 @@
             </div>
             <div class="flex items-center mt-2">
               <i class="w-4 h-4 mr-2 fa-solid fa-user"></i>
-              Created By: {{ item.createdBy.name }}
+            
+              <ng-container
+              *ngIf="item.createdBy.userRole === 'ADMIN'; else notAdmin"
+            >
+              <a href="" class="font-medium">Created By {{ item.createdBy.name }}</a>
+            </ng-container>
+            <ng-template #notAdmin>
+              <span
+                >By {{ item.createdBy.firstName }}
+                {{ item.createdBy.lastName }}</span
+              >
+            </ng-template>
             </div>
           </div>
         </div>

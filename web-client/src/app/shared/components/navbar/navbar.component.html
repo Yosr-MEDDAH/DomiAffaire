@@ -62,53 +62,47 @@
         <a
           routerLink="/client/consultations"
           class="top-menu"
-          *ngIf="isUserLoggedIn() && !isAdmin"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
           >Consultation</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/accountant/in-progress-consultations"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isClient && !isAdmin"
+          >Consultation</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/accountant/blogs"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isClient && !isAdmin"
+          >Posted Blogs</a
         >
       </li>
       <li>
         <a
           routerLink="/client/my-domiciliation-requests"
           class="top-menu"
-          *ngIf="isUserLoggedIn() && !isAdmin"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
           >Domiciliation
           <span *ngIf="userProfile?.domiciliationNotificationCount > 0" class="notification-badge rounded-full">{{ userProfile.domiciliationNotificationCount }}</span>
         </a>
       </li>
+      <li>
+        <a
+          routerLink="/client/all-blogs"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
+          >Blogs
+          <!-- <span *ngIf="userProfile?.domiciliationNotificationCount > 0" class="notification-badge rounded-full">{{ userProfile.domiciliationNotificationCount }}</span> -->
+        </a>
+      </li>
       
 
-      <li>
-        <a
-          routerLink="/admin"
-          class="top-menu"
-          *ngIf="isUserLoggedIn() && isAdmin"
-          >Clients</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/admin/accountants"
-          class="top-menu"
-          *ngIf="isUserLoggedIn() && isAdmin"
-          >Accountants</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/admin/company-creation-documents"
-          class="top-menu"
-          *ngIf="isUserLoggedIn() && isAdmin"
-          >Documents</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/admin/archived-clients"
-          class="top-menu"
-          *ngIf="isUserLoggedIn() && isAdmin"
-          >Archived Clients</a
-        >
-      </li>
+     
       <li *ngIf="isUserLoggedIn()">
         <div class="user-info top-menu">
           <img
@@ -121,6 +115,48 @@
       </li>
       <li *ngIf="isUserLoggedIn()">
         <button (click)="logout()" class="logout-btn top-menu">Sign out</button>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          aria-controls="dropdown-example"
+          data-collapse-toggle="dropdown-example"
+        >
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+            ><div class="user-info top-menu">
+              <img
+                [src]="'data:image/png;base64,' + userProfile.image"
+                alt="User Image"
+                class="user-image"
+              />
+              <span>{{ userProfile.firstName }}</span>
+            </div></span
+          >
+        </button>
+        <ul id="dropdown-example" class="hidden py-2 space-y-2">
+          <li>
+            <a
+              routerLink="/client/profile"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >My Profile</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/admin/accountants"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >Saved Blogs</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/admin/archived-clients"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >Sign out</a
+            >
+          </li>
+        </ul>
       </li>
     </ul>
   </nav>

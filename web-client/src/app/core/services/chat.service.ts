@@ -104,6 +104,14 @@ export class ChatService {
       }
     );
   }
+  getChat(id: any) {
+    return this.http.get(
+      `${environment.urlBackend}api/users/all-chats/${id}`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
 
   // getChatMessages(id: any) {
   //   this.getChatById(id).subscribe({
