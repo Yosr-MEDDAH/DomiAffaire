@@ -1,0 +1,44 @@
+/* domiciliation-form.component.css */
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  select, input, button {
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+    /* Add this CSS to your component's CSS file or global stylesheet */
+.circle-li {
+  list-style-type: none; /* Remove default bullet */
+  padding-left: 20px; /* Adjust spacing between circle and text */
+}
+
+.circle-li:before {
+  content: "\2022"; /* Unicode character for bullet point (circle) */
+  color: #fe703f; /* Adjust color of the circle */
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em; /* Adjust position to align with text */
+}

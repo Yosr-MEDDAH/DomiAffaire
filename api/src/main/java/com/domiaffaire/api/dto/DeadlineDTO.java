@@ -1,5 +1,6 @@
 package com.domiaffaire.api.dto;
 
+import com.domiaffaire.api.entities.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,4 +12,5 @@ public class DeadlineDTO {
     private LocalDateTime limitedDate ;
     private BigDecimal netPayable;
     private int counterOfNotPaidPeriods;
+    private User client;
 }

@@ -1,5 +1,6 @@
 package com.domiaffaire.api.repositories;
 
+import com.domiaffaire.api.entities.Deadline;
 import com.domiaffaire.api.entities.DomiciliationRequest;
 import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.enums.DomiciliationRequestStatus;
@@ -13,4 +14,6 @@ public interface DomiciliationRequestRepository extends MongoRepository<Domicili
     List<DomiciliationRequest> findAllByStatusIsOrderByCreatedAtDesc(DomiciliationRequestStatus status);
     List<DomiciliationRequest> findAllByClientAndDeadlineIsNullOrderByCreatedAtDesc(User user);
     List<DomiciliationRequest> findAllByDeadlineNotNull();
+    DomiciliationRequest findByDeadline(Deadline deadline);
+    List<DomiciliationRequest> findAllByClient(User user);
 }

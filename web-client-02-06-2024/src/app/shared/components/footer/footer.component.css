@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://use.fontawesome.com/releases/v5.8.1/css/all.css');
+@import url('../../../../assets/home/assets/css/templatemo-chain-app-dev.css');
+@import url('../../../../assets/home/assets/css/animated.css');
+@import url('../../../../assets/home/assets/css/owl.css');
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px; 
+    justify-content: center;
+    align-items: stretch;
+  }

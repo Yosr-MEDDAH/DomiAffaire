@@ -1,10 +1,7 @@
 package com.domiaffaire.api.services;
 
 import com.domiaffaire.api.dto.*;
-import com.domiaffaire.api.entities.Blog;
-import com.domiaffaire.api.entities.DomiciliationRequest;
-import com.domiaffaire.api.entities.Message;
-import com.domiaffaire.api.entities.User;
+import com.domiaffaire.api.entities.*;
 import com.domiaffaire.api.exceptions.*;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface DomiAffaireService {
     List<UserDTO> findAllUsers();
@@ -84,9 +82,16 @@ public interface DomiAffaireService {
     BlogDTO addBlog(BlogRequest blogRequest,MultipartFile image) throws UserNotFoundException, IOException,BlogCategoryNotFoundException;
     BlogDTO getBlogById(String id) throws BlogNotFoundException;
     List<BlogDTO> getAllBlogs();
+    List<BlogDTO> getAllBlogsNotArchived();
     List<BlogDTO> getAllBlogsByCategory(String id) throws BlogCategoryNotFoundException;
     BlogDTO updateBlog(BlogRequest blogRequest, String id,MultipartFile image) throws BlogNotFoundException,IOException,BlogCategoryNotFoundException;
     void deleteBlog(String id) throws BlogNotFoundException;
+    List<BlogDTO> getAllBlogsByAuthenticatedAdmin() throws UserNotFoundException;
+    List<BlogDTO> getAllBlogsByAuthenticatedAccountant() throws UserNotFoundException;
+    String archiveBlog(String id) throws BlogNotFoundException, UserNotFoundException;
+    String desarchiveBlog(String id) throws BlogNotFoundException, UserNotFoundException;
+    Set<BlogDTO> getAllBlogsArchivedByUser() throws UserNotFoundException;
+
 
     FaqDTO addFaq(FaqRequest faqRequest);
     FaqDTO getFaqById(String id) throws FaqNotFoundException;
@@ -94,14 +99,17 @@ public interface DomiAffaireService {
     FaqDTO updateFaq(FaqRequest faqRequest, String id) throws FaqNotFoundException;
     void deleteFaq(String id) throws FaqNotFoundException;
 
-    List<BlogDTO> getAllBlogsByAuthenticatedAdmin() throws UserNotFoundException;
-    List<BlogDTO> getAllBlogsByAuthenticatedAccountant() throws UserNotFoundException;
-
     List<Blog> saveBlogForClient(String id) throws BlogNotFoundException, UserNotFoundException, BlogAlreadyExistsException;
     BlogDTO unsaveBlogForClient(String id) throws BlogNotFoundException, UserNotFoundException, BlogDoesNotExistException;
     List<BlogDTO>getAllSavedBlogsByClient() throws UserNotFoundException;
 
 
+    void deleteAccount(String email) throws UserNotFoundException;
+    String updateNetPayable(String id, UpdateNetPayableRequest updateNetPayableRequest) throws DeadlineNotFoundException, DomiciliationRequestNotFoundException;
 
+    RoomDTO addRoom(RoomRequest roomRequest);
+    RoomDTO getRoomById(String id)throws RoomNotFoundException;
+    List<RoomDTO> getAllRooms();
+    ReservationRequestDTO addReservationRequest();//Bchnkamel reservationPostRequest
 
 }

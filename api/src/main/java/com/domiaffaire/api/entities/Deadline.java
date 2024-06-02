@@ -21,5 +21,6 @@ public class Deadline {
     private LocalDateTime dateBeginig = LocalDateTime.now();
     private LocalDateTime limitedDate ;
     private BigDecimal netPayable;
+    private float packPrice;
     private int counterOfNotPaidPeriods;
 }

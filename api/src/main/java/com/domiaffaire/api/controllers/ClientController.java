@@ -5,6 +5,8 @@ import com.domiaffaire.api.entities.DomiciliationRequest;
 import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.events.RegistrationCompleteEvent;
 import com.domiaffaire.api.exceptions.*;
+import com.domiaffaire.api.repositories.DeadlineRepository;
+import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,9 +29,10 @@ import java.io.IOException;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ClientController {
     private final DomiAffaireServiceImpl service;
+    private final DeadlineServiceImpl deadlineService;
 
     @GetMapping("/{email}")
-    public ResponseEntity<?> findClientByEmail(@PathVariable String email){
+    public ResponseEntity<?> findUserByEmail(@PathVariable String email){
         try {
             User client = service.findUserByEmail(email);
             return ResponseEntity.ok(client);
@@ -40,7 +43,7 @@ public class ClientController {
 
     @PutMapping(value = "/update-profile/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateUser(@RequestPart("image") MultipartFile file,
-                                            @RequestPart("updateRequest") @Valid UpdateProfileRequest updateProfileRequest,
+                                        @RequestPart("updateRequest") @Valid UpdateProfileRequest updateProfileRequest,
                                         @PathVariable String id) {
 
         try {
@@ -216,7 +219,7 @@ public class ClientController {
 
     @GetMapping("/blogs")
     public ResponseEntity<?> findAllBlogs(){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogs());
+        return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogsNotArchived());
     }
 
     @GetMapping("/faqs/{id}")
@@ -281,6 +284,15 @@ public class ClientController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogsByCategory(id));
         } catch (BlogCategoryNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/deadlines")
+    public ResponseEntity<?> findAllDeadlinesByClient(){
+        try {
+            return ResponseEntity.ok().body(deadlineService.getDeadlinesOfClientAuthenticated());
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }

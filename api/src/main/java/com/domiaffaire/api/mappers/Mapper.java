@@ -104,4 +104,29 @@ public class Mapper {
         return faqDTO;
     }
 
+    public RoomDTO fromRoomToRoomDTO(Room room){
+        RoomDTO roomDTO = new RoomDTO();
+        BeanUtils.copyProperties(room,roomDTO);
+        return roomDTO;
+    }
+
+    public DeadlineDTO fromDeadlineToDeadlineDTO(Deadline deadline){
+        DeadlineDTO deadlineDTO = new DeadlineDTO();
+        BeanUtils.copyProperties(deadline,deadlineDTO);
+        return deadlineDTO;
+    }
+
+    public Deadline fromDeadlineDTOToDeadline(DeadlineDTO deadlineDTO){
+        Deadline deadline = new Deadline();
+        BeanUtils.copyProperties(deadlineDTO,deadline);
+        return deadline;
+    }
+
+    public ReservationRequestDTO fromReservationRequestToReservationRequestDTO(ReservationRequest reservationRequest){
+        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
+        BeanUtils.copyProperties(reservationRequest,reservationRequestDTO);
+        return reservationRequestDTO;
+    }
+
+
 }

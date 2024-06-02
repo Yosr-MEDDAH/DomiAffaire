@@ -1,0 +1,217 @@
+<div>
+  <div
+    class="main-banner wow fadeIn"
+    id="top"
+    data-wow-duration="1s"
+    data-wow-delay="0.5s"
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-6 align-self-center">
+              <div
+                class="left-content show-up header-text wow fadeInLeft"
+                data-wow-duration="1s"
+                data-wow-delay="1s"
+              >
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h2
+                      [ngStyle]="{
+                        color: isDarkModeEnabled() ? 'white' : 'black'
+                      }"
+                    >
+                      {{ "DOMIAFFAIRE_TITLE" | translate }}
+                    </h2>
+                    <p
+                      [ngStyle]="{
+                        color: isDarkModeEnabled() ? 'white' : 'black'
+                      }"
+                    >
+                      {{ "DOMIAFFAIRE_DESCRIPTION" | translate }}
+                    </p>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="white-button first-button scroll-to-section">
+                      <a routerLink="/client/domiciliation-request"
+                        >{{ "DOMICILE_BUSINESS" | translate
+                        }}<i class="fa-solid fa-home"></i
+                      ></a>
+                    </div>
+                    <div class="white-button scroll-to-section">
+                      <a href="#newsletter"
+                        >{{ "CONTACT_US" | translate }}
+                        <i class="fa-solid fa-phone"></i
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div
+                class="right-image wow fadeInRight"
+                data-wow-duration="1s"
+                data-wow-delay="0.5s"
+              >
+                <img src="assets/dist/images/domiciliation.png" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="services" class="services section">
+    <div class="container">
+      <div
+        class="section-heading wow fadeInDown"
+        data-wow-duration="1s"
+        data-wow-delay="0.5s"
+      >
+        <h4
+          [ngStyle]="{
+            color: isDarkModeEnabled() ? 'white' : 'black'
+          }"
+        >
+          {{ "SERVICES_TITLE" | translate }}
+        </h4>
+        <p
+          [ngStyle]="{
+            color: isDarkModeEnabled() ? 'white' : 'black'
+          }"
+        >
+          {{ "SERVICES_DESCRIPTION" | translate }}
+        </p>
+      </div>
+      <div class="row">
+        <div
+          class="service-item first-service"
+          [ngStyle]="{
+            backgroundColor: isDarkModeEnabled() ? '#222430' : 'white'
+          }"
+        >
+          <div class="icon"></div>
+          <h4>{{ "BUSINESS_CREATION" | translate }}</h4>
+          <p>{{ "BUSINESS_CREATION_DESCRIPTION" | translate }}</p>
+        </div>
+        <div
+          class="service-item second-service"
+          [ngStyle]="{
+            backgroundColor: isDarkModeEnabled() ? '#222430' : 'white'
+          }"
+        >
+          <div class="icon"></div>
+          <h4>{{ "DOMICILIATION" | translate }}</h4>
+          <p>{{ "DOMICILIATION_DESCRIPTION" | translate }}</p>
+        </div>
+        <div
+          class="service-item third-service"
+          [ngStyle]="{
+            backgroundColor: isDarkModeEnabled() ? '#222430' : 'white'
+          }"
+        >
+          <div class="icon"></div>
+          <h4>{{ "WORKSPACE_SOLUTIONS" | translate }}</h4>
+          <p>{{ "WORKSPACE_SOLUTIONS_DESCRIPTION" | translate }}</p>
+        </div>
+        <div
+          class="service-item fourth-service"
+          [ngStyle]="{
+            backgroundColor: isDarkModeEnabled() ? '#222430' : 'white'
+          }"
+        >
+          <div class="icon"></div>
+          <h4>{{ "ENTREPRENEURIAL_SUPPORT" | translate }}</h4>
+          <p>{{ "ENTREPRENEURIAL_SUPPORT_DESCRIPTION" | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pricing" class="pricing-tables">
+    <div class="container">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading">
+          <h4
+            [ngStyle]="{
+              color: isDarkModeEnabled() ? 'white' : 'black'
+            }"
+          >
+            {{ "PRICING_TITLE" | translate }}
+          </h4>
+          <p
+            [ngStyle]="{
+              color: isDarkModeEnabled() ? 'white' : 'black'
+            }"
+          >
+            {{ "PRICING_DESCRIPTION" | translate }}
+          </p>
+        </div>
+        <div class="row">
+          <div *ngFor="let item of packs">
+            <div class="pricing-item-pro">
+              <span class="price"
+              [ngStyle]="{
+                color: isDarkModeEnabled() ? 'white' : 'black'
+              }"
+                >{{ "STARTING_FROM" | translate }}: {{ item.price }}DT/HT
+                {{ "PER_MONTH" | translate }}</span
+              >
+              <h4>{{ item.designation }}</h4>
+              <div class="icon">
+                <img src="assets/dist/images/select.png" />
+              </div>
+              <ul>
+                <li *ngFor="let desc of item.descriptionList" class="circle-li">
+                  {{ desc }}
+                </li>
+              </ul>
+              <div class="border-button">
+                <a routerLink="/client/domiciliation-request">{{
+                  "GET_STARTED" | translate
+                }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="clients" class="the-clients">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <div class="section-heading">
+            <h4
+              [ngStyle]="{
+                color: isDarkModeEnabled() ? 'white' : 'black'
+              }"
+            >
+              {{ "EXPLORE_MEETING_SPACES_TITLE" | translate }}
+            </h4>
+            <img src="assets/images/heading-line-dec.png" alt="" />
+            <p
+              [ngStyle]="{
+                color: isDarkModeEnabled() ? 'white' : 'black'
+              }"
+            >
+              {{ "EXPLORE_MEETING_SPACES_DESCRIPTION" | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="naccs">
+            <div class="grid">
+              <div class="row">
+                <app-carousel [items]="carouselItems"></app-carousel>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

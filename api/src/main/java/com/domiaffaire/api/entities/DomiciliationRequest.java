@@ -66,5 +66,7 @@ public class DomiciliationRequest {
     @DBRef
     private File contract;
     private boolean emailSent;
+    private int protestCount=0;
+    private String documentCode;
 
 }

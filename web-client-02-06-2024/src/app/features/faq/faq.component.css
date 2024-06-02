@@ -1,0 +1,23 @@
+.question {
+    cursor: pointer;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .answer {
+    display: none;
+    padding: 1rem;
+  }
+  
+  .active .answer {
+    display: block;
+  }
+  .question-text {
+    display: flex;
+    align-items: center;
+  }
+  .question-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }

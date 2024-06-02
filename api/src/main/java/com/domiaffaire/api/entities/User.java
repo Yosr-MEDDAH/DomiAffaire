@@ -47,6 +47,9 @@ public class User implements UserDetails {
     private List<Blog> savedBlogs = new ArrayList<>();
     @DBRef
     @JsonIgnore
+    private Set<Blog> archivedBlogs = new HashSet<>();
+    @DBRef
+    @JsonIgnore
     private List<Chat> userChats = new ArrayList<>();
 
     public User(UserDetails userDetails) {

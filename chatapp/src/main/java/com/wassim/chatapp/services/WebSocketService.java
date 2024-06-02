@@ -10,6 +10,9 @@ import com.wassim.chatapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +27,8 @@ public class WebSocketService {
 
         User user = userRepository.findById(userId).get();
         String messageId = UUID.randomUUID().toString();
+        LocalDateTime sentAt = LocalDateTime.now();
+        List<Integer> sentAtArray = convertDateToArray(sentAt);
         Message message = new Message();
         message.setContent(chatMessage.getContent());
         message.setSender(user);
@@ -33,6 +38,19 @@ public class WebSocketService {
         chatRepository.save(chat);
 
         chatMessage.setMessageId(messageId);
+        chatMessage.setSentAt(sentAtArray);
         return chatMessage;
+    }
+
+    private List<Integer> convertDateToArray(LocalDateTime dateTime) {
+        List<Integer> dateArray = new ArrayList<>();
+        dateArray.add(dateTime.getYear());
+        dateArray.add(dateTime.getMonthValue());
+        dateArray.add(dateTime.getDayOfMonth());
+        dateArray.add(dateTime.getHour());
+        dateArray.add(dateTime.getMinute());
+        dateArray.add(dateTime.getSecond());
+        dateArray.add(dateTime.getNano() ); // Convert nanoseconds to milliseconds
+        return dateArray;
     }
 }

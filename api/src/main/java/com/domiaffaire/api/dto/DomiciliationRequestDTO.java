@@ -1,9 +1,6 @@
 package com.domiaffaire.api.dto;
 
-import com.domiaffaire.api.entities.File;
-import com.domiaffaire.api.entities.Pack;
-import com.domiaffaire.api.entities.ResponseDomiAdmin;
-import com.domiaffaire.api.entities.User;
+import com.domiaffaire.api.entities.*;
 import com.domiaffaire.api.enums.CompanyStatus;
 import com.domiaffaire.api.enums.DomiciliationRequestStatus;
 import com.domiaffaire.api.enums.LegalForm;
@@ -39,4 +36,6 @@ public class DomiciliationRequestDTO {
     private DomiciliationRequestStatus status;
     private ResponseDomiAdmin responseDomiAdmin;
     private PaymentMode paymentMode;
+    private ResponseClient clientConfirmation;
+    private String documentCode;
 }

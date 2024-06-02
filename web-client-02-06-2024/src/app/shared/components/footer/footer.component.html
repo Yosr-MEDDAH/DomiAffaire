@@ -1,0 +1,125 @@
+<footer id="newsletter">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <div class="section-heading">
+            <h4>{{ "READY_TO_TRUST_US" | translate }}</h4>
+          </div>
+        </div>
+        <div class="col-lg-6 offset-lg-3">
+          <form (ngSubmit)="sendMail()">
+            <div class="row">
+              <div class="col-lg-6 col-sm-6">
+                <fieldset>
+                  <input
+                    type="text"
+                    [(ngModel)]="content"
+                    name="content"
+                    class="email"
+                    placeholder="{{ 'ENTER_YOUR_QUESTIONS' | translate }}"
+                    autocomplete="on"
+                    required
+                  />
+                </fieldset>
+              </div>
+              <div class="col-lg-6 col-sm-6">
+                <fieldset>
+                  <button
+                    type="submit"
+                    class="main-button"
+                    style="padding: 5px"
+                    [ngStyle]="{
+                      color: isDarkModeEnabled() ? 'white' : 'white'
+                    }"
+                  >
+                    {{ "SEND" | translate }} <i class="fa fa-angle-right"></i>
+                  </button>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>{{ "CONTACT_US" | translate }}</h4>
+            <p>
+              27, Av Habib Bourguiba, immeuble Meriem, B 4-1, Ariana 2080,
+              Tunisie.
+            </p>
+            <p><a href="tel:+21698114223">+216 98 114 223</a></p>
+            <p>
+              <a href="mailto:info@domi-affaire.com">info@domi-affaire.com</a>
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>{{ "USEFUL_LINKS" | translate }}</h4>
+            <ul>
+              <li>
+                <a routerLink="/">{{ "HOME" | translate }}</a>
+              </li>
+              <li>
+                <a routerLink="/company-creation">{{
+                  "BUSINESS_CREATION" | translate
+                }}</a>
+              </li>
+              <li>
+                <a routerLink="/client/domiciliation-request">{{
+                  "DOMICILIATION" | translate
+                }}</a>
+              </li>
+              <li>
+                <a routerLink="/client/consultation-request">{{
+                  "CONSULTATION" | translate
+                }}</a>
+              </li>
+              <li>
+                <a href="#pricing">{{ "PRICING" | translate }}</a>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <a routerLink="/login">{{ "SIGN_IN" | translate }}</a>
+              </li>
+              <li>
+                <a routerLink="/register">{{ "SIGN_UP" | translate }}</a>
+              </li>
+              <li>
+                <a href="#services">{{ "SERVICES" | translate }}</a>
+              </li>
+              <li>
+                <a routerLink="/faq">{{ "FAQ" | translate }}</a>
+              </li>
+              <li>
+                <a routerLink="/client/all-blogs">{{ "BLOGS" | translate }}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>{{ "ABOUT_OUR_COMPANY" | translate }}</h4>
+            <div class="logo">
+              <img src="assets/home/assets/images/white-logo.png" />
+            </div>
+            <p>
+              {{ "ABOUT_COMPANY_DESCRIPTION" | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="copyright-text">
+            <p>
+              {{ "COPYRIGHT_NOTICE" | translate }}
+              <br />{{ "SITE_CREATED_BY" | translate }}
+              <a routerLink="/" title="DomiAffaire">Domi Affaire</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>

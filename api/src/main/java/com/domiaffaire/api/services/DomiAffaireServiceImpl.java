@@ -4,13 +4,10 @@ import com.domiaffaire.api.dto.*;
 import com.domiaffaire.api.dto.ClientResponse;
 import com.domiaffaire.api.entities.*;
 import com.domiaffaire.api.enums.*;
-import com.domiaffaire.api.events.RegistrationCompleteEvent;
 import com.domiaffaire.api.events.listener.RegistrationCompleteEventListener;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.mappers.Mapper;
 import com.domiaffaire.api.repositories.*;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -22,16 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +33,7 @@ import java.util.stream.Collectors;
 public class DomiAffaireServiceImpl implements DomiAffaireService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
+    private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final ConsultationRequestRepository consultationRequestRepository;
@@ -268,8 +262,21 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         consultationRequestRepository.save(consultationRequest);
         String clientId = consultationRequest.getSentBy().getId();
         String accountantId = authenticatedUser.getId();
-        ChatDTO createdChatDto = createChat(clientId,accountantId);
-        return createdChatDto;
+        List<Chat> chats = chatRepository.findAll();
+        boolean chatDuplicated = false;
+        ChatDTO chatDTOExist = new ChatDTO();
+        for (Chat chat:chats){
+            if(chat.getClient().getId().equals(clientId) && chat.getAccountant().getId().equals(accountantId)){
+                chatDTOExist = mapper.fromChatToChatDTO(chat);
+                chatDuplicated = true;
+            }
+        }
+        if(chatDuplicated){
+            return chatDTOExist;
+        }else{
+            ChatDTO createdChatDto = createChat(clientId,accountantId);
+            return createdChatDto;
+        }
     }
 
     @Override
@@ -332,7 +339,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         if (authenticatedUser == null) {
             throw new UserNotFoundException("Authenticated user not found.");
         }
-        List<Chat> chats = chatRepository.findAllByClientIs(authenticatedUser);
+        List<Chat> chats = chatRepository.findAllByAccountantIsOrClientIs(authenticatedUser,authenticatedUser);
         List<ChatDTO> chatDTOS = chats.stream()
                 .map(chat -> mapper.fromChatToChatDTO(chat))
                 .collect(Collectors.toList());
@@ -711,10 +718,13 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
             packRepository.save(domiciliationRequest.getPack());
             domiciliationRequest.getResponseDomiAdmin().getResponsedBy().setDomiciliationNotificationCount(domiciliationRequest.getResponseDomiAdmin().getResponsedBy().getDomiciliationNotificationCount()+1);
             userRepository.save(domiciliationRequest.getResponseDomiAdmin().getResponsedBy());
+            deadline.setPackPrice(domiciliationRequest.getPack().getPrice());
             deadline.setNetPayable(calculateNetPayable(domiciliationRequest.getPack().getPrice(),paymentMode,1));
             deadline.setCounterOfNotPaidPeriods(0);
             deadlineRepository.save(deadline);
             domiciliationRequest.setDeadline(deadline);
+            String clientCode = domiciliationRequest.getClient().getFirstName()+"_"+domiciliationRequest.getClient().getLastName()+"_"+LocalDateTime.now();
+            domiciliationRequest.setDocumentCode(clientCode);
             domiciliationRequestRepository.save(domiciliationRequest);
             return "You have accepted the terms of the contract.";
         }else{
@@ -726,20 +736,30 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     public String protestContractTermsClient(String id, ClientResponse clientResponse) throws DomiciliationRequestNotFoundException {
         Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
         if(domiciliationRequestOptional.isPresent()){
-            DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
-            ResponseClient responseClient = new ResponseClient();
-            responseClient.setResponse(com.domiaffaire.api.enums.ClientResponse.REJECTED);
-            responseClient.setObjectionArgument(clientResponse.getObjectionArgument());
-            responseClientRepository.save(responseClient);
-            domiciliationRequest.setClientConfirmation(responseClient);
-            domiciliationRequest.getResponseDomiAdmin().getResponsedBy().setDomiciliationNotificationCount(domiciliationRequest.getResponseDomiAdmin().getResponsedBy().getDomiciliationNotificationCount()+1);
-            userRepository.save(domiciliationRequest.getResponseDomiAdmin().getResponsedBy());
-            domiciliationRequestRepository.save(domiciliationRequest);
-            return "Your response is sent to the administration successfully";
+            if(domiciliationRequestOptional.get().getProtestCount()>3){
+//                domiciliationRequestRepository.delete(domiciliationRequestOptional.get());
+                domiciliationRequestOptional.get().setStatus(DomiciliationRequestStatus.REJECTED);
+                domiciliationRequestRepository.save(domiciliationRequestOptional.get());
+                return "saye maadch njmou ne9blou hata protest sakarna";
+            }else{
+                DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
+                ResponseClient responseClient = new ResponseClient();
+                responseClient.setResponse(com.domiaffaire.api.enums.ClientResponse.REJECTED);
+                responseClient.setObjectionArgument(clientResponse.getObjectionArgument());
+                responseClientRepository.save(responseClient);
+                domiciliationRequest.setClientConfirmation(responseClient);
+                domiciliationRequest.getResponseDomiAdmin().getResponsedBy().setDomiciliationNotificationCount(domiciliationRequest.getResponseDomiAdmin().getResponsedBy().getDomiciliationNotificationCount()+1);
+                domiciliationRequest.setProtestCount(domiciliationRequest.getProtestCount()+1);
+                userRepository.save(domiciliationRequest.getResponseDomiAdmin().getResponsedBy());
+                domiciliationRequestRepository.save(domiciliationRequest);
+                return "Your response is sent to the administration successfully";
+            }
         }else{
             throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
         }
     }
+
+
 
     @Override
     public BigDecimal calculateNetPayable(float pack, int paymentMode, int timbre) {
@@ -833,7 +853,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
 
     @Override
     public List<BlogCategoryDTO> getAllBlogCategories() {
-        List<BlogCategory> blogCategories = blogCategoryRepository.findAll();
+        List<BlogCategory> blogCategories = blogCategoryRepository.findAllByOrderByCreatedAtDesc();
         return blogCategories.stream()
                 .map(blogCategory->mapper.fromBlogCategoryToBlogCategoryDTO(blogCategory))
                 .collect(Collectors.toList());
@@ -857,13 +877,14 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     public void deleteBlogCategory(String id) throws BlogCategoryNotFoundException {
         Optional<BlogCategory> optionalBlogCategory = blogCategoryRepository.findById(id);
         if(optionalBlogCategory.isPresent()){
-            List<Blog> blogs = blogRepository.findAllByCategoryIs(optionalBlogCategory.get());
+            List<Blog> blogs = blogRepository.findAllByCategoryIsAndIsArchivedFalse(optionalBlogCategory.get());
             if(blogs.size()!=0){
                 BlogCategory defaultCategory = blogCategoryRepository.findByName("Default").get();
                     for (Blog elmt:blogs){
                         elmt.setCategory(defaultCategory);
+                        blogRepository.save(elmt);
                     }
-                blogRepository.saveAll(blogs);
+
             }
             blogCategoryRepository.delete(optionalBlogCategory.get());
         }else{
@@ -921,7 +942,15 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
 
     @Override
     public List<BlogDTO> getAllBlogs() {
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogRepository.findAllByOrderByCreatedAtDesc();
+        return blogs.stream()
+                .map(blog->mapper.fromBlogToBlogDTO(blog))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BlogDTO> getAllBlogsNotArchived() {
+        List<Blog> blogs = blogRepository.findAllByIsArchivedFalseOrderByCreatedAtDesc();
         return blogs.stream()
                 .map(blog->mapper.fromBlogToBlogDTO(blog))
                 .collect(Collectors.toList());
@@ -930,7 +959,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     @Override
     public List<BlogDTO> getAllBlogsByCategory(String id) throws BlogCategoryNotFoundException {
         BlogCategory  blogCategory = blogCategoryRepository.findById(id).orElseThrow(()->new BlogCategoryNotFoundException("Category not found"));
-        List<Blog> blogs = blogRepository.findAllByCategoryIs(blogCategory);
+        List<Blog> blogs = blogRepository.findAllByCategoryIsAndIsArchivedFalse(blogCategory);
         return blogs.stream()
                 .map(blog->mapper.fromBlogToBlogDTO(blog))
                 .collect(Collectors.toList());
@@ -1040,7 +1069,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         if (authenticatedUser == null) {
             throw new UserNotFoundException("Authenticated user not found.");
         }
-        List<Blog> blogs = blogRepository.findAllByCreatedByOrderByCreatedAtDesc(authenticatedUser);
+        List<Blog> blogs = blogRepository.findAllByCreatedByAndIsArchivedFalseOrderByCreatedAtDesc(authenticatedUser);
         List<BlogDTO> blogDTOS = blogs.stream()
                 .map(blog -> mapper.fromBlogToBlogDTO(blog))
                 .collect(Collectors.toList());
@@ -1054,10 +1083,72 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         if (authenticatedUser == null) {
             throw new UserNotFoundException("Authenticated user not found.");
         }
-        List<Blog> blogs = blogRepository.findAllByCreatedByOrderByCreatedAtDesc(authenticatedUser);
+        List<Blog> blogs = blogRepository.findAllByCreatedByAndIsArchivedFalseOrderByCreatedAtDesc(authenticatedUser);
         List<BlogDTO> blogDTOS = blogs.stream()
                 .map(blog -> mapper.fromBlogToBlogDTO(blog))
                 .collect(Collectors.toList());
+        return blogDTOS;
+    }
+
+    @Override
+    public String archiveBlog(String id) throws BlogNotFoundException, UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = userRepository.findFirstByEmail(authentication.getName()).orElse(null);
+        if (authenticatedUser == null) {
+            throw new UserNotFoundException("Authenticated user not found.");
+        }
+
+        Optional<Blog> optionalBlog = blogRepository.findById(id);
+        if(optionalBlog.isPresent()){
+            Blog blog = optionalBlog.get();
+            List<User> users = userRepository.findAll();
+            for (User user:users){
+                if(user.getSavedBlogs().contains(blog))
+                    user.getSavedBlogs().remove(blog);
+            }
+            blog.setArchived(true);
+            authenticatedUser.getArchivedBlogs().add(blog);
+            userRepository.saveAll(users);
+            userRepository.save(authenticatedUser);
+            blogRepository.save(blog);
+            return "Blog archived successfully";
+        }else{
+            throw new BlogNotFoundException("Blog not found exception");
+        }
+    }
+
+    @Override
+    public String desarchiveBlog(String id) throws BlogNotFoundException, UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = userRepository.findFirstByEmail(authentication.getName()).orElse(null);
+        if (authenticatedUser == null) {
+            throw new UserNotFoundException("Authenticated user not found.");
+        }
+
+        Optional<Blog> optionalBlog = blogRepository.findById(id);
+        if(optionalBlog.isPresent()){
+            Blog blog = optionalBlog.get();
+            blog.setArchived(false);
+            authenticatedUser.getArchivedBlogs().remove(blog);
+            blogRepository.save(blog);
+            userRepository.save(authenticatedUser);
+            return "Blog unarchived successfully";
+        }else{
+            throw new BlogNotFoundException("Blog not found exception");
+        }
+    }
+
+    @Override
+    public Set<BlogDTO> getAllBlogsArchivedByUser() throws UserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = userRepository.findFirstByEmail(authentication.getName()).orElse(null);
+        if (authenticatedUser == null) {
+            throw new UserNotFoundException("Authenticated user not found.");
+        }
+        Set<Blog> blogs = authenticatedUser.getArchivedBlogs();
+        Set<BlogDTO> blogDTOS = blogs.stream()
+                .map(blog -> mapper.fromBlogToBlogDTO(blog))
+                .collect(Collectors.toSet());
         return blogDTOS;
     }
 
@@ -1122,6 +1213,70 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .collect(Collectors.toList());
         log.info("Size of saved blogs : "+blogDTOS.size());
         return blogDTOS;
+    }
+
+    @Override
+    public void deleteAccount(String email) throws UserNotFoundException {
+        Optional<User> userOptional = userRepository.findFirstByEmail(email);
+        if(userOptional.isPresent()){
+            userRepository.delete(userOptional.get());
+        }else{
+            throw new UserNotFoundException("User not found.");
+        }
+    }
+
+    @Override
+    public String updateNetPayable(String id, UpdateNetPayableRequest updateNetPayableRequest) throws DomiciliationRequestNotFoundException {
+        Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
+        if(domiciliationRequestOptional.isPresent()){
+            DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
+            domiciliationRequest.setId(id);
+            if(domiciliationRequest.getDeadline()!=null){
+                domiciliationRequest.getDeadline().setPackPrice(updateNetPayableRequest.getPrice());
+                int paymentMode = 0;
+                if (domiciliationRequest.getPaymentMode()==PaymentMode.QUARTER){
+                    paymentMode = 3;
+                }else if(domiciliationRequest.getPaymentMode()==PaymentMode.SEMESTER){
+                    paymentMode = 6;
+                }else if(domiciliationRequest.getPaymentMode()==PaymentMode.ANNUALLY){
+                    paymentMode = 12;
+                }
+                domiciliationRequest.getDeadline().setNetPayable(calculateNetPayable(updateNetPayableRequest.getPrice(),paymentMode,1));
+                deadlineRepository.save(domiciliationRequest.getDeadline());
+                domiciliationRequestRepository.save(domiciliationRequest);
+                return "Price updated successfully";
+            }else{
+                throw new DomiciliationRequestNotFoundException("This domiciliation have no deadline");
+            }
+
+        }else{
+            throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
+        }
+    }
+
+    @Override
+    public RoomDTO addRoom(RoomRequest roomRequest) {
+        Room room = new Room();
+        room.setName(roomRequest.getName());
+        room.setNbrPlaces(roomRequest.getNbrPlaces());
+        room.setEquipments(roomRequest.getEquipments());
+        roomRepository.save(room);
+        return mapper.fromRoomToRoomDTO(room);
+    }
+
+    @Override
+    public RoomDTO getRoomById(String id) throws RoomNotFoundException {
+        return null;
+    }
+
+    @Override
+    public List<RoomDTO> getAllRooms() {
+        return null;
+    }
+
+    @Override
+    public ReservationRequestDTO addReservationRequest() {
+        return null;
     }
 
 

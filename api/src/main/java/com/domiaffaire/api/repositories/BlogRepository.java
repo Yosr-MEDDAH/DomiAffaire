@@ -11,6 +11,12 @@ import java.util.List;
 
 @Repository
 public interface BlogRepository extends MongoRepository<Blog,String> {
-    List<Blog> findAllByCategoryIs(BlogCategory blogCategory);
-    List<Blog> findAllByCreatedByOrderByCreatedAtDesc(User user);
+//    List<Blog> findAllByCategoryIsOrderByCreatedAtDesc(BlogCategory blogCategory);
+//    List<Blog> findAllByCreatedByOrderByCreatedAtDesc(User user);
+//    List<Blog> findAllByOrderByCreatedAtDesc();
+    List<Blog> findAllByCategoryIsAndIsArchivedFalse(BlogCategory blogCategory);
+    List<Blog> findAllByCreatedByAndIsArchivedFalseOrderByCreatedAtDesc(User user);
+    List<Blog> findAllByIsArchivedFalseOrderByCreatedAtDesc();
+    List<Blog> findAllByOrderByCreatedAtDesc();
+
 }

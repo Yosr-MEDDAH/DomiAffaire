@@ -8,6 +8,7 @@ import com.domiaffaire.api.events.listener.RegistrationCompleteEventListener;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.repositories.DomiciliationRequestRepository;
 import com.domiaffaire.api.repositories.UserRepository;
+import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final DomiAffaireServiceImpl service;
+    private final DeadlineServiceImpl deadlineService;
     private final UserRepository userRepository;
     private final DomiciliationRequestRepository domiciliationRequestRepository;
     private final ApplicationEventPublisher publisher;
@@ -424,6 +426,39 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/blogs/archive/{id}")
+    public ResponseEntity<?> archiverBlog(@PathVariable String id){
+        try {
+            String message = service.archiveBlog(id);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\""+message+"\"}");
+        } catch (BlogNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/blogs/unarchive/{id}")
+    public ResponseEntity<?> desarchiverBlog(@PathVariable String id){
+        try {
+            String message = service.desarchiveBlog(id);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\""+message+"\"}");
+        } catch (BlogNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/blogs-archived")
+    public ResponseEntity<?> findAllBlogsArchivedByAdmin(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogsArchivedByUser());
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
     @DeleteMapping("/blogs/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable String id){
         try {
@@ -481,5 +516,56 @@ public class AdminController {
         }
     }
 
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<?> deleteUser(@PathVariable String email){
+        try {
+            service.deleteAccount(email);
+            return ResponseEntity.ok().body("{\"message\": \"User has been deleted successfully\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/domiciliation-request/client-response/{id}")
+    public ResponseEntity<?> findClientResponse(@PathVariable String id){
+        try {
+            return ResponseEntity.ok().body(service.getDomiciliationRequestById(id));
+        } catch (DomiciliationRequestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PutMapping("/domiciliation-request/deadline/change-price/{id}")
+    public ResponseEntity<?> updateDomiciliationPrice(@PathVariable String id, @RequestBody @Valid UpdateNetPayableRequest updateNetPayableRequest){
+        try {
+            return ResponseEntity.ok().body("{\"message\":\"" + service.updateNetPayable(id,updateNetPayableRequest) + "\"}");
+        } catch (DomiciliationRequestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/rooms")
+    public RoomDTO addRoom(@RequestBody RoomRequest roomRequest){
+        return service.addRoom(roomRequest);
+    }
+
+    @PostMapping("/deadlines-filter")
+    public ResponseEntity<?> findAllDeadlinesBetweenTwoDates(@RequestBody DeadlineFilterRequest request){
+        return ResponseEntity.status(HttpStatus.OK).body((deadlineService.getDeadlinesBetweenTwoDates(request)));
+    }
+
+    @GetMapping("/deadlines")
+    public ResponseEntity<?> findAllDeadlinesBetweenTwoWeeks(){
+        return ResponseEntity.status(HttpStatus.OK).body((deadlineService.getDeadlinesBetweenTwoDatesFixed()));
+    }
+
+    @GetMapping("/client-deadlines/{id}")
+    public ResponseEntity<?> findAllDeadlinesByClient(@PathVariable String id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body((deadlineService.getDeadlinesOfClientById(id)));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
 
 }

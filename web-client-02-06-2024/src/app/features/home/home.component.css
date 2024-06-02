@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://use.fontawesome.com/releases/v5.8.1/css/all.css');
+@import url('../../../assets/home/assets/css/templatemo-chain-app-dev.css');
+@import url('../../../assets/home/assets/css/animated.css');
+@import url('../../../assets/home/assets/css/owl.css');
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Flexbox styling for centering the service items */
+.services .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centering the items horizontally */
+  gap: 15px;
+}
+
+/* Styling for service items */
+.service-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 10px;
+  border-top-right-radius: 50px;
+  transition: all .3s;
+  width: calc(33.33% - 30px); /* Ensure they have a reasonable width and margin */
+  max-width: 300px; /* Optional: limit the max width */
+}
+
+.service-item .icon {
+  margin-bottom: 30px;
+  background-repeat: no-repeat;
+  width: 50px;
+  height: 50px;
+  transition: all .3s;
+}
+
+.service-item h4 {
+    transition: all .3s;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.service-item p {
+    transition: all .3s;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.service-item:hover h4,
+.service-item:hover p,
+.service-item:hover .text-button a {
+    color: #fff;
+}
+
+.first-service .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-01.png);
+}
+
+.first-service:hover .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-hover-01.png);
+}
+
+.second-service .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-02.png);
+}
+
+.second-service:hover .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-hover-02.png);
+}
+
+.third-service .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-03.png);
+}
+
+.third-service:hover .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-hover-03.png);
+}
+
+.fourth-service .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-04.png);
+}
+
+.fourth-service:hover .icon {
+    background-image: url(../../../assets/home/assets/images/service-icon-hover-04.png);
+}
+
+.service-item:hover {
+    background-image: url(../../../assets/home/assets/images/service-bg.png);
+    background-position: right top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.pricing-tables {
+
+    gap: 15px;
+  }
+
+.row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px; 
+    justify-content: center;
+    align-items: stretch;
+  }
+  .pricing-item-pro {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    /* background-color: #fff; */
+    border-radius: 10px;
+    border-top-right-radius: 50px;
+    transition: all .3s;
+    flex: 1 1 calc(33.33% - 30px); 
+    max-width: 300px;
+    min-width: 280px;
+    height: 750px;
+    box-sizing: border-box; 
+    word-wrap: break-word;
+    border: 1px solid #fea53fb3;
+  }
+
+.pricing-item-pro .price {
+  display: block; /* Ensure it takes full width */
+  margin-bottom: 15px; /* Add space below */
+  line-height: 1.5; /* Adjust line height for better readability */
+  font-weight: bold; /* Make the price text bold */
+  font-size: 1.9em !important;  /* Increase font size */
+}
+.pricing-item-pro h4 {
+    font-size: 2.5em !important;  
+    margin-top: 200px; /* Add space below heading */
+  }
+  
+  .pricing-item-pro ul {
+    margin-top: 15px; /* Add space above list */
+  }
+  
+  .pricing-item-pro ul li {
+    margin-bottom: 10px; /* Add space between list items */
+  }
+@media (max-width: 768px) {
+    .pricing-item-pro {
+      flex: 1 1 100%; 
+      max-width: none; 
+    }
+  }
+  /* Add this CSS to your component's CSS file or global stylesheet */
+.circle-li {
+  list-style-type: none; /* Remove default bullet */
+  padding-left: 20px; /* Adjust spacing between circle and text */
+}
+
+.circle-li:before {
+  content: "\2022"; /* Unicode character for bullet point (circle) */
+  color: #fe703f; /* Adjust color of the circle */
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em; /* Adjust position to align with text */
+}

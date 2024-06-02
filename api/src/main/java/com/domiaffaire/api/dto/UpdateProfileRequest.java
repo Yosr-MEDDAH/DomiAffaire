@@ -1,6 +1,7 @@
 package com.domiaffaire.api.dto;
 
 import com.domiaffaire.api.validators.MinimumAge;
+import com.domiaffaire.api.validators.NoBadWords;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import java.util.Date;
 public class UpdateProfileRequest {
     @NotNull(message="firstname shouldn't be null")
     @NotBlank(message="firstname shouldn't be blank")
+    @NoBadWords(message = "yezi ml bleda")
     private String firstName;
     @NotNull(message="lastname shouldn't be null")
     @NotBlank(message="lastname shouldn't be blank")
@@ -25,7 +27,7 @@ public class UpdateProfileRequest {
     @NotBlank(message="phone number shouldn't be blank")
     @Pattern(regexp = "^[2-5|9]\\d{7}$", message = "Invalid phone number")
     private String phoneNumber;
-    @NotNull(message="birthdate shouldn't be null")
-    @MinimumAge
+//    @NotNull(message="birthdate shouldn't be null")
+//    @MinimumAge
     private Date birthDate;
 }

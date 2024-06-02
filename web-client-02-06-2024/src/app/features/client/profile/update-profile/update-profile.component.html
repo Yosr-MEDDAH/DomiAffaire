@@ -1,0 +1,354 @@
+<div class="content content--top-nav">
+  <div class="intro-y flex items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Update Profile</h2>
+  </div>
+  <!-- {{oldClient|json}} -->
+  <div class="grid grid-cols-12 gap-6">
+    <div
+      class="col-span-12 lg:col-span-4 2xl:col-span-3 flex lg:block flex-col-reverse"
+    >
+      <div class="intro-y box mt-5">
+        <div class="relative flex items-center p-5">
+          <div class="w-12 h-12 image-fit">
+            <img
+              alt="user image"
+              class="rounded-full"
+              [src]="'data:image/png;base64,' + oldClient.image"
+            />
+          </div>
+          <div class="ml-4 mr-auto">
+            <div class="font-medium text-base">
+              {{ oldClient.firstName }} {{ oldClient.lastName }}
+            </div>
+            <div class="text-slate-500">{{ oldClient.role }}</div>
+          </div>
+        </div>
+        <div class="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+          <a
+            class="flex items-center text-primary font-medium"
+            routerLink="/client/profile"
+          >
+            <i class="fas fa-user w-4 h-4 mr-2"></i> View Profile
+          </a>
+        </div>
+        <div class="p-5 border-t border-slate-200/60 dark:border-darkmode-400">
+          <a class="flex items-center" routerLink="/client/change-password">
+            <i class="fas fa-lock w-4 h-4 mr-2"></i> Change password
+          </a>
+        </div>
+        <div
+          class="p-5 border-t border-slate-200/60 dark:border-darkmode-400 flex"
+        >
+          <button type="button" class="btn btn-primary py-1 px-2">
+            Delete account
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary py-1 px-2 ml-auto"
+            (click)="logout()"
+          >
+            <i class="fas fa-sign-out-alt mr-2"></i> logout
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-12 lg:col-span-8 2xl:col-span-9">
+      <div class="intro-y box lg:mt-5">
+        <div
+          class="flex items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400"
+        >
+          <h2 class="font-medium text-base mr-auto">Display Information</h2>
+        </div>
+        <div class="p-5">
+          <div class="flex flex-col-reverse xl:flex-row flex-col">
+            <div class="flex-1 mt-6 xl:mt-0">
+              <form
+                [formGroup]="profileForm"
+                (ngSubmit)="updateClientProfile()"
+              >
+                <div class="grid grid-cols-12 gap-x-5">
+                  <div class="col-span-12 2xl:col-span-6">
+                    <div>
+                      <label for="update-profile-form-1" class="form-label"
+                        >Email</label
+                      >
+                      <input
+                        id="update-profile-form-1"
+                        type="text"
+                        class="form-control"
+                        placeholder="Input text"
+                        value="{{ oldClient.email }}"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div class="col-span-12 2xl:col-span-6">
+                    <div class="mt-3">
+                      <label for="update-profile-form-4" class="form-label"
+                        >First Name</label
+                      >
+                      <input
+                        formControlName="firstName"
+                        id="update-profile-form-4"
+                        type="text"
+                        class="form-control"
+                        placeholder="FirstName"
+                        [value]="oldClient.firstName"
+                      />
+                      <div
+                        *ngIf="
+                          profileForm.get('firstName')!.invalid &&
+                          profileForm.get('firstName')!.touched
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            profileForm.get('firstName')?.hasError('required')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "First name is required"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm.get('firstName')?.hasError('minlength')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "First name must be at least 3 characters long"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm.get('firstName')?.hasError('pattern')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "First name can only contain letters, numbers, and underscores"
+                            )
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <label for="update-profile-form-4" class="form-label"
+                        >Last Name</label
+                      >
+                      <input
+                        formControlName="lastName"
+                        id="update-profile-form-4"
+                        type="text"
+                        class="form-control"
+                        placeholder="Input text"
+                        [value]="oldClient.lastName"
+                      />
+                      <div
+                        *ngIf="
+                          profileForm.get('lastName')!.invalid &&
+                          profileForm.get('lastName')!.touched
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            profileForm.get('lastName')?.hasError('required')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Last name is required"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm.get('lastName')?.hasError('minlength')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Last name must be at least 3 characters long"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm.get('lastName')?.hasError('pattern')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Last name can only contain letters, numbers, and underscores"
+                            )
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <label for="update-profile-form-4" class="form-label"
+                        >Phone Number</label
+                      >
+                      <input
+                        maxlength="8"
+                        formControlName="phoneNumber"
+                        id="update-profile-form-4"
+                        type="text"
+                        class="form-control"
+                        placeholder="Input text"
+                        [value]="oldClient.phoneNumber"
+                      />
+                      <div
+                        *ngIf="
+                          profileForm.get('phoneNumber')!.invalid &&
+                          profileForm.get('phoneNumber')!.touched
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            profileForm.get('phoneNumber')?.hasError('required')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Phone number is required"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm
+                              .get('phoneNumber')
+                              ?.hasError('minlength') ||
+                            profileForm
+                              .get('phoneNumber')
+                              ?.hasError('maxlength')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Phone number must be 8 characters long"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm.get('phoneNumber')?.hasError('pattern')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Invalid phone number format"
+                            )
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3">
+                      <label for="update-profile-form-4" class="form-label"
+                        >Birth Date</label
+                      >
+                      <input
+                        formControlName="birthDate"
+                        id="update-profile-form-4"
+                        type="date"
+                        class="form-control"
+                        placeholder="Input text"
+                        [value]="oldClient.birthDate | date : 'dd-MM-yyyy'"
+                      />
+                      <div
+                        *ngIf="
+                          profileForm.get('birthDate')!.invalid &&
+                          profileForm.get('birthDate')!.touched
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            profileForm.get('birthDate')?.hasError('required')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Birth date is required"
+                            )
+                          }}
+                        </div>
+                        <div
+                          *ngIf="
+                            profileForm
+                              .get('birthDate')
+                              ?.hasError('invalidDate')
+                          "
+                        >
+                          {{
+                            toastService.showToast(
+                              "warning",
+                              "Invalid birth date. Age must be 18 years old or older"
+                            )
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  [disabled]="profileForm.invalid"
+                  type="submit"
+                  class="btn btn-primary w-20 mt-3"
+                >
+                  Save
+                </button>
+              </form>
+            </div>
+            <div class="w-52 mx-auto xl:mr-0 xl:ml-6">
+              <div
+                class="border-2 border-dashed shadow-sm border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+              >
+                <div
+                  class="h-40 relative image-fit cursor-pointer zoom-in mx-auto"
+                >
+                  <img
+                    class="rounded-md"
+                    alt="user image"
+                    [src]="'data:image/png;base64,' + oldClient.image"
+                  />
+                  <div
+                    title="Remove this profile photo?"
+                    class="tooltip w-5 h-5 flex items-center justify-center absolute rounded-full text-white bg-danger right-0 top-0 -mr-2 -mt-2"
+                  >
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <div class="mx-auto cursor-pointer relative mt-5">
+                  <button type="button" class="btn btn-primary w-full">
+                    Change Photo
+                  </button>
+                  <input
+                    type="file"
+                    class="w-full h-full top-0 left-0 absolute opacity-0"
+                    name="image"
+                    (change)="onFileSelected($event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

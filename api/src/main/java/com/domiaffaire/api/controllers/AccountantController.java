@@ -264,4 +264,39 @@ public class AccountantController {
     public ResponseEntity<?> findAllBlogCategories(){
         return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogCategories());
     }
+
+    @GetMapping("/blogs/archive/{id}")
+    public ResponseEntity<?> archiverBlog(@PathVariable String id){
+        try {
+            String message = service.archiveBlog(id);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\""+message+"\"}");
+        } catch (BlogNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/blogs/unarchive/{id}")
+    public ResponseEntity<?> desarchiverBlog(@PathVariable String id){
+        try {
+            String message = service.desarchiveBlog(id);
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\""+message+"\"}");
+        } catch (BlogNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/blogs-archived")
+    public ResponseEntity<?> findAllBlogsArchivedByAdmin(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.getAllBlogsArchivedByUser());
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+
 }

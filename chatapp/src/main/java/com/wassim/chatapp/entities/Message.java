@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Message {
     @Id
     private String id;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime sentAt = LocalDateTime.now();
     private String content;
     @DBRef
     private  User sender;

@@ -32,6 +32,11 @@ public class VisitorsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }
+    @GetMapping("/packs")
+    public ResponseEntity<?> findAllPacks(){
+        return ResponseEntity.status(HttpStatus.OK).body(service.getAllPacks());
+    }
+
 
     @GetMapping("/faqs")
     public ResponseEntity<?> findAllFaqs(){

@@ -15,4 +15,5 @@ public class BlogDTO {
     private File image;
     private User createdBy;
     private BlogCategory category;
+    private boolean isArchived;
 }

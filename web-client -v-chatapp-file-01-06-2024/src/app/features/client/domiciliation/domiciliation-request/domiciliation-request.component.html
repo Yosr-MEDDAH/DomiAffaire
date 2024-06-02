@@ -1,0 +1,1633 @@
+<div class="content">
+  <div class="grid grid-cols-11 gap-x-6 mt-5 pb-20">
+    <form
+      [formGroup]="domiciliationForm"
+      (ngSubmit)="submitForm()"
+      class="intro-y col-span-11 2xl:col-span-9"
+    >
+      <!-- first step -- get started -->
+      <div class="intro-y box p-5">
+        <div
+          class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+        >
+          <div
+            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+          >
+            <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Before You
+            Start
+          </div>
+          <div class="mt-5">
+            <div class="flex items-center text-slate-500">
+              <span
+                ><i data-lucide="lightbulb" class="w-5 h-5 text-warning"></i
+              ></span>
+              <div class="ml-2">
+                <span class="mr-1"
+                  >Take a look at our blogs for valuable insights.</span
+                >
+                <a
+                  class="text-primary font-medium"
+                  target="blank"
+                  routerLink="/client/all-blogs"
+                  >Learn More</a
+                >
+              </div>
+            </div>
+            <div
+              class="w-full mt-3 xl:mt-0 flex-1 border-2 border-dashed dark:border-darkmode-400 rounded-md pt-4"
+            >
+              <div class="grid grid-cols-10 gap-5 pl-4 pr-5">
+                <div
+                  *ngFor="let item of blogs.slice(0, 3)"
+                  class="col-span-5 md:col-span-2 h-28 relative image-fit cursor-pointer zoom-in"
+                >
+                  <img
+                    [routerLink]="['/client/blog', item.id]"
+                    class="rounded-md"
+                    alt="image"
+                    [src]="'data:image/png;base64,' + item.image.fileData"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="form-inline items-start flex-col xl:flex-row mt-10">
+              <div class="form-label w-full xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">FAQ</div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    <div>
+                      We've compiled a list of frequently asked questions to
+                      address any uncertainties you may have.
+                    </div>
+                    <div class="mt-2">
+                      Navigate to our FAQ section for more information.
+                      <a
+                        class="text-primary font-medium"
+                        target="blank"
+                        routerLink="/faq"
+                        >Learn More</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- second step -- basic infos  -->
+      <div class="intro-y box p-5 mt-5">
+        <div
+          class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+        >
+          <div
+            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+          >
+            <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Essential
+            Information
+          </div>
+          <div class="mt-5">
+            <!-- Legal Form Selection -->
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Choose a Legal Form</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Think about factors such as liability, taxation, and
+                    management structure when selecting the appropriate legal
+                    form for your business.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div class="form-check form-switch">
+                  <input
+                    id="natural-person"
+                    formControlName="legalForm"
+                    class="form-check-input"
+                    type="radio"
+                    value="Natural person"
+                    (change)="onLegalFormChange()"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500 mr-5"
+                    for="natural-person"
+                  >
+                    Natural Person
+                  </label>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div class="form-check form-switch">
+                  <input
+                    id="corporation"
+                    formControlName="legalForm"
+                    class="form-check-input mt-1"
+                    type="radio"
+                    value="Corporation"
+                    (change)="onLegalFormChange()"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="corporation"
+                  >
+                    Corporation
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Company Status Selection -->
+            <div
+              *ngIf="
+                domiciliationForm.get('legalForm')!.value ===
+                  'Natural person' ||
+                domiciliationForm.get('legalForm')!.value === 'Corporation'
+              "
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Choose the Company Status</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    <ul>
+                      <li class="circle-li">
+                        <b>"In Process"</b> may be suitable if you're in the midst of
+                        setting up your company.
+                      </li>
+                      <li class="circle-li">
+                        <b>"Transfer"</b> might be appropriate if you're transferring
+                        your company from one jurisdiction to another or
+                        undergoing a change in ownership.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div class="form-check form-switch">
+                  <input
+                    id="in-transfer"
+                    formControlName="companyStatus"
+                    class="form-check-input mt-1"
+                    type="radio"
+                    value="Transfer"
+                    (change)="onCompanyStatusChange()"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500 mr-5"
+                    for="in-transfer"
+                  >
+                    Transfer
+                  </label>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div class="form-check form-switch">
+                  <input
+                    id="in-process"
+                    formControlName="companyStatus"
+                    class="form-check-input"
+                    type="radio"
+                    value="In Process"
+                    (change)="onCompanyStatusChange()"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="in-process"
+                  >
+                    In Process
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- third step -- more infos  -->
+      <div
+        *ngIf="
+          (domiciliationForm.get('legalForm')!.value === 'Natural person' &&
+            domiciliationForm.get('companyStatus')!.value === 'In Process') ||
+          (domiciliationForm.get('legalForm')!.value === 'Natural person' &&
+            domiciliationForm.get('companyStatus')!.value === 'Transfer')
+        "
+        class="intro-y box p-5 mt-5"
+      >
+        <div
+          class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+        >
+          <div
+            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+          >
+            <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Further
+            Details
+          </div>
+          <div class="mt-5">
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">CIN</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Ensure accuracy as this information may be used for verification purposes.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="cin"
+                  type="text"
+                  class="form-control"
+                  formControlName="cin"
+                  placeholder="CIN"
+                  maxlength="8"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('cin')!.touched &&
+                    domiciliationForm.get('cin')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['required']"
+                  >
+                    CIN is required.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['minlength']"
+                  >
+                    CIN must be 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['maxlength']"
+                  >
+                    CIN must be 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.hasError('pattern')"
+                  >
+                    CIN must contain only numbers.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Upload here you CIN File</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Ensure accuracy as this information may be used for verification purposes.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="cin-file"
+                  type="file"
+                  formControlName="cinFile"
+                  (change)="onFileSelected($event, 'cin')"
+                  class="form-control"
+                  placeholder="CIN File"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('cinFile')!.touched &&
+                    domiciliationForm.get('cinFile')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('cinFile')!.errors?.['required']"
+                  >
+                    CIN File is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Denomination</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Please enter the denomination of your company and upload the corresponding denomination file if available.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="denomination"
+                  type="text"
+                  formControlName="denomination"
+                  class="form-control"
+                  placeholder="Denomination"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('denomination')!.touched &&
+                    domiciliationForm.get('denomination')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('denomination')!.errors?.['required']"
+                  >
+                    Denomination is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">
+                      Upload here your denomination File
+                    </div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    If you don't have a denomination file yet, you can visit <a href="https://www.registre-entreprises.tn/rne-public/#/" target="_blank" rel="noopener noreferrer" style="color: blue;">this website</a> to initiate the process.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="denominationFile"
+                  type="file"
+                  formControlName="denominationFile"
+                  (change)="onFileSelected($event, 'denomination')"
+                  class="form-control"
+                  placeholder="Denomination File"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('denominationFile')!.touched &&
+                    domiciliationForm.get('denominationFile')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('denominationFile')!.errors?.['required']"
+                  >
+                    Denomination File is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          domiciliationForm.get('legalForm')!.value === 'Corporation' &&
+          domiciliationForm.get('companyStatus')!.value === 'In Process'
+        "
+        class="intro-y box p-5 mt-5"
+      >
+        <div
+          class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+        >
+          <div
+            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+          >
+            <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Further
+            Details For Corporations
+          </div>
+          <div class="mt-5">
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">CIN</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Ensure accuracy as this information may be used for verification purposes.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="cin"
+                  type="text"
+                  class="form-control"
+                  formControlName="cin"
+                  placeholder="CIN"
+                  maxlength="8"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('cin')!.touched &&
+                    domiciliationForm.get('cin')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['required']"
+                  >
+                    CIN is required.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['minlength']"
+                  >
+                    CIN must be 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.errors?.['maxlength']"
+                  >
+                    CIN must be 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="domiciliationForm.get('cin')!.hasError('pattern')"
+                  >
+                    CIN must contain only numbers.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Upload here you CIN File</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Ensure accuracy as this information may be used for verification purposes.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="cin-file"
+                  type="file"
+                  formControlName="cinFile"
+                  (change)="onFileSelected($event, 'cin')"
+                  class="form-control"
+                  placeholder="CIN File"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('cinFile')!.touched &&
+                    domiciliationForm.get('cinFile')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('cinFile')!.errors?.['required']"
+                  >
+                    CIN File is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Denomination</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Please enter the denomination of your company and upload the corresponding denomination file if available.
+
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="denomination"
+                  type="text"
+                  formControlName="denomination"
+                  class="form-control"
+                  placeholder="Denomination"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('denomination')!.touched &&
+                    domiciliationForm.get('denomination')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('denomination')!.errors?.['required']"
+                  >
+                    Denomination is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">
+                      Upload here your denomination File
+                    </div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    If you don't have a denomination file yet, you can visit <a href="https://www.registre-entreprises.tn/rne-public/#/" target="_blank" rel="noopener noreferrer" style="color: blue;">this website</a> to initiate the process.
+
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="denominationFile"
+                  type="file"
+                  formControlName="denominationFile"
+                  (change)="onFileSelected($event, 'denomination')"
+                  class="form-control"
+                  placeholder="Denomination File"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('denominationFile')!.touched &&
+                    domiciliationForm.get('denominationFile')!.invalid
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('denominationFile')!.errors?.['required']"
+                  >
+                    Denomination File is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Choose a Draft Status</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Choose a draft status that best represents the legal structure of your company.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <select id="draftStatus" formControlName="draftStatus">
+                  <option value="" disabled selected>
+                    Select a draft status
+                  </option>
+                  <option value="SARL">
+                    SARL ( Société à responsabilité limitée )
+                  </option>
+                  <option value="SUARL">
+                    SUARL ( Entreprise unipersonnelle à responsabilité limitée )
+                  </option>
+                  <option value="SA">SA ( Société anonyme )</option>
+                  <option value="EI">EI ( Entrepreneur individuel )</option>
+                </select>
+                <div
+                  *ngIf="
+                    domiciliationForm.get('draftStatus')!.invalid &&
+                    (domiciliationForm.get('draftStatus')!.dirty ||
+                      domiciliationForm.get('draftStatus')!.touched)
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('draftStatus')!.errors?.['required']"
+                  >
+                    Draft Status is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Enter your Share Capital</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Ensure to select a share capital amount that aligns with your company's needs and goals.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="shareCapital"
+                  type="number"
+                  formControlName="shareCapital"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('shareCapital')!.invalid &&
+                    (domiciliationForm.get('shareCapital')!.dirty ||
+                      domiciliationForm.get('shareCapital')!.touched)
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('shareCapital')!.errors?.['required']"
+                  >
+                    Share Capital is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Manager Name</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Consider nominating an individual with relevant experience and qualifications.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="management"
+                  type="text"
+                  formControlName="management"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('management')!.invalid &&
+                    (domiciliationForm.get('management')!.dirty ||
+                      domiciliationForm.get('management')!.touched)
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('management')!.errors?.['required']"
+                  >
+                    Management is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Upload the RNE Extract</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Please upload the extract document obtained from the <a href="https://www.registre-entreprises.tn/rne-public/#/" target="_blank" rel="noopener noreferrer" style="color: blue;">RNE website</a>.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <input
+                  id="extractRNE"
+                  type="file"
+                  formControlName="extractRNE"
+                  (change)="onFileSelected($event, 'extractRne')"
+                />
+                <div
+                  *ngIf="
+                    domiciliationForm.get('extractRNE')!.invalid &&
+                    (domiciliationForm.get('extractRNE')!.dirty ||
+                      domiciliationForm.get('extractRNE')!.touched)
+                  "
+                  class="form-help text-right text-danger"
+                >
+                  <div
+                    *ngIf="domiciliationForm.get('extractRNE')!.errors?.['required']"
+                  >
+                    RNE Extract is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fourth step -- old legal folder -->
+      <div
+        *ngIf="
+          domiciliationForm.get('legalForm')!.value === 'Corporation' &&
+          domiciliationForm.get('companyStatus')!.value === 'Transfer'
+        "
+      >
+        <div class="intro-y box p-5 mt-5">
+          <div
+            class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+          >
+            <div
+              class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+            >
+              <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Further
+              Details For Corporations
+            </div>
+            <div class="mt-5">
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">CIN</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Ensure accuracy as this information may be used for verification purposes.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="cin"
+                    type="text"
+                    class="form-control"
+                    formControlName="cin"
+                    placeholder="CIN"
+                    maxlength="8"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('cin')!.touched &&
+                      domiciliationForm.get('cin')!.invalid
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('cin')!.errors?.['required']"
+                    >
+                      CIN is required.
+                    </div>
+                    <div
+                      *ngIf="domiciliationForm.get('cin')!.errors?.['minlength']"
+                    >
+                      CIN must be 8 digits long.
+                    </div>
+                    <div
+                      *ngIf="domiciliationForm.get('cin')!.errors?.['maxlength']"
+                    >
+                      CIN must be 8 digits long.
+                    </div>
+                    <div
+                      *ngIf="domiciliationForm.get('cin')!.hasError('pattern')"
+                    >
+                      CIN must contain only numbers.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Upload here you CIN File</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Ensure accuracy as this information may be used for verification purposes.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="cin-file"
+                    type="file"
+                    formControlName="cinFile"
+                    (change)="onFileSelected($event, 'cin')"
+                    class="form-control"
+                    placeholder="CIN File"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('cinFile')!.touched &&
+                      domiciliationForm.get('cinFile')!.invalid
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('cinFile')!.errors?.['required']"
+                    >
+                      CIN File is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Denomination</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Please enter the denomination of your company and upload the corresponding denomination file if available.
+
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="denomination"
+                    type="text"
+                    formControlName="denomination"
+                    class="form-control"
+                    placeholder="Denomination"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('denomination')!.touched &&
+                      domiciliationForm.get('denomination')!.invalid
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('denomination')!.errors?.['required']"
+                    >
+                      Denomination is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">
+                        Upload here your denomination File
+                      </div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      If you don't have a denomination file yet, you can visit <a href="https://www.registre-entreprises.tn/rne-public/#/" target="_blank" rel="noopener noreferrer" style="color: blue;">this website</a> to initiate the process.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="denominationFile"
+                    type="file"
+                    formControlName="denominationFile"
+                    (change)="onFileSelected($event, 'denomination')"
+                    class="form-control"
+                    placeholder="Denomination File"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('denominationFile')!.touched &&
+                      domiciliationForm.get('denominationFile')!.invalid
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('denominationFile')!.errors?.['required']"
+                    >
+                      Denomination File is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Choose a Draft Status</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Choose a draft status that best represents the legal structure of your company.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <select id="draftStatus" formControlName="draftStatus">
+                    <option value="" disabled selected>
+                      Select a draft status
+                    </option>
+                    <option value="SARL">
+                      SARL ( Société à responsabilité limitée )
+                    </option>
+                    <option value="SUARL">
+                      SUARL ( Entreprise unipersonnelle à responsabilité limitée
+                      )
+                    </option>
+                    <option value="SA">SA ( Société anonyme )</option>
+                    <option value="EI">EI ( Entrepreneur individuel )</option>
+                  </select>
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('draftStatus')!.invalid &&
+                      (domiciliationForm.get('draftStatus')!.dirty ||
+                        domiciliationForm.get('draftStatus')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('draftStatus')!.errors?.['required']"
+                    >
+                      Draft Status is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Enter your Share Capital</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Ensure to select a share capital amount that aligns with your company's needs and goals.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="shareCapital"
+                    type="number"
+                    formControlName="shareCapital"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('shareCapital')!.invalid &&
+                      (domiciliationForm.get('shareCapital')!.dirty ||
+                        domiciliationForm.get('shareCapital')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('shareCapital')!.errors?.['required']"
+                    >
+                      Share Capital is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Manager Name</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Consider nominating an individual with relevant experience and qualifications.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="management"
+                    type="text"
+                    formControlName="management"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('management')!.invalid &&
+                      (domiciliationForm.get('management')!.dirty ||
+                        domiciliationForm.get('management')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('management')!.errors?.['required']"
+                    >
+                      Management is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Upload the RNE Extract</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                      Please upload the extract document obtained from the <a href="https://www.registre-entreprises.tn/rne-public/#/" target="_blank" rel="noopener noreferrer" style="color: blue;">RNE website</a>.
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="extractRNE"
+                    type="file"
+                    formControlName="extractRNE"
+                    (change)="onFileSelected($event, 'extractRne')"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('extractRNE')!.invalid &&
+                      (domiciliationForm.get('extractRNE')!.dirty ||
+                        domiciliationForm.get('extractRNE')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('extractRNE')!.errors?.['required']"
+                    >
+                      RNE Extract is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="intro-y box p-5 mt-5">
+          <div
+            class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+          >
+            <div
+              class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+            >
+              <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Old Legal
+              Files
+            </div>
+            <div class="mt-5">
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Old Draft Status</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <select id="oldDraftStatus" formControlName="oldDraftStatus">
+                    <option value="" disabled selected>
+                      Select a draft status
+                    </option>
+                    <option value="SARL">
+                      SARL ( Société à responsabilité limitée )
+                    </option>
+                    <option value="SUARL">
+                      SUARL ( Entreprise unipersonnelle à responsabilité limitée
+                      )
+                    </option>
+                    <option value="SA">SA ( Société anonyme )</option>
+                    <option value="EI">EI ( Entrepreneur individuel )</option>
+                  </select>
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('oldDraftStatus')!.invalid &&
+                      (domiciliationForm.get('oldDraftStatus')!.dirty ||
+                        domiciliationForm.get('oldDraftStatus')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('oldDraftStatus')!.errors?.['required']"
+                    >
+                      Old Draft Status is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Old Legal Form</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                   
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <div class="form-check form-switch">
+                    <input
+                      id="old-natural-person"
+                      formControlName="oldLegalForm"
+                      class="form-check-input"
+                      type="radio"
+                      value="Natural person"
+                    />
+
+                    <label
+                      class="form-check-label leading-relaxed text-slate-500 mr-5"
+                      for="old-natural-person"
+                    >
+                      Natural Person
+                    </label>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <div class="form-check form-switch">
+                    <input
+                      id="old-corporation"
+                      formControlName="oldLegalForm"
+                      class="form-check-input mt-1"
+                      type="radio"
+                      value="Corporation"
+                    />
+                    <label
+                      class="form-check-label leading-relaxed text-slate-500"
+                      for="old-corporation"
+                    >
+                      Corporation
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Old Share Capital</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="oldShareCapital"
+                    type="number"
+                    formControlName="oldShareCapital"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('oldShareCapital')!.invalid &&
+                      (domiciliationForm.get('oldShareCapital')!.dirty ||
+                        domiciliationForm.get('oldShareCapital')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('oldShareCapital')!.errors?.['required']"
+                    >
+                      Old Share Capital is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Old Manager Name</div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="oldManagement"
+                    type="text"
+                    formControlName="oldManagement"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('oldManagement')!.invalid &&
+                      (domiciliationForm.get('oldManagement')!.dirty ||
+                        domiciliationForm.get('oldManagement')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('oldManagement')!.errors?.['required']"
+                    >
+                      Old Management is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">
+                        Upload the report of change of adress sheet here                    </div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="pvChangeAddress"
+                    type="file"
+                    formControlName="pvChangeAddress"
+                    (change)="onFileSelected($event, 'pvChangeAddress')"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('pvChangeAddress')!.invalid &&
+                      (domiciliationForm.get('pvChangeAddress')!.dirty ||
+                        domiciliationForm.get('pvChangeAddress')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('pvChangeAddress')!.errors?.['required']"
+                    >
+                      Change Adress report is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">Upload Old Business Licence</div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="oldBusinessLicence"
+                    type="file"
+                    formControlName="oldBusinessLicence"
+                    (change)="onFileSelected($event, 'oldBussinessLicence')"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('oldBusinessLicence')!.invalid &&
+                      (domiciliationForm.get('oldBusinessLicence')!.dirty ||
+                        domiciliationForm.get('oldBusinessLicence')!.touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('oldBusinessLicence')!.errors?.['required']"
+                    >
+                      Old Business Licence is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+              >
+                <div class="form-label xl:w-64 xl:!mr-10">
+                  <div class="text-left">
+                    <div class="flex items-center">
+                      <div class="font-medium">
+                        Upload Old Existence Declaration
+                      </div>
+                      <div
+                        class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                      >
+                        Required
+                      </div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="w-full mt-3 xl:mt-0 flex-1">
+                  <input
+                    id="oldExistenceDeclaration"
+                    type="file"
+                    formControlName="oldExistenceDeclaration"
+                    (change)="onFileSelected($event, 'oldExistenceDeclaration')"
+                  />
+                  <div
+                    *ngIf="
+                      domiciliationForm.get('oldExistenceDeclaration')!
+                        .invalid &&
+                      (domiciliationForm.get('oldExistenceDeclaration')!
+                        .dirty ||
+                        domiciliationForm.get('oldExistenceDeclaration')!
+                          .touched)
+                    "
+                    class="form-help text-right text-danger"
+                  >
+                    <div
+                      *ngIf="domiciliationForm.get('oldExistenceDeclaration')!.errors?.['required']"
+                    >
+                      Old Existence Declaration is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fifth step -- payment -->
+      <div
+        *ngIf="
+          (domiciliationForm.get('legalForm')!.value === 'Corporation' &&
+            domiciliationForm.get('companyStatus')!.value === 'Transfer') ||
+          (domiciliationForm.get('legalForm')!.value === 'Corporation' &&
+            domiciliationForm.get('companyStatus')!.value === 'In Process') ||
+          (domiciliationForm.get('legalForm')!.value === 'Natural person' &&
+            (domiciliationForm.get('companyStatus')!.value === 'Transfer' ||
+              domiciliationForm.get('companyStatus')!.value === 'In Process'))
+        "
+        class="intro-y box p-5 mt-5"
+      >
+        <div
+          class="border border-slate-200/60 dark:border-darkmode-400 rounded-md p-5"
+        >
+          <div
+            class="font-medium text-base flex items-center border-b border-slate-200/60 dark:border-darkmode-400 pb-5"
+          >
+            <i data-lucide="chevron-down" class="w-4 h-4 mr-2"></i> Payment
+            Options
+          </div>
+          <div class="mt-5">
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Choose a Pack</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                   <ul>
+                    <li class="circle-li">Please choose one of the available pricing packs listed below.</li>
+                    <li class="circle-li">For more details about each pack, <a routerLink="/" fragment="pricing"  style="color: blue;">click here</a>.</li>
+                    <li class="circle-li">Select the pack that best suits your company's needs and budget.</li>
+                   </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div *ngFor="let item of packs" class="form-check form-switch">
+                  <input
+                    id="pack{{ item.id }}"
+                    formControlName="pack"
+                    class="form-check-input"
+                    type="radio"
+                    [value]="item.id"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="pack{{ item.id }}"
+                  >
+                    {{ item.designation }}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="form-inline items-start flex-col xl:flex-row mt-5 pt-5 first:mt-0 first:pt-0"
+            >
+              <div class="form-label xl:w-64 xl:!mr-10">
+                <div class="text-left">
+                  <div class="flex items-center">
+                    <div class="font-medium">Choose a Payment Mode</div>
+                    <div
+                      class="ml-2 px-2 py-0.5 bg-slate-200 text-slate-600 dark:bg-darkmode-300 dark:text-slate-400 text-xs rounded-md"
+                    >
+                      Required
+                    </div>
+                  </div>
+                  <div class="leading-relaxed text-slate-500 text-xs mt-3">
+                    Choose your preferred payment schedule.
+                  </div>
+                </div>
+              </div>
+              <div class="w-full mt-3 xl:mt-0 flex-1">
+                <div class="form-check form-switch">
+                  <input
+                    id="paymentModeQuarter"
+                    formControlName="paymentMode"
+                    class="form-check-input"
+                    type="radio"
+                    value="Quarter"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="paymentModeQuarter"
+                  >
+                    Quarter
+                  </label>
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    id="paymentModeSemester"
+                    formControlName="paymentMode"
+                    class="form-check-input"
+                    type="radio"
+                    value="Semester"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="paymentModeSemester"
+                  >
+                    Semester
+                  </label>
+                </div>
+                <div class="form-check form-switch">
+                  <input
+                    id="paymentModeAnnually"
+                    formControlName="paymentMode"
+                    class="form-check-input"
+                    type="radio"
+                    value="Annually"
+                  />
+                  <label
+                    class="form-check-label leading-relaxed text-slate-500"
+                    for="paymentModeAnnually"
+                  >
+                    Annually
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input
+          type="submit"
+          [disabled]="!domiciliationForm.valid"
+          value="Submit"
+          class="btn btn-primary"
+        />
+      </div>
+    </form>
+  </div>
+</div>

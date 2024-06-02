@@ -25,16 +25,16 @@ public class ApiApplication {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
-
+	@Bean
 	CommandLineRunner start(UserRepository userRepository, DeadlineServiceImpl service){
 		return args -> {
-////			User admin = new User();
-////			admin.setEnabled(true);
-////			admin.setEmail("admin@gmail.com");
-////			admin.setPwd(new BCryptPasswordEncoder().encode("123456"));
-////			admin.setName("admin");
-////			admin.setUserRole(UserRole.ADMIN);
-////			userRepository.save(admin);
+//			User admin = new User();
+//			admin.setEnabled(true);
+//			admin.setEmail("admin@gmail.com");
+//			admin.setPwd(new BCryptPasswordEncoder().encode("yosrMeddah123_"));
+//			admin.setName("Admin DomiAffaire");
+//			admin.setUserRole(UserRole.ADMIN);
+//			userRepository.save(admin);
 //
 //
 ////			float pack = 70f;
