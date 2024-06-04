@@ -35,6 +35,7 @@ public interface DomiAffaireService {
     ConsultationRequestDTO addConsultationRequest(ConsultationPostRequest consultationPostRequest) throws UserNotFoundException;
     List<ConsultationRequestDTO> findAllConsultationsByClient() throws UserNotFoundException;
     List<DomiciliationRequestDTO> findAllDomiciliationRequestByClient() throws UserNotFoundException;
+    List<DomiciliationRequestDTO> findAllDomiciliationDocuments();
     List<ConsultationRequestDTO> findAllConsultationRequests();
     List<ConsultationRequestDTO> findAllConsultationsInProgress();
     List<ConsultationRequestDTO> findAllConsultationsAccepted();
@@ -60,6 +61,12 @@ public interface DomiAffaireService {
     List<DomiciliationRequestDTO> findAllDomiciliationRequestsRejected();
     DomiciliationRequestDTO getDomiciliationRequestById(String id) throws DomiciliationRequestNotFoundException;
     String acceptDomiciliationRequestAdmin(String id, MultipartFile draftContract) throws DomiciliationRequestNotFoundException, IOException, UserNotFoundException;
+
+
+    String addPatenteFileToDomiciliation(String id,MultipartFile businessLicence) throws DomiciliationRequestNotFoundException, IOException;
+    String addContractFileToDomiciliation(String id,MultipartFile contract) throws DomiciliationRequestNotFoundException, IOException;
+    String addExistenceDeclaration(String id,MultipartFile existenceDeclaration) throws DomiciliationRequestNotFoundException, IOException;
+
     ResponseDomiAdminDTO getResponseDomiAdminById(String id) throws ResponseAdminNotFoundException;
     String rejectDomiciliationRequestAdmin(String id) throws DomiciliationRequestNotFoundException;
     String acceptContractTermsClient(String id)throws  DomiciliationRequestNotFoundException;
@@ -107,9 +114,8 @@ public interface DomiAffaireService {
     void deleteAccount(String email) throws UserNotFoundException;
     String updateNetPayable(String id, UpdateNetPayableRequest updateNetPayableRequest) throws DeadlineNotFoundException, DomiciliationRequestNotFoundException;
 
-    RoomDTO addRoom(RoomRequest roomRequest);
-    RoomDTO getRoomById(String id)throws RoomNotFoundException;
-    List<RoomDTO> getAllRooms();
-    ReservationRequestDTO addReservationRequest();//Bchnkamel reservationPostRequest
+
+
+
 
 }

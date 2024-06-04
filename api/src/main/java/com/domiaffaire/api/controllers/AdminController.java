@@ -10,6 +10,7 @@ import com.domiaffaire.api.repositories.DomiciliationRequestRepository;
 import com.domiaffaire.api.repositories.UserRepository;
 import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
+import com.domiaffaire.api.services.ReservationServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import java.util.List;
 public class AdminController {
     private final DomiAffaireServiceImpl service;
     private final DeadlineServiceImpl deadlineService;
+    private final ReservationServiceImpl reservationService;
     private final UserRepository userRepository;
     private final DomiciliationRequestRepository domiciliationRequestRepository;
     private final ApplicationEventPublisher publisher;
@@ -298,6 +300,69 @@ public class AdminController {
         }
     }
 
+
+    @PostMapping("/domiciliation-requests/add-patente/{id}")
+    public ResponseEntity<?> addPatente(@RequestParam("patente") MultipartFile patente,
+                                                        @PathVariable String id){
+        try {
+            if (patente != null && (patente.getContentType().equals("application/pdf")
+                    || patente.getContentType().equals("application/msword"))
+                    || patente.getContentType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                String message = service.addPatenteFileToDomiciliation(id,patente);
+                return ResponseEntity.ok().body("{\"message\":\""+message+ "\"}");
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error: Only PDF or DOC files are allowed\"}");
+            }
+        } catch (DomiciliationRequestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Failed to process file.\"}");
+
+        }
+    }
+
+    @PostMapping("/domiciliation-requests/add-contract/{id}")
+    public ResponseEntity<?> addContract(@RequestParam("contract") MultipartFile contract,
+                                        @PathVariable String id){
+        try {
+            if (contract != null && (contract.getContentType().equals("application/pdf")
+                    || contract.getContentType().equals("application/msword"))
+                    || contract.getContentType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                String message = service.addContractFileToDomiciliation(id,contract);
+                return ResponseEntity.ok().body("{\"message\":\""+message+ "\"}");
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error: Only PDF or DOC files are allowed\"}");
+            }
+        } catch (DomiciliationRequestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Failed to process file.\"}");
+
+        }
+    }
+
+    @PostMapping("/domiciliation-requests/add-existence-declaration/{id}")
+    public ResponseEntity<?> addExistenceDeclaration(@RequestParam("ed") MultipartFile ed,
+                                         @PathVariable String id){
+        try {
+            if (ed != null && (ed.getContentType().equals("application/pdf")
+                    || ed.getContentType().equals("application/msword"))
+                    || ed.getContentType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                String message = service.addExistenceDeclaration(id,ed);
+                return ResponseEntity.ok().body("{\"message\":\""+message+ "\"}");
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error: Only PDF or DOC files are allowed\"}");
+            }
+        } catch (DomiciliationRequestNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Failed to process file.\"}");
+
+        }
+    }
+
+
+
     @GetMapping("/response-admin/{id}")
     public ResponseEntity<?> getResponseAdminById(@PathVariable String id){
         try {
@@ -546,7 +611,45 @@ public class AdminController {
 
     @PostMapping("/rooms")
     public RoomDTO addRoom(@RequestBody RoomRequest roomRequest){
-        return service.addRoom(roomRequest);
+        RoomDTO roomDTO = reservationService.addRoom(roomRequest);
+        reservationService.exportRoomsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/rooms.csv");
+        return roomDTO;
+    }
+
+    @PutMapping("/rooms/{id}")
+    public RoomDTO updateRoom(@PathVariable String id,@RequestBody RoomRequest roomRequest){
+        RoomDTO roomDTO = null;
+        try {
+            roomDTO = reservationService.updateRoom(id,roomRequest);
+            reservationService.exportRoomsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/rooms.csv");
+            return roomDTO;
+        } catch (RoomNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/rooms")
+    public List<RoomDTO> getAllRooms(){
+        return reservationService.getAllRooms();
+    }
+
+    @GetMapping("/rooms/{id}")
+    public ResponseEntity<?> getRoomById(@PathVariable String id){
+        try {
+            return ResponseEntity.ok().body(reservationService.getRoomById(id));
+        } catch (RoomNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @DeleteMapping("/rooms/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable String id){
+        try {
+            reservationService.deleteRoom(id);
+            return ResponseEntity.ok().body("{\"message\":\"Room deleted successfully\"}");
+        } catch (RoomNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
     }
 
     @PostMapping("/deadlines-filter")
@@ -564,6 +667,33 @@ public class AdminController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body((deadlineService.getDeadlinesOfClientById(id)));
         } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/domiciliations-documents")
+    public List<DomiciliationRequestDTO> findAllDomiciliationDocuments(){
+        return service.findAllDomiciliationDocuments();
+    }
+
+    @GetMapping("/reservation/accept/{id}")
+    public ResponseEntity<?> acceptReservation(@PathVariable String id){
+        try {
+            String message = reservationService.acceptReservation(id);
+            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"" + message + "\"}");
+        } catch (ReservationNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/reservation/reject/{id}")
+    public ResponseEntity<?> rejectReservation(@PathVariable String id){
+        try {
+            String message = reservationService.rejectReservation(id);
+            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"" + message + "\"}");
+        } catch (ReservationNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }

@@ -8,6 +8,7 @@ import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.repositories.DeadlineRepository;
 import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
+import com.domiaffaire.api.services.ReservationServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ import java.io.IOException;
 public class ClientController {
     private final DomiAffaireServiceImpl service;
     private final DeadlineServiceImpl deadlineService;
+    private final ReservationServiceImpl reservationService;
 
     @GetMapping("/{email}")
     public ResponseEntity<?> findUserByEmail(@PathVariable String email){
@@ -295,5 +297,19 @@ public class ClientController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
+    }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<?> saveRecommendation(@RequestBody RecommendationRequest recommendationRequest){
+        String message = "";
+        try {
+            message = reservationService.addReservation(recommendationRequest);
+            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            reservationService.exportRoomsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/rooms.csv");
+            return ResponseEntity.ok().body("{\"message\":\"" + message + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+
     }
 }

@@ -68,5 +68,27 @@ public class DomiciliationRequest {
     private boolean emailSent;
     private int protestCount=0;
     private String documentCode;
+    private long domiciliationDocumentsSize;
+
+
+    public void calculateDocumentsSize() {
+        long totalSize = 0;
+
+        totalSize += getFileSize(cinFile);
+        totalSize += getFileSize(denominationFile);
+        totalSize += getFileSize(extractRNE);
+        totalSize += getFileSize(businessLicence);
+        totalSize += getFileSize(existenceDeclaration);
+        totalSize += getFileSize(pvChangeAddress);
+        totalSize += getFileSize(oldBusinessLicence);
+        totalSize += getFileSize(oldExistenceDeclaration);
+        totalSize += getFileSize(contract);
+
+        this.domiciliationDocumentsSize = totalSize;
+    }
+
+    private long getFileSize(File file) {
+        return (file != null) ? file.getSize() : 0;
+    }
 
 }

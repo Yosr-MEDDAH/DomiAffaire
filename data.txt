@@ -1,0 +1,11 @@
+
+“View domiciliation requests that have been accepted by both admin and users.”
+“Explore officially domiciled cases after successful approval.”
+
+"Access the history of all domiciliation requests submitted."
+===================================================================================
+Accepted Domiciliation Requests Awaiting User Response
+Officially Domiciled Cases
+Rejected Domiciliation Requests by Administration
+Domiciliation Requests History
+===================================================================================

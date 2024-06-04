@@ -7,5 +7,7 @@ public class FileDTO {
     private String id;
     private String name;
     private String type;
+    private long size;
     private byte[] fileData;
+    private boolean companyCreation;
 }

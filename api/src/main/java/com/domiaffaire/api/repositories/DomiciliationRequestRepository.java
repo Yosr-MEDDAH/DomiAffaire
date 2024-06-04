@@ -16,4 +16,5 @@ public interface DomiciliationRequestRepository extends MongoRepository<Domicili
     List<DomiciliationRequest> findAllByDeadlineNotNull();
     DomiciliationRequest findByDeadline(Deadline deadline);
     List<DomiciliationRequest> findAllByClient(User user);
+    List<DomiciliationRequest> findAllByDocumentCodeIsNotNull();
 }

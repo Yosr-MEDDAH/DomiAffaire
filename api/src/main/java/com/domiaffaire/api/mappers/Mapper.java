@@ -128,5 +128,11 @@ public class Mapper {
         return reservationRequestDTO;
     }
 
+    public ReservationDTO fromReservationToReservationDTO(Reservation reservation){
+        ReservationDTO reservationDTO = new ReservationDTO();
+        BeanUtils.copyProperties(reservation,reservationDTO);
+        return reservationDTO;
+    }
+
 
 }

@@ -188,6 +188,14 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     }
 
     @Override
+    public List<DomiciliationRequestDTO> findAllDomiciliationDocuments() {
+        List<DomiciliationRequest> domiciliationRequests = domiciliationRequestRepository.findAllByDocumentCodeIsNotNull();
+        return domiciliationRequests.stream()
+                .map(domiciliationRequest -> mapper.fromDomiciliationRequestToDomiciliationRequestDTO(domiciliationRequest))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<ConsultationRequestDTO> findAllConsultationRequests() {
         List<ConsultationRequest> consultationRequests = consultationRequestRepository.findAll();
         return consultationRequests.stream()
@@ -408,12 +416,14 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .name(cin.getOriginalFilename())
                 .type(cin.getContentType())
                 .fileData(cin.getBytes())
+                .size(cin.getSize())
                 .build());
 
         File savedDenomination = fileRepository.save(File.builder()
                 .name(denomination.getOriginalFilename())
                 .type(denomination.getContentType())
                 .fileData(denomination.getBytes())
+                .size(denomination.getSize())
                 .build());
 
         Pack pack = packRepository.findById(domiciliationPostRequest.getPack()).get();
@@ -429,7 +439,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
 
         domiciliationRequest.setCinFile(savedCin);
         domiciliationRequest.setDenominationFile(savedDenomination);
-
+        domiciliationRequest.calculateDocumentsSize();
         domiciliationRequestRepository.save(domiciliationRequest);
         return mapper.fromDomiciliationRequestToDomiciliationRequestDTO(domiciliationRequest);
     }
@@ -458,18 +468,21 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .name(cin.getOriginalFilename())
                 .type(cin.getContentType())
                 .fileData(cin.getBytes())
+                .size(cin.getSize())
                 .build());
 
         File savedDenomination = fileRepository.save(File.builder()
                 .name(denomination.getOriginalFilename())
                 .type(denomination.getContentType())
                 .fileData(denomination.getBytes())
+                        .size(denomination.getSize())
                 .build());
 
         File savedExtractRNE = fileRepository.save(File.builder()
                 .name(extractRNE.getOriginalFilename())
                 .type(extractRNE.getContentType())
                 .fileData(extractRNE.getBytes())
+                        .size(extractRNE.getSize())
                 .build());
 
         Pack pack = packRepository.findById(domiciliationPostRequest.getPack()).get();
@@ -486,7 +499,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         domiciliationRequest.setCinFile(savedCin);
         domiciliationRequest.setDenominationFile(savedDenomination);
         domiciliationRequest.setExtractRNE(savedExtractRNE);
-
+        domiciliationRequest.calculateDocumentsSize();
         domiciliationRequestRepository.save(domiciliationRequest);
         return mapper.fromDomiciliationRequestToDomiciliationRequestDTO(domiciliationRequest);
     }
@@ -527,36 +540,42 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .name(cin.getOriginalFilename())
                 .type(cin.getContentType())
                 .fileData(cin.getBytes())
+                        .size(cin.getSize())
                 .build());
 
         File savedDenomination = fileRepository.save(File.builder()
                 .name(denomination.getOriginalFilename())
                 .type(denomination.getContentType())
                 .fileData(denomination.getBytes())
+                        .size(denomination.getSize())
                 .build());
 
         File savedExtractRNE = fileRepository.save(File.builder()
                 .name(extractRNE.getOriginalFilename())
                 .type(extractRNE.getContentType())
                 .fileData(extractRNE.getBytes())
+                        .size(extractRNE.getSize())
                 .build());
 
         File savedPvChangeAddress = fileRepository.save(File.builder()
                 .name(pvChangeAddress.getOriginalFilename())
                 .type(pvChangeAddress.getContentType())
                 .fileData(pvChangeAddress.getBytes())
+                        .size(pvChangeAddress.getSize())
                 .build());
 
         File savedOldBusinessLicence = fileRepository.save(File.builder()
                 .name(oldBusinessLicence.getOriginalFilename())
                 .type(oldBusinessLicence.getContentType())
                 .fileData(oldBusinessLicence.getBytes())
+                        .size(oldBusinessLicence.getSize())
                 .build());
 
         File savedOldExistenceDeclaration = fileRepository.save(File.builder()
                 .name(oldExistenceDeclaration.getOriginalFilename())
                 .type(oldExistenceDeclaration.getContentType())
                 .fileData(oldExistenceDeclaration.getBytes())
+                        .size(oldExistenceDeclaration.getSize())
                 .build());
 
         Pack pack = packRepository.findById(domiciliationPostRequest.getPack()).get();
@@ -576,6 +595,8 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         domiciliationRequest.setPvChangeAddress(savedPvChangeAddress);
         domiciliationRequest.setOldBusinessLicence(savedOldBusinessLicence);
         domiciliationRequest.setOldExistenceDeclaration(savedOldExistenceDeclaration);
+        domiciliationRequest.calculateDocumentsSize();
+
         domiciliationRequestRepository.save(domiciliationRequest);
         return mapper.fromDomiciliationRequestToDomiciliationRequestDTO(domiciliationRequest);
     }
@@ -660,12 +681,88 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
             domiciliationRequest.getClient().setDomiciliationNotificationCount(domiciliationRequest.getClient().getDomiciliationNotificationCount()+1);
             userRepository.save(domiciliationRequest.getClient());
             responseDomiAdminRepository.save(responseDomiAdmin);
+            domiciliationRequest.calculateDocumentsSize();
             domiciliationRequestRepository.save(domiciliationRequest);
             return "Domiciliation request accepted";
         }else {
             throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
         }
     }
+
+    @Override
+    public String addPatenteFileToDomiciliation(String id, MultipartFile businessLicence) throws DomiciliationRequestNotFoundException, IOException {
+        Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
+        if(domiciliationRequestOptional.isPresent()) {
+            DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
+            if(domiciliationRequest.getBusinessLicence()!=null){
+                fileRepository.delete(domiciliationRequest.getBusinessLicence());
+            }
+            File savedBusinessLicence = fileRepository.save(File.builder()
+                    .name(businessLicence.getOriginalFilename())
+                    .type(businessLicence.getContentType())
+                    .fileData(businessLicence.getBytes())
+                            .size(businessLicence.getSize())
+                    .build());
+
+            domiciliationRequest.setBusinessLicence(savedBusinessLicence);
+            domiciliationRequest.calculateDocumentsSize();
+            domiciliationRequestRepository.save(domiciliationRequest);
+            return "Business license added successfully";
+        }else {
+            throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
+        }
+    }
+
+    @Override
+    public String addContractFileToDomiciliation(String id, MultipartFile contract) throws DomiciliationRequestNotFoundException, IOException {
+        Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
+        if(domiciliationRequestOptional.isPresent()) {
+            DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
+            if(domiciliationRequest.getContract()!=null){
+                fileRepository.delete(domiciliationRequest.getContract());
+            }
+            File savedContract = fileRepository.save(File.builder()
+                    .name(contract.getOriginalFilename())
+                    .type(contract.getContentType())
+                    .fileData(contract.getBytes())
+                            .size(contract.getSize())
+                    .build());
+
+            domiciliationRequest.setContract(savedContract);
+            domiciliationRequest.calculateDocumentsSize();
+            domiciliationRequestRepository.save(domiciliationRequest);
+            return "Contract added successfully";
+        }else {
+            throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
+        }
+    }
+
+    @Override
+    public String addExistenceDeclaration(String id, MultipartFile existenceDeclaration) throws DomiciliationRequestNotFoundException, IOException {
+        Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
+        if(domiciliationRequestOptional.isPresent()) {
+            DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
+            if(domiciliationRequest.getExistenceDeclaration()!=null){
+                fileRepository.delete(domiciliationRequest.getExistenceDeclaration());
+            }
+            File savedExistenceDeclaration = fileRepository.save(File.builder()
+                    .name(existenceDeclaration.getOriginalFilename())
+                    .type(existenceDeclaration.getContentType())
+                    .fileData(existenceDeclaration.getBytes())
+                            .size(existenceDeclaration.getSize())
+                    .build());
+
+
+            domiciliationRequest.setExistenceDeclaration(savedExistenceDeclaration);
+            domiciliationRequest.calculateDocumentsSize();
+            domiciliationRequestRepository.save(domiciliationRequest);
+            return "Existence declaration added successfully";
+        }else {
+            throw new DomiciliationRequestNotFoundException("Domiciliation request not found");
+        }
+    }
+
+
 
     @Override
     public ResponseDomiAdminDTO getResponseDomiAdminById(String id) throws ResponseAdminNotFoundException {
@@ -685,6 +782,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
             domiciliationRequest.setStatus(DomiciliationRequestStatus.REJECTED);
             domiciliationRequest.getClient().setDomiciliationNotificationCount(domiciliationRequest.getClient().getDomiciliationNotificationCount()+1);
             userRepository.save(domiciliationRequest.getClient());
+            domiciliationRequest.calculateDocumentsSize();
             domiciliationRequestRepository.save(domiciliationRequest);
             return "Domiciliation request rejected";
         }else {
@@ -739,6 +837,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
             if(domiciliationRequestOptional.get().getProtestCount()>3){
 //                domiciliationRequestRepository.delete(domiciliationRequestOptional.get());
                 domiciliationRequestOptional.get().setStatus(DomiciliationRequestStatus.REJECTED);
+                domiciliationRequestOptional.get().calculateDocumentsSize();
                 domiciliationRequestRepository.save(domiciliationRequestOptional.get());
                 return "saye maadch njmou ne9blou hata protest sakarna";
             }else{
@@ -751,6 +850,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 domiciliationRequest.getResponseDomiAdmin().getResponsedBy().setDomiciliationNotificationCount(domiciliationRequest.getResponseDomiAdmin().getResponsedBy().getDomiciliationNotificationCount()+1);
                 domiciliationRequest.setProtestCount(domiciliationRequest.getProtestCount()+1);
                 userRepository.save(domiciliationRequest.getResponseDomiAdmin().getResponsedBy());
+                domiciliationRequest.calculateDocumentsSize();
                 domiciliationRequestRepository.save(domiciliationRequest);
                 return "Your response is sent to the administration successfully";
             }
@@ -923,6 +1023,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .type(image.getContentType())
                 .fileData(image.getBytes())
                 .companyCreation(false)
+                        .size(image.getSize())
                 .build());
 
         blog.setImage(savedImage);
@@ -991,6 +1092,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                     .type(image.getContentType())
                     .fileData(image.getBytes())
                     .companyCreation(false)
+                            .size(image.getSize())
                     .build());
             blog.setImage(savedImage);
             blogRepository.save(blog);
@@ -1243,6 +1345,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 }
                 domiciliationRequest.getDeadline().setNetPayable(calculateNetPayable(updateNetPayableRequest.getPrice(),paymentMode,1));
                 deadlineRepository.save(domiciliationRequest.getDeadline());
+                domiciliationRequest.calculateDocumentsSize();
                 domiciliationRequestRepository.save(domiciliationRequest);
                 return "Price updated successfully";
             }else{
@@ -1254,30 +1357,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         }
     }
 
-    @Override
-    public RoomDTO addRoom(RoomRequest roomRequest) {
-        Room room = new Room();
-        room.setName(roomRequest.getName());
-        room.setNbrPlaces(roomRequest.getNbrPlaces());
-        room.setEquipments(roomRequest.getEquipments());
-        roomRepository.save(room);
-        return mapper.fromRoomToRoomDTO(room);
-    }
-
-    @Override
-    public RoomDTO getRoomById(String id) throws RoomNotFoundException {
-        return null;
-    }
-
-    @Override
-    public List<RoomDTO> getAllRooms() {
-        return null;
-    }
-
-    @Override
-    public ReservationRequestDTO addReservationRequest() {
-        return null;
-    }
 
 
     @Override
@@ -1325,6 +1404,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .fileData(file.getBytes())
+                        .size(file.getSize())
                 .companyCreation(true).build());
         if(newFile != null)
             return "File uploaded successfully : "+file.getOriginalFilename();
