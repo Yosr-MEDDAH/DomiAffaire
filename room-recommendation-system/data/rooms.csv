@@ -1,6 +1,7 @@
 room_id,nbrPlaces,equipments
-665a45eff75c577629632506,8,"datashow,board"
-665de0b628b4245367a997c1,9,"datashow,board,video conference,datashow"
-665de0d528b4245367a997c2,4,"board,datashow"
-665de0da28b4245367a997c3,6,"board,video conference,datashow"
-665de0e328b4245367a997c4,15,"board"
+665f9cfea7c36f32c7c95e2a,8,"Projecteur,Tableau"
+665f9d1fa7c36f32c7c95e2b,9,"Projecteur,Tableau,Conférence Vidéo"
+665f9d41a7c36f32c7c95e2c,4,"Projecteur,Tableau,Ordinateur Portable"
+665f9d5ca7c36f32c7c95e2d,6,"Projecteur,Tableau,Conférence Vidéo"
+665f9d7da7c36f32c7c95e2e,6,"Tableau,Ordinateur Portable"
+666317ca30bccc70aebb1770,20,"Tableau,Conférence Vidéo,Projecteur"

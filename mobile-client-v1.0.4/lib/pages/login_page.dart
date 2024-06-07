@@ -1,8 +1,8 @@
+import 'package:DomiAffaire/components/my_button.dart';
+import 'package:DomiAffaire/components/my_textfield.dart';
+import 'package:DomiAffaire/pages/auth_page.dart';
+import 'package:DomiAffaire/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:hello/components/my_button.dart';
-import 'package:hello/components/my_textfield.dart';
-import 'package:hello/services/auth_service.dart';
-import 'package:hello/pages/auth_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {

@@ -92,8 +92,8 @@
                   Contract
                 </button>
                 <button
-                  *ngIf="item.status === 'REJECTED'"
-                  (click)="protest(item.id)"
+                  *ngIf="item.status === 'ACCEPTED'"
+                  (click)="closeProtestModal(item.id)"
                   class="flex items-center text-primary whitespace-nowrap"
                 >
                   <i class="w-4 h-4 mr-1 fa-solid fa-exclamation-triangle"></i>
@@ -117,7 +117,7 @@
   </div>
 </div>
 
-<div *ngIf="isDetailsModalOpen" class="modal-overlay">
+<div *ngIf="isDetailsModalOpen" [ngClass]="{show:isDetailsModalOpen}" class="modal-overlay">
   <div
     class="modal-content"
     [ngClass]="isDarkModeEnabled() ? 'modal-dark' : 'modal-light'"
@@ -200,7 +200,7 @@
   </div>
 </div>
 
-<div *ngIf="isCancelModalOpen" class="modal-overlay">
+<div *ngIf="isCancelModalOpen" [ngClass]="{show:isCancelModalOpen}" class="modal-overlay">
   <div class="modal-content">
     <span class="close" (click)="openCancelOrCloseModal()">&times;</span>
 
@@ -227,7 +227,7 @@
     </div>
   </div>
 </div>
-<div *ngIf="isAcceptModalOpen" class="modal-overlay accept-modal">
+<div *ngIf="isAcceptModalOpen"  [ngClass]="{show:isAcceptModalOpen}" class="modal-overlay accept-modal">
   <div class="modal-content accept-modal-content disable-text-selection">
     <span class="close" (click)="openAcceptOrCloseModal()">&times;</span>
     <p class="mt-5 mb-5 font-bold text-left text-lg">
@@ -305,6 +305,45 @@
       >
         Accept
       </button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" [ngClass]="{ show: isProtest}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Objection
+        </h5>
+        <button type="button" class="close" (click)="closeProtestModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="protestForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="objectionArgument">Objection Argument</label>
+            <textarea
+              id="objectionArgument"
+              formControlName="objectionArgument"
+              class="form-control"
+            ></textarea>
+          </div>
+          
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeProtestModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Send
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

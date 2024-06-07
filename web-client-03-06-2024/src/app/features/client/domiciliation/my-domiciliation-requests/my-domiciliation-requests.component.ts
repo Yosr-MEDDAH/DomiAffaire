@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   HostListener,
 } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ClientService } from 'src/app/core/services/client.service';
 import { DarkModeService } from 'src/app/core/services/dark-mode.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -14,6 +15,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
   styleUrls: ['./my-domiciliation-requests.component.css'],
 })
 export class MyDomiciliationRequestsComponent {
+  isProtest: boolean = false;
   selectedDomiciliation: any;
   isCheckboxChecked: boolean = false;
   isDetailsModalOpen: boolean = false;
@@ -23,13 +25,19 @@ export class MyDomiciliationRequestsComponent {
   requestId: any;
   pdfSrc: string = '';
   obscured: boolean = false;
+  protestForm!: FormGroup;
 
   constructor(
     private clientService: ClientService,
     private darkModeService: DarkModeService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private fb: FormBuilder
   ) {}
   ngOnInit(): void {
+    this.protestForm = this.fb.group({
+      objectionArgument: [''],
+    });
+    
     this.getClientDomiciliationRequests();
   }
   getClientDomiciliationRequests() {
@@ -42,7 +50,7 @@ export class MyDomiciliationRequestsComponent {
         console.log(this.domiciliations);
       },
       error: (err: HttpErrorResponse) => {
-        console.log(err);
+        this.handleError(err);
       },
     });
   }
@@ -60,15 +68,7 @@ export class MyDomiciliationRequestsComponent {
         this.getClientDomiciliationRequests();
       },
       error: (err: HttpErrorResponse) => {
-        if (err.error != null) {
-          let errorMessage = 'An error occurred: ';
-          for (const key in err.error) {
-            if (err.error.hasOwnProperty(key)) {
-              errorMessage += `${err.error[key]} `;
-            }
-          }
-          this.toastService.showToast('error', errorMessage);
-        }
+        this.handleError(err);
       },
     });
   }
@@ -102,7 +102,6 @@ export class MyDomiciliationRequestsComponent {
     return this.darkModeService.isDarkModeEnabled();
   }
 
-  protest(id: any) {}
   openAcceptOrCloseModal() {
     this.isAcceptModalOpen = !this.isAcceptModalOpen;
   }
@@ -120,19 +119,11 @@ export class MyDomiciliationRequestsComponent {
           next: (data: any) => {
             // console.log(data);
             this.getClientDomiciliationRequests();
-            this.toastService.showToast('success',data.message);
+            this.toastService.showToast('success', data.message);
             this.openAcceptOrCloseModal();
           },
           error: (err: HttpErrorResponse) => {
-            if (err.error != null) {
-              let errorMessage = 'An error occurred: ';
-              for (const key in err.error) {
-                  if (err.error.hasOwnProperty(key)) {
-                      errorMessage += `${err.error[key]} `;
-                  }
-              }
-              this.toastService.showToast('error', errorMessage);
-          }
+            this.handleError(err);
           },
         });
     }
@@ -159,5 +150,33 @@ export class MyDomiciliationRequestsComponent {
     setTimeout(() => {
       this.obscured = false;
     }, 3000); // Obscure content for 2 seconds
+  }
+  closeProtestModal(id?:any) {
+    if(id) this.requestId=id;
+    this.isProtest=!this.isProtest;
+  }
+  onSubmit() {
+    this.clientService
+      .rejectDomiciliationRequest(this.requestId, this.protestForm.value)
+      .subscribe({
+        next: (data: any) => {
+          console.log(data);
+          this.getClientDomiciliationRequests()
+          this.toastService.showToast("success",data.message)
+          this.closeProtestModal()
+        },
+        error: (err: HttpErrorResponse) => {
+          this.handleError(err);
+        },
+      });
+  }
+  private handleError(err: HttpErrorResponse) {
+    let errorMessage = 'An error occurred: ';
+    for (const key in err.error) {
+      if (err.error.hasOwnProperty(key)) {
+        errorMessage += `${err.error[key]} `;
+      }
+    }
+    this.toastService.showToast('error', errorMessage);
   }
 }

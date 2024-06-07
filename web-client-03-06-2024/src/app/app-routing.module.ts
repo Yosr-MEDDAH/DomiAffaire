@@ -168,6 +168,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: '',
+        loadChildren: () =>
+          import('./features/admin/reservation/reservation.module').then(
+            (m) => m.ReservationModule
+          ),
+      },
+      {
         path: 'company-creation-documents',
         loadChildren: () =>
           import('./features/admin/company-creation-documents/company-creation-documents.module').then(

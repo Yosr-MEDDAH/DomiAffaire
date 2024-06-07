@@ -1,9 +1,9 @@
+import 'package:DomiAffaire/pages/recommandation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hello/pages/recommandation_page.dart';
 
 class ReservationPage extends StatefulWidget {
   @override
@@ -13,7 +13,6 @@ class ReservationPage extends StatefulWidget {
 class _ReservationPageState extends State<ReservationPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Form field controllers
   final TextEditingController _nbrPlacesController = TextEditingController();
   final TextEditingController _durationController = TextEditingController();
   final TextEditingController _startDateController = TextEditingController();
@@ -22,17 +21,21 @@ class _ReservationPageState extends State<ReservationPage> {
   final TextEditingController _hourEndingController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
 
-  // Form field variables
   List<String> _selectedEquipments = [];
   String? _nature;
 
-  final List<String> _equipments = ['Datashow', 'Board', 'Laptop', 'Projector'];
+  final List<String> _equipments = [
+    'Projecteur',
+    'Tableau',
+    'Ordinateur Portable',
+    'Conférence Vidéo'
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reservation Page'),
+        title: Text('Page de Réservation'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -42,17 +45,17 @@ class _ReservationPageState extends State<ReservationPage> {
             children: [
               TextFormField(
                 controller: _nbrPlacesController,
-                decoration: InputDecoration(labelText: 'Number of Places'),
+                decoration: InputDecoration(labelText: 'Nombre de Places'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the number of places';
+                    return 'Veuillez entrer le nombre de places';
                   }
                   return null;
                 },
               ),
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Required Equipments'),
+                decoration: InputDecoration(labelText: 'Équipements Requis'),
                 items: _equipments.map((String equipment) {
                   return DropdownMenuItem<String>(
                     value: equipment,
@@ -61,43 +64,47 @@ class _ReservationPageState extends State<ReservationPage> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    if (newValue != null && !_selectedEquipments.contains(newValue)) {
+                    if (newValue != null &&
+                        !_selectedEquipments.contains(newValue)) {
                       _selectedEquipments.add(newValue);
                     }
                   });
                 },
-                 validator: (value) {
+                validator: (value) {
                   if (_selectedEquipments.isEmpty) {
-                    return 'Please select at least one equipment';
+                    return 'Veuillez sélectionner au moins un équipement';
                   }
                   return null;
                 },
               ),
               Wrap(
                 spacing: 8.0,
-                children: _selectedEquipments.map((e) => Chip(
-                  label: Text(e),
-                  onDeleted: () {
-                    setState(() {
-                      _selectedEquipments.remove(e);
-                    });
-                  },
-                )).toList(),
+                children: _selectedEquipments
+                    .map((e) => Chip(
+                          label: Text(e),
+                          onDeleted: () {
+                            setState(() {
+                              _selectedEquipments.remove(e);
+                            });
+                          },
+                        ))
+                    .toList(),
               ),
               TextFormField(
                 controller: _durationController,
-                decoration: InputDecoration(labelText: 'Duration (hours)'),
+                decoration: InputDecoration(labelText: 'Durée (en heures)'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the duration';
+                    return 'Veuillez entrer la durée';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _startDateController,
-                decoration: InputDecoration(labelText: 'Start Date'),
+                decoration:
+                    InputDecoration(labelText: 'Date de Début (à partir de)'),
                 readOnly: true,
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -108,31 +115,33 @@ class _ReservationPageState extends State<ReservationPage> {
                   );
                   if (pickedDate != null) {
                     setState(() {
-                      _startDateController.text = pickedDate.toIso8601String().split('T')[0];
+                      _startDateController.text =
+                          pickedDate.toIso8601String().split('T')[0];
                     });
                   }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the start date';
+                    return 'Veuillez entrer la date de début';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _numDaysController,
-                decoration: InputDecoration(labelText: 'Number of Days'),
+                decoration: InputDecoration(labelText: 'Nombre de Jours'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the number of days';
+                    return 'Veuillez entrer le nombre de jours';
                   }
                   return null;
                 },
               ),
-                TextFormField(
+              TextFormField(
                 controller: _hourBeginingController,
-                decoration: InputDecoration(labelText: 'Hour Beginning Suggested'),
+                decoration:
+                    InputDecoration(labelText: 'Heure de Début Suggérée'),
                 readOnly: true,
                 onTap: () async {
                   TimeOfDay? pickedTime = await showTimePicker(
@@ -140,7 +149,8 @@ class _ReservationPageState extends State<ReservationPage> {
                     initialTime: TimeOfDay(hour: 9, minute: 0),
                     builder: (BuildContext context, Widget? child) {
                       return MediaQuery(
-                        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
                         child: child!,
                       );
                     },
@@ -153,14 +163,14 @@ class _ReservationPageState extends State<ReservationPage> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the hour beginning';
+                    return "Veuillez entrer l'heure de début";
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _hourEndingController,
-                decoration: InputDecoration(labelText: 'Hour Ending Suggested'),
+                decoration: InputDecoration(labelText: 'Heure de Fin Suggérée'),
                 readOnly: true,
                 onTap: () async {
                   TimeOfDay? pickedTime = await showTimePicker(
@@ -168,7 +178,8 @@ class _ReservationPageState extends State<ReservationPage> {
                     initialTime: TimeOfDay(hour: 17, minute: 0),
                     builder: (BuildContext context, Widget? child) {
                       return MediaQuery(
-                        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                        data: MediaQuery.of(context)
+                            .copyWith(alwaysUse24HourFormat: true),
                         child: child!,
                       );
                     },
@@ -181,17 +192,18 @@ class _ReservationPageState extends State<ReservationPage> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the hour ending';
+                    return "Veuillez entrer l'heure de fin";
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration:
+                    InputDecoration(labelText: 'Titre de la Réservation'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
+                    return 'Veuillez entrer un titre';
                   }
                   return null;
                 },
@@ -199,7 +211,7 @@ class _ReservationPageState extends State<ReservationPage> {
               Column(
                 children: [
                   CheckboxListTile(
-                    title: Text('Team Meeting'),
+                    title: Text("Réunion d'Équipe"),
                     value: _nature == 'Team Meeting',
                     onChanged: (bool? value) {
                       if (value == true) {
@@ -210,7 +222,7 @@ class _ReservationPageState extends State<ReservationPage> {
                     },
                   ),
                   CheckboxListTile(
-                    title: Text('Training Session'),
+                    title: Text('Session de Formation'),
                     value: _nature == 'Training Session',
                     onChanged: (bool? value) {
                       if (value == true) {
@@ -227,9 +239,9 @@ class _ReservationPageState extends State<ReservationPage> {
                 onPressed: _submitReservation,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.orange, // Text color
+                  backgroundColor: Colors.orange,
                 ),
-                child: Text('Submit'),
+                child: Text('Soumettre'),
               ),
             ],
           ),
@@ -237,6 +249,7 @@ class _ReservationPageState extends State<ReservationPage> {
       ),
     );
   }
+
   Future<void> _submitReservation() async {
     if (_formKey.currentState?.validate() ?? false) {
       final reservationData = {
@@ -250,30 +263,22 @@ class _ReservationPageState extends State<ReservationPage> {
         'nature': _nature,
         'title': _titleController.text,
       };
-      print ('Reservation Data $reservationData');
-      print (jsonEncode(reservationData));
 
       try {
         final prefs = await SharedPreferences.getInstance();
         final token = prefs.getString('auth_token') ?? '';
-        print (token);
-
         final response = await http.post(
-          Uri.parse('http://localhost:5000/recommend'),
+          Uri.parse('http://192.168.1.133:5000/recommend'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode(reservationData),
         );
-print("response 9bal el 200");
-print(response);
         if (response.statusCode == 200) {
-          print("from status === 200");
-          print(response);
           final responseData = jsonDecode(response.body);
           Fluttertoast.showToast(
-            msg: "Reservation submitted successfully!",
+            msg: "Réservation soumise avec succès !",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -289,10 +294,9 @@ print(response);
             ),
           );
         } else {
-          print("from else === 200");
-          print(response);
           Fluttertoast.showToast(
-            msg: "Failed to submit reservation: ${response.reasonPhrase}",
+            msg:
+                "Échec de la soumission de la réservation : ${response.reasonPhrase}",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -302,10 +306,8 @@ print(response);
           );
         }
       } catch (e) {
-        print("catch");
-        print(e);
         Fluttertoast.showToast(
-          msg: "Error: $e",
+          msg: "Erreur: $e",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -317,5 +319,3 @@ print(response);
     }
   }
 }
-
-

@@ -209,4 +209,23 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
+    @Override
+    public ReservationDTO getReservationById(String id) throws ReservationNotFoundException {
+        Optional<Reservation> reservationOptional = reservationRepository.findById(id);
+        if(reservationOptional.isPresent()){
+            Reservation reservation = reservationOptional.get();
+            return mapper.fromReservationToReservationDTO(reservation);
+        }else{
+            throw new ReservationNotFoundException("Reservation not found");
+        }
+    }
+    @Override
+    public List<ReservationDTO> getAllReservations() {
+        List<Reservation> reservations = reservationRepository.findAllByStatusIsOrderByCreatedAtDesc(ReservationStatus.IN_PROGRESS);
+        List<ReservationDTO> reservationDTOS = reservations.stream()
+                .map(reservation -> mapper.fromReservationToReservationDTO(reservation))
+                .collect(Collectors.toList());
+        return reservationDTOS;
+    }
+
 }

@@ -362,4 +362,66 @@ export class AdminService {
       }
     );
   }
+  addPatente(id:any, formData:FormData) {
+    return this.http.post(
+      `${environment.urlBackend}api/admin/domiciliation-requests/add-patente/${id}`,
+      formData,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  addContract(id:any, formData:FormData) {
+    return this.http.post(
+      `${environment.urlBackend}api/admin/domiciliation-requests/add-contract/${id}`,
+      formData,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  addExistenceDec(id:any, formData:FormData) {
+    return this.http.post(
+      `${environment.urlBackend}api/admin/domiciliation-requests/add-existence-declaration/${id}`,
+      formData,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  // ========================================================================
+  // =============================  Reservations    =========================
+  // ========================================================================
+  getReservations() {
+    return this.http.get(
+      `${environment.urlBackend}api/admin/reservations`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  getReservationById(id:any) {
+    return this.http.get(
+      `${environment.urlBackend}api/admin/reservations/${id}`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  acceptReservation(id:any) {
+    return this.http.get(
+      `${environment.urlBackend}api/admin/reservation/accept/${id}`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
+  rejectReservation(id:any) {
+    return this.http.get(
+      `${environment.urlBackend}api/admin/reservation/reject/${id}`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
 }

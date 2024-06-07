@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from 'src/app/core/services/admin.service';
 import * as saveAs from 'file-saver';
-@Component({
+@Component({    
   selector: 'app-domiciliation-request-details',
   templateUrl: './domiciliation-request-details.component.html',
   styleUrls: ['./domiciliation-request-details.component.css']

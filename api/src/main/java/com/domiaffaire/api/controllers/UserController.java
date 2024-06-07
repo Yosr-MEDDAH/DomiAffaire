@@ -1,11 +1,13 @@
 package com.domiaffaire.api.controllers;
 
 import com.domiaffaire.api.dto.ChangePasswordRequest;
+import com.domiaffaire.api.dto.RecommendationRequest;
 import com.domiaffaire.api.dto.UpdateProfileRequest;
 import com.domiaffaire.api.dto.UserDTO;
 import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
+import com.domiaffaire.api.services.ReservationServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,7 @@ import java.io.IOException;
 @RequestMapping("/api/users")
 public class UserController {
     private final DomiAffaireServiceImpl service;
-
+    final ReservationServiceImpl reservationService;
     @GetMapping("/all-chats/{id}")
     public ResponseEntity<?> findChatById(@PathVariable String id){
         try {
@@ -111,6 +113,27 @@ public class UserController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
+    }
+    @GetMapping("/rooms/{id}")
+    public ResponseEntity<?> getRoomById(@PathVariable String id){
+        try {
+            return ResponseEntity.ok().body(reservationService.getRoomById(id));
+        } catch (RoomNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
+    @PostMapping("/reservations")
+    public ResponseEntity<?> saveRecommendation(@RequestBody RecommendationRequest recommendationRequest){
+        String message = "";
+        try {
+            message = reservationService.addReservation(recommendationRequest);
+            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            reservationService.exportRoomsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/rooms.csv");
+            return ResponseEntity.ok().body("{\"message\":\"" + message + "\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+
     }
 
 }

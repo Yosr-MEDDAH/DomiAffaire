@@ -1,6 +1,7 @@
 package com.domiaffaire.api.services;
 
 import com.domiaffaire.api.dto.RecommendationRequest;
+import com.domiaffaire.api.dto.ReservationDTO;
 import com.domiaffaire.api.dto.RoomDTO;
 import com.domiaffaire.api.dto.RoomRequest;
 import com.domiaffaire.api.exceptions.ReservationNotFoundException;
@@ -20,5 +21,6 @@ public interface ReservationService {
     RoomDTO updateRoom(String id,RoomRequest roomRequest)throws RoomNotFoundException;
     List<RoomDTO> getAllRooms();
     void deleteRoom(String id)throws RoomNotFoundException;
-
+    List<ReservationDTO> getAllReservations();
+    ReservationDTO getReservationById(String id)throws ReservationNotFoundException;
 }

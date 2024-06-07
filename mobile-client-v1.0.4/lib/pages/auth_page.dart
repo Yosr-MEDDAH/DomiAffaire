@@ -1,8 +1,7 @@
 import 'dart:convert';
+import 'package:DomiAffaire/pages/login_page.dart';
+import 'package:DomiAffaire/pages/reservation_page.dart';
 import 'package:flutter/material.dart';
-import 'package:hello/pages/echeance_page.dart';
-import 'package:hello/pages/login_page.dart';
-import 'package:hello/pages/reservation_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,16 +35,12 @@ class _AuthPageState extends State<AuthPage> {
         _token = token;
         _userRole = userRole;
       });
-      // print('Token: $_token');
-      // print('UserRole: $_userRole');
-      // print('Email: $email');
       String endpoint = '';
       if (_userRole == 'CLIENT') {
-        endpoint = 'http://localhost:8080/api/clients/$email';
+        endpoint = 'http://192.168.1.133:8080/api/clients/$email';
       } else if (_userRole == 'ACCOUNTANT') {
-        endpoint = 'http://localhost:8080/api/accountants/$email';
+        endpoint = 'http://192.168.1.133:8080/api/accountants/$email';
       }
-      // print('Endpoint: $endpoint');
 
       final userDataResponse = await http.get(
         Uri.parse(endpoint),
@@ -55,13 +50,9 @@ class _AuthPageState extends State<AuthPage> {
       );
       if (userDataResponse.statusCode == 200) {
         final userData = json.decode(userDataResponse.body);
-        // print('User Data: $userData');
         setState(() {
           _userData = userData;
         });
-      } else {
-        // print(
-        //     'Failed to load user data. Status code: ${userDataResponse.statusCode}');
       }
     }
   }
@@ -82,7 +73,7 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Authentification réussie'),
+        title: Text('Page Principale'),
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
@@ -94,12 +85,6 @@ class _AuthPageState extends State<AuthPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon(Icons.check_circle, color: Colors.green, size: 100),
-            // SizedBox(height: 20),
-            // Text(
-            //   'Bienvenue, ${widget.username} !',
-            //   style: TextStyle(fontSize: 20),
-            // ),
             if (_userData != null && _userData!['image'] != null)
               Image.memory(
                 base64Decode(_userData!['image']),
@@ -111,45 +96,11 @@ class _AuthPageState extends State<AuthPage> {
               Icon(Icons.check_circle, color: Colors.green, size: 100),
             SizedBox(height: 20),
             Text(
-              'Bienvenue, ${_userData?['firstName'] ?? 'Admin'} ${_userData?['lastName'] ?? ''} !',
+              'Bienvenue, ${_userData?['firstName'] ?? 'Utilisateur'} ${_userData?['lastName'] ?? ''} !',
               style: TextStyle(fontSize: 20),
             ),
             if (_token != null && _userRole != null) ...[
-              // SizedBox(height: 20),
-              // Text(
-              //   'Token: ${_token}',
-              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              // ),
-              // SizedBox(height: 10),
-              // Text(
-              //   _token!,
-              //   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-              //   textAlign: TextAlign.center,
-              // ),
               SizedBox(height: 20),
-              Text(
-                'User Role:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(
-                _userRole!,
-                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              // if (_userData != null) ...[
-              //   Text(
-              //     'User Data:',
-              //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              //   ),
-              //   SizedBox(height: 10),
-              //   Text(
-              //     _userData.toString(),
-              //     style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-              //     textAlign: TextAlign.center,
-              //   ),
-              // ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -157,22 +108,15 @@ class _AuthPageState extends State<AuthPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ReservationPage()),
+                        MaterialPageRoute(
+                            builder: (context) => ReservationPage()),
                       );
                     },
-                    child: Text('Reservation'),
+                    child: Text('Réservation'),
                   ),
                   SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EcheancePage()),
-                      );
-                    },
-                    child: Text('Échéance'),
-                  ),
-                  ],
+                 
+                ],
               ),
             ],
           ],

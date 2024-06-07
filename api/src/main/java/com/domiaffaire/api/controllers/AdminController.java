@@ -697,5 +697,16 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }
-
+    @GetMapping("/reservations")
+    public List<ReservationDTO> findAll(){
+        return reservationService.getAllReservations();
+    }
+    @GetMapping("/reservations/{id}")
+    public ResponseEntity<?> getReservationById(@PathVariable String id){
+        try {
+            return ResponseEntity.ok().body(reservationService.getReservationById(id));
+        } catch (ReservationNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
 }

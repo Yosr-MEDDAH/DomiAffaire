@@ -834,7 +834,7 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     public String protestContractTermsClient(String id, ClientResponse clientResponse) throws DomiciliationRequestNotFoundException {
         Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
         if(domiciliationRequestOptional.isPresent()){
-            if(domiciliationRequestOptional.get().getProtestCount()>3){
+            if(domiciliationRequestOptional.get().getProtestCount()>=2){
 //                domiciliationRequestRepository.delete(domiciliationRequestOptional.get());
                 domiciliationRequestOptional.get().setStatus(DomiciliationRequestStatus.REJECTED);
                 domiciliationRequestOptional.get().calculateDocumentsSize();

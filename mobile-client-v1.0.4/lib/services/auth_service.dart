@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final Uri url = Uri.parse('http://localhost:8080/api/auth/login');
+    final Uri url = Uri.parse('http://192.168.1.133:8080/api/auth/login');
 
     final response = await http.post(
       url,
@@ -30,7 +30,7 @@ class AuthService {
         'user_email': email,
       };
     } else {
-      throw Exception('Failed to login');
+      throw Exception('Échec de Connexion');
     }
   }
 }

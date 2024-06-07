@@ -25,16 +25,19 @@ class MyApp extends StatelessWidget {
           bool isLoggedIn = snapshot.data ?? false;
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: isLoggedIn ? FutureBuilder<String>(
-              future: _getUserEmail(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Scaffold(body: Center(child: CircularProgressIndicator()));
-                } else {
-                  return AuthPage(username: snapshot.data!);
-                }
-              },
-            ) : LoginPage(),
+            home: isLoggedIn
+                ? FutureBuilder<String>(
+                    future: _getUserEmail(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Scaffold(
+                            body: Center(child: CircularProgressIndicator()));
+                      } else {
+                        return AuthPage(username: snapshot.data!);
+                      }
+                    },
+                  )
+                : LoginPage(),
           );
         }
       },

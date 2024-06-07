@@ -8,10 +8,8 @@ import { AdminService } from 'src/app/core/services/admin.service';
   styleUrls: ['./clients-documents.component.css'],
 })
 export class ClientsDocumentsComponent implements OnInit {
-  isDropdownOpen: { [key: string]: boolean } = {};  
+  isDropdownOpen: { [key: string]: boolean } = {};
   domiciliationDocs: any;
-  // dropdownId:string=''
-  // domiciliationDocs:any;
   constructor(private adminService: AdminService) {}
   ngOnInit(): void {
     this.getDomiciliationDocuments();
@@ -19,6 +17,7 @@ export class ClientsDocumentsComponent implements OnInit {
   getDomiciliationDocuments() {
     this.adminService.domiciliationDocuments().subscribe({
       next: (data: any) => {
+        console.log(data);
         this.domiciliationDocs = data;
         this.domiciliationDocs.forEach((doc: any) => {
           this.isDropdownOpen[doc.id] = false;
@@ -29,13 +28,14 @@ export class ClientsDocumentsComponent implements OnInit {
       },
     });
   }
- 
+
   toggleDropdown(id: any) {
     this.isDropdownOpen[id] = !this.isDropdownOpen[id];
   }
   closeMenu() {
-    Object.keys(this.isDropdownOpen).forEach(key => {
+    Object.keys(this.isDropdownOpen).forEach((key) => {
       this.isDropdownOpen[key] = false;
     });
   }
+
 }
