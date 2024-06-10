@@ -96,9 +96,10 @@ Run the Flutter application using:
 ```sh
 flutter run
 ```
-##Running Tests
 
-###Angular
+## Running Tests
+
+### Angular
 To run Cypress tests:
 
 ```sh
