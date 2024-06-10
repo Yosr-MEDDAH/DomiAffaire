@@ -78,3 +78,33 @@ Before you begin, ensure you have met the following requirements:
 To run the Angular application:
 ```sh
 ng serve
+```
+Navigate to http://localhost:4200 to see the application running.
+
+### Spring Boot
+Run the Spring Boot application from your IDE or use the following command:
+
+```sh
+mvn spring-boot:run
+```
+### Flask
+Ensure the Flask API is running as mentioned in the Flask setup instructions.
+
+### Flutter
+Run the Flutter application using:
+
+```sh
+flutter run
+```
+##Running Tests
+###Angular
+To run Cypress tests:
+
+```sh
+cypress run
+```
+Or to use the Cypress interface:
+
+```sh
+cypress open
+```
