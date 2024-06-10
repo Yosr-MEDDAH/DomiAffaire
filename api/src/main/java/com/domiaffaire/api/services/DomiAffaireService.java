@@ -114,7 +114,10 @@ public interface DomiAffaireService {
     void deleteAccount(String email) throws UserNotFoundException;
     String updateNetPayable(String id, UpdateNetPayableRequest updateNetPayableRequest) throws DeadlineNotFoundException, DomiciliationRequestNotFoundException;
 
+    List<PackCountDTO> getPackCounts();
 
+    List<CapitalSocialDTO> getCapitalSocialDistribution();
+    String getCapitalRange(DomiciliationRequest request);
 
 
 

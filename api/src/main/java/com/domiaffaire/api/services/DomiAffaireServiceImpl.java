@@ -21,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -1357,6 +1354,40 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         }
     }
 
+    @Override
+    public List<PackCountDTO> getPackCounts() {
+        List<Pack> packs = packRepository.findAll();
+        List<PackCountDTO> packCounts = packs.stream()
+                .map(pack -> new PackCountDTO(pack.getDesignation(),pack.getUsers().size()))
+                .collect(Collectors.toList());
+        return packCounts;
+    }
+
+    @Override
+    public List<CapitalSocialDTO> getCapitalSocialDistribution() {
+        List<DomiciliationRequest> requests = domiciliationRequestRepository.findAllByShareCapitalIsNotNull();
+        Map<String, Long> distribution = requests.stream()
+                .collect(Collectors.groupingBy(this::getCapitalRange, Collectors.counting()));
+
+        return distribution.entrySet().stream()
+                .map(entry -> new CapitalSocialDTO(entry.getKey(), entry.getValue().intValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getCapitalRange(DomiciliationRequest request) {
+        double capital = request.getShareCapital();
+        if (capital <= 50000) {
+            return "0-50K";
+        } else if (capital <= 100000) {
+            return "50K-100K";
+        } else if (capital <= 200000) {
+            return "100K-200K";
+        } else {
+            return ">200K";
+        }
+
+    }
 
 
     @Override

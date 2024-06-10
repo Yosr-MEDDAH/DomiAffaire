@@ -1,0 +1,236 @@
+<div class="content">
+  <h2 class="intro-y text-lg font-medium mt-10">
+    My Consultation Requests List
+  </h2>
+  <div class="grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2"
+    >
+      <div class="flex w-full sm:w-auto">
+
+      </div>
+      <div class="w-full xl:w-auto flex items-center mt-3 xl:mt-0">
+        <button
+          class="btn btn-primary shadow-md mr-2"
+          routerLink="/client/consultation-request"
+        >
+          <i class="w-4 h-4 mr-2 fa-solid fa-plus"></i> New Consultation Request
+        </button>
+      </div>
+    </div>
+    <div
+      class="intro-y col-span-12 overflow-auto 2xl:overflow-visible"
+      *ngIf="consultations && consultations.length > 0; else noConsultation"
+    >
+      <table class="table table-report -mt-2">
+        <thead>
+          <tr>
+            <th class="whitespace-nowrap">SENT AT</th>
+            <th class="whitespace-nowrap">SUBJECT</th>
+            <th class="text-center whitespace-nowrap">STATUS</th>
+            <th class="text-center whitespace-nowrap">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="intro-x" *ngFor="let item of consultations">
+            <td class="w-40">
+              <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                {{ item.sentAt | date : "MMM d, y 'At' h:mm a" }}
+              </div>
+            </td>
+            <td>
+              <div class="whitespace-nowrap">{{ item.subject }}</div>
+            </td>
+            <td class="text-center">
+              <div
+                class="flex items-center justify-center whitespace-nowrap"
+                [ngClass]="{
+                  'text-success': item.status === 'ACCEPTED',
+                  'text-danger': item.status === 'REJECTED',
+                  'text-pending': item.status === 'IN_PROGRESS'
+                }"
+              >
+                <i
+                  *ngIf="item.status === 'ACCEPTED'"
+                  class="w-4 h-4 mr-2 fa-regular fa-circle-check"
+                ></i>
+                <i
+                  *ngIf="item.status === 'REJECTED'"
+                  class="w-4 h-4 mr-2 fa-solid fa-ban"
+                ></i>
+                <i
+                  *ngIf="item.status === 'IN_PROGRESS'"
+                  class="w-4 h-4 mr-2 fa-regular fa-clock"
+                ></i>
+                {{ item.status }}
+              </div>
+            </td>
+
+            <td class="table-report__action">
+              <div class="flex justify-center items-center">
+                <button
+                  class="flex items-center text-primary whitespace-nowrap mr-5"
+                  (click)="openDetailsModal(item)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-regular fa-circle-check"></i> View
+                  Details
+                </button>
+                <button
+                  *ngIf="item.status === 'IN_PROGRESS'"
+                  (click)="openCancelOrCloseModal(item.id)"
+                  class="flex items-center text-primary whitespace-nowrap"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-ban"></i> Cancel
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #noConsultation>
+      <div class=" intro-y col-span-12 overflow-auto 2xl:overflow-visible text-center">
+        <div class="alert alert-primary-soft mb-1">You have not send any consultation request..</div>
+
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+
+<div *ngIf="isDetailsModalOpen" class="modal-overlay" [ngClass]="{ show: isDetailsModalOpen }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Consultation Request Details</h5>
+        <button type="button" class="close" (click)="closeDetailsModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="intro-y grid grid-cols-12 gap-5 mt-5">
+          <div class="col-span-12 lg:col-span-8 2xl:col-span-6">
+            <div class="box p-5 rounded-md">
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <h3 class="text-xl font-bold">
+                    {{ selectedConsultation.subject }}
+                  </h3>
+                  <div class="flex items-center text-slate-500 text-xs">
+                    Sent:
+                    <a class="ml-1 font-medium mr-3">{{
+                      selectedConsultation.sentAt | date : "MMM d, y 'At' h:mm a"
+                    }}</a>
+                    <span
+                      class="ml-auto"
+                      *ngIf="selectedConsultation.status === 'ACCEPTED'"
+                    >
+                      Accepted By:
+                      <span class="font-medium">{{
+                        selectedConsultation.sentTo.firstName
+                      }} {{
+                        selectedConsultation.sentTo.lastName
+                      }}</span>
+                    </span>
+                    <span
+                      class="ml-auto"
+                      *ngIf="selectedConsultation.status === 'REJECTED'"
+                    >
+                      Rejected by:
+                      <span class="font-medium">{{
+                        selectedConsultation.sentTo
+                      }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="flex items-center">
+                  <i
+                    class="w-4 h-4 text-slate-500 mr-2 fa-solid fa-clipboard-list"
+                  ></i>
+                  <span>Details:</span>
+                </div>
+                <div class="mt-3 p-3 border rounded-md">
+                  <span [innerHTML]="sanitizedDetails"></span>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label class="form-label">Other infromations</label>
+                <div class="input-group" *ngIf="selectedConsultation.proposedDate">
+                  Proposed Date
+                  {{selectedConsultation.proposedDate
+                    | date : 'MMM d, y At h:mm a'}}
+                </div>
+                  <div class="input-group mt-2 sm:mt-0">
+                    Draft Status
+                    {{selectedConsultation.draftStatus}}
+                  </div>
+                  <div
+                    class="input-group mt-2 sm:mt-0"
+                    *ngIf="selectedConsultation.budget"
+                  >
+                  Budget
+                  {{selectedConsultation.budget}} DT
+                </div>
+              
+              <div class="flex items-center mt-3">
+                <span
+                  [ngClass]="{
+                    'bg-success/20 text-success rounded px-2 ml-1':
+                      selectedConsultation.status === 'ACCEPTED',
+                    'bg-pending/20 text-pending rounded px-2 ml-1':
+                      selectedConsultation.status === 'IN_PROGRESS',
+                    'bg-red-900/20 text-danger rounded px-2 ml-1':
+                      selectedConsultation.status === 'REJECTED'
+                  }"
+                  >{{ selectedConsultation.status }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDetailsModal()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div *ngIf="isCancelModalOpen" class="modal-overlay" [ngClass]="{show:isCancelModalOpen}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close" (click)="openCancelOrCloseModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to cancel this consultation request?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="openCancelOrCloseModal()"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmCancelRequest()">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

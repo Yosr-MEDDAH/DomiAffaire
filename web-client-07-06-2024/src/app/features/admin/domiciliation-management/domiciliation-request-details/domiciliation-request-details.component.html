@@ -1,0 +1,262 @@
+<div class="content content--top-nav">
+  <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Détails de la Demande de Domiciliation</h2>
+    <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
+    </div>
+  </div>
+
+  <div class="intro-y box overflow-hidden mt-5">
+    <div
+      class="border-b border-slate-200/60 dark:border-darkmode-400 text-center sm:text-left"
+    >
+      <div class="px-5 py-10 sm:px-20 sm:py-20">
+        <div class="text-success font-semibold text-3xl">
+          Demande de Domiciliation
+        </div>
+        <div class="mt-2">
+          CIN du Client:
+          <span class="font-medium">{{ domiciliationRequestDetails.cin }}</span>
+        </div>
+        <div class="mt-1">
+          {{ domiciliationRequestDetails.createdAt | date : "MMM d, y" }}
+          {{ domiciliationRequestDetails.createdAt | date : "hh:mm a" }}
+        </div>
+      </div>
+      <div class="flex flex-col lg:flex-row px-5 sm:px-20 pt-10 pb-10 sm:pb-20">
+        <div>
+          <div class="text-base text-slate-500">Détails du Client</div>
+          <div class="text-lg font-medium text-success mt-2">
+            {{ domiciliationRequestDetails.client.firstName }}
+            {{ domiciliationRequestDetails.client.lastName }}
+          </div>
+          <div class="mt-1">{{ domiciliationRequestDetails.client.email }}</div>
+          <div class="mt-1">
+            {{ domiciliationRequestDetails.client.phoneNumber }}
+          </div>
+        </div>
+        <div class="lg:text-right mt-10 lg:mt-0 lg:ml-auto">
+          <div class="text-base text-slate-500">Détails de la Domiciliation</div>
+          <div>
+            Dénomination:
+            <span class="text-lg font-medium text-success mt-2">{{
+              domiciliationRequestDetails.denomination
+            }}</span>
+          </div>
+          <div class="mt-1">
+            Type de l'enreprise: {{ domiciliationRequestDetails.legalForm }}
+          </div>
+          <div class="mt-1">
+            État de l'entreprise: {{ domiciliationRequestDetails.companyStatus }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.draftStatus">
+            Forme Juridique: {{ domiciliationRequestDetails.draftStatus }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.shareCapital">
+            Capital Social: {{ domiciliationRequestDetails.shareCapital }} Dinars
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.management">
+            Gérance: {{ domiciliationRequestDetails.management }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.oldDraftStatus">
+            Ancienne Forme Juridique : {{ domiciliationRequestDetails.oldDraftStatus }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.oldLegalForm">
+            Ancienne Type d'entreprise: {{ domiciliationRequestDetails.oldLegalForm }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.oldShareCapital">
+            Ancien Capital Social: {{ domiciliationRequestDetails.oldShareCapital }}
+          </div>
+          <div class="mt-1" *ngIf="domiciliationRequestDetails.oldManagement">
+            Ancienne gérance :: {{ domiciliationRequestDetails.oldManagement }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-5 sm:px-16 py-10 sm:py-20">
+      <div class="overflow-x-auto">
+        <div class="mt-10 lg:mt-0 lg:ml-auto">
+          <div class="text-lg font-medium text-success mt-2">Liste des Fichiers</div>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="border-b-2 dark:border-darkmode-400 whitespace-nowrap">
+                Nom
+              </th>
+              <th
+                colspan="2"
+                class="border-b-2 dark:border-darkmode-400 text-center whitespace-nowrap"
+              >
+              Fichier
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier CIN
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button (click)="openFile(domiciliationRequestDetails.cinFile)">
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="downloadFile(domiciliationRequestDetails.cinFile)"
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier de Dénomination
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    openFile(domiciliationRequestDetails.denominationFile)
+                  "
+                >
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    downloadFile(domiciliationRequestDetails.denominationFile)
+                  "
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="domiciliationRequestDetails.extractRNE">
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier d'Extrait RNE
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="openFile(domiciliationRequestDetails.extractRNE)"
+                >
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="downloadFile(domiciliationRequestDetails.extractRNE)"
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="domiciliationRequestDetails.pvChangeAddress">
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier de Procès-Verbal de Changement d'Adresse
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    openFile(domiciliationRequestDetails.pvChangeAddress)
+                  "
+                >
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    downloadFile(domiciliationRequestDetails.pvChangeAddress)
+                  "
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="domiciliationRequestDetails.oldBusinessLicence">
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier de l'ancienne patente
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    openFile(domiciliationRequestDetails.oldBusinessLicence)
+                  "
+                >
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    downloadFile(domiciliationRequestDetails.oldBusinessLicence)
+                  "
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="domiciliationRequestDetails.oldExistenceDeclaration">
+              <td class="border-b dark:border-darkmode-400">
+                <div class="text-slate-500 text-sm mt-0.5 whitespace-nowrap">
+                  Fichier de l'Ancienne Déclaration d'Existence
+                </div>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    openFile(
+                      domiciliationRequestDetails.oldExistenceDeclaration
+                    )
+                  "
+                >
+                  Ouvrir le Fichier
+                </button>
+              </td>
+              <td class="text-right border-b dark:border-darkmode-400 w-32">
+                <button
+                  (click)="
+                    downloadFile(
+                      domiciliationRequestDetails.oldExistenceDeclaration
+                    )
+                  "
+                >
+                  Télécharger le Fichier
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="px-5 sm:px-20 pb-10 sm:pb-20 flex flex-col-reverse sm:flex-row">
+      <div class="text-center sm:text-left mt-10 sm:mt-0">
+        <div class="text-base text-slate-500">Pack</div>
+        <div class="text-lg text-success font-medium mt-2">
+          {{ domiciliationRequestDetails.pack.designation }}
+        </div>
+        <div class="mt-1">
+          Price : {{ domiciliationRequestDetails.pack.price }} Dinars
+        </div>
+      </div>
+      <div class="text-center sm:text-right sm:ml-auto">
+        <div class="text-base text-slate-500">Mode de Paiement</div>
+        <div class="text-xl text-success font-medium mt-2">
+          {{ domiciliationRequestDetails.paymentMode }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

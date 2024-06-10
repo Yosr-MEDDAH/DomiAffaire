@@ -1,0 +1,116 @@
+<div class="content">
+  <div class="intro-y flex items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">FAQ</h2>
+    <button class="btn btn-primary shadow-md" (click)="openModal('add')">
+      Ajouter une Nouvelle FAQ
+    </button>
+  </div>
+  <div class="grid grid-cols-12 gap-6">
+    <div class="intro-y col-span-12 lg:col-span-8 xl:col-span-9">
+      <div class="intro-y box mt-5" *ngFor="let item of faq">
+        <div class="question" (click)="toggleAccordion(item.id)">
+          <div class="question-container">
+            <div class="question-text">
+              <h2 class="font-medium text-primary">{{ item.question }}</h2>
+            </div>
+            <div class="dropdown">
+              <button class="dropdown-btn" (click)="toggleDropdown(item.id)">
+                <i
+                  class="fa-solid fa-ellipsis-v text-gray-600 dark:text-gray-400"
+                ></i>
+              </button>
+              <div class="dropdown-content" *ngIf="isDropdownOpen[item.id]">
+                <button class="dropdown-item" (click)="openModal('edit', item)">
+                  <i class="fas fa-pen text-primary"></i> Modifier
+                </button>
+                <button class="dropdown-item" (click)="confirmModal(item.id)">
+                  <i class="fas fa-trash text-red-900"></i> Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="collapse{{ item.id }}" class="answer">
+            <p>{{ item.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add/Edit FAQ Modal -->
+    <div class="modal-overlay" [ngClass]="{ show: isEdit || isAdd }">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              {{ isEdit ? "Modifier FAQ" : "Ajouter une Nouvelle FAQ" }}
+            </h5>
+            <button type="button" class="close" (click)="closeModal()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="faqForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+                <label for="question">Question</label>
+                <input
+                  type="text"
+                  id="question"
+                  formControlName="question"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="answer">Réponse</label>
+                <textarea
+                  id="answer"
+                  formControlName="answer"
+                  class="form-control"
+                ></textarea>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="closeModal()"
+                >
+                  Annuler
+                </button>
+                <button type="submit" class="btn btn-primary text-primary">
+                  {{ isEdit ? "Enregistrer les Modifications" : "Ajouter FAQ" }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" [ngClass]="{ show: isDeleteModalOpen }">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation de Suppression</h5>
+            <button type="button" class="close" (click)="confirmModal()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr(e) de vouloir supprimer cette FAQ ?</p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="confirmModal()"
+            >
+              Annuler
+            </button>
+            <button type="button" class="btn btn-danger text-danger" (click)="removeFAQ()">
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="content">
+    <h2 class="intro-y text-lg font-medium mt-10">
+        Liste des Comptables
+    </h2>
+    <div class="grid grid-cols-12 gap-6 mt-5">
+        <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">            
+            <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0">
+                
+            </div>
+        </div>
+        <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+           <ng-container 
+           *ngIf="accountants && accountants.length > 0; else NoAccountantsTemplate"
+
+           >
+           <table class="table table-report -mt-2">
+            <thead>
+                <tr >
+                    <th class="whitespace-nowrap">Image</th>
+                    <th class="whitespace-nowrap">Nom</th>
+                    <th class="text-center whitespace-nowrap">Numéro de Téléphone</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="intro-x" *ngFor="let accountant of accountants">
+                    <td class="w-40">
+                        <div class="flex">
+                            
+                            <div class="w-10 h-10 image-fit zoom-in -ml-5">
+                                <img alt="client image" class="tooltip rounded-full" [src]="'data:image/png;base64,'+accountant.image" title="Client image">
+                            </div>
+                            
+                        </div>
+                    </td>
+                    <td>
+                        <a href="" class="font-medium whitespace-nowrap">{{accountant.firstName }} {{accountant.lastName }}</a> 
+                        <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">{{accountant.email }}</div>
+                    </td>
+                    <td class="text-center">{{accountant.phoneNumber}}</td>
+                    <td class="table-report__action w-56">
+                        <div class="flex justify-center items-center">
+                        </div>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+        </ng-container>
+        <ng-template #NoAccountantsTemplate>
+            <div class="text-center mt-5">
+              <p>Pas de comptables disponibles.</p>
+            </div>
+          </ng-template>
+        </div>
+    </div>
+</div>

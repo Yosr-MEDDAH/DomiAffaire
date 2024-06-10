@@ -1,0 +1,131 @@
+<div class="content">
+  <h2 class="intro-y text-lg font-medium mt-10">Catégories</h2>
+  <div class="grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2"
+    >
+      <button class="btn btn-primary shadow-md mr-2" (click)="openModal('add')">
+        Ajouter une Nouvelle Catégorie
+      </button>
+      <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0"></div>
+    </div>
+    <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+      <table class="table table-report -mt-2">
+        <thead>
+          <tr>
+            <th class="whitespace-nowrap"></th>
+            <th class="whitespace-nowrap">Désignation de la catégorie</th>
+            <th class="text-center whitespace-nowrap">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="intro-x" *ngFor="let item of categories">
+            <td class="w-40">
+              <div class="flex">
+                <div
+                  *ngFor="let image of item.randomImages"
+                  class="w-10 h-10 image-fit zoom-in -ml-5"
+                >
+                  <img alt="image" class="tooltip rounded-full" [src]="image" />
+                </div>
+              </div>
+            </td>
+            <td>
+              <a class="font-medium whitespace-nowrap">{{ item.name }}</a>
+            </td>
+            <td class="table-report__action w-56">
+              <div class="flex justify-center items-center">
+                <button
+                  class="flex items-center mr-3"
+                  (click)="openModal('edit', item)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-check-square"></i> Modifier
+                </button>
+                <button
+                  class="flex items-center text-danger"
+                  (click)="confirmModal(item.id)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-trash"></i> Supprimer
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal-overlay" [ngClass]="{ show: isEdit || isAdd }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEdit ? "Modifier Catégorie" : "Ajouter une nouvelle cateégorie" }}
+        </h5>
+        <button type="button" class="close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="name">Désignation de la catégorie</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
+            >
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary text-primary">
+              {{ isEdit ? "Enregistrer les modifications" : "Ajouter" }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" [ngClass]="{ show: isDeleteModalOpen }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation de Suppression</h5>
+        <button type="button" class="close" (click)="confirmModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr(e) de vouloir supprimer cette Catégorie ?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="confirmModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger text-danger"
+          (click)="removeCategory()"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

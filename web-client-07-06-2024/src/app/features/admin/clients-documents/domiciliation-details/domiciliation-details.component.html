@@ -1,0 +1,114 @@
+<div class="content">
+  <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Détails de la Domiciliation
+    </h2>
+    <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
+      <a
+        class="btn btn-outline-success shadow-md mr-2"
+        [routerLink]="['/admin/clients-documents/add-file', domiId]"
+        >Nouveaux Fichiers</a
+      >
+      <div class="pos-dropdown dropdown ml-auto sm:ml-0"></div>
+    </div>
+  </div>
+  <div class="intro-y grid grid-cols-12 gap-5 mt-5">
+    <div class="intro-y col-span-12 lg:col-span-8">
+      <div class="lg:flex intro-y">
+        <div class="relative">
+          
+        </div>
+      </div>
+      <div class="grid grid-cols-12 gap-5 mt-5">
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          (click)="openFile(domiciliation.cinFile)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.cinFile.name }}
+          </div>
+          <div class="text-slate-500">Fichier CIN
+        </div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          (click)="openFile(domiciliation.denominationFile)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.denominationFile.name }}
+          </div>
+          <div class="text-slate-500">Fichier de Dénomination</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.existenceDeclaration"
+          (click)="openFile(domiciliation.existenceDeclaration)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.existenceDeclaration.name }}
+          </div>
+          <div class="text-slate-500">Déclaration d'Existence</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.businessLicence"
+          (click)="openFile(domiciliation.businessLicence)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.businessLicence.name }}
+          </div>
+          <div class="text-slate-500">Patente</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.oldBusinessLicence"
+          (click)="openFile(domiciliation.oldBusinessLicence)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.oldBusinessLicence.name }}
+          </div>
+          <div class="text-slate-500">Ancienne patente</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.OldExistenceDeclaration"
+          (click)="openFile(domiciliation.OldExistenceDeclaration)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.OldExistenceDeclaration.name }}
+          </div>
+          <div class="text-slate-500">Ancienne Déclaration d'Existence</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.pvChangeAdress"
+          (click)="openFile(domiciliation.pvChangeAdress)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.pvChangeAdress.name }}
+          </div>
+          <div class="text-slate-500">Procès-Verbal de Changement d'Adresse</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.extractRNE"
+          (click)="openFile(domiciliation.extractRNE)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.extractRNE.name }}
+          </div>
+          <div class="text-slate-500">Extrait RNE</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in"
+          *ngIf="domiciliation.contract"
+          (click)="openFile(domiciliation.contract)"
+        >
+          <div class="font-medium text-base">
+            {{ domiciliation.contract.name }}
+          </div>
+          <div class="text-slate-500">Contrat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

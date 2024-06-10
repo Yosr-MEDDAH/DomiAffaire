@@ -2,12 +2,16 @@ package com.domiaffaire.api.services;
 
 import com.domiaffaire.api.dto.ChangePasswordRequest;
 import com.domiaffaire.api.dto.SignupRequest;
+import com.domiaffaire.api.entities.Reservation;
 import com.domiaffaire.api.entities.User;
+import com.domiaffaire.api.enums.ReservationStatus;
 import com.domiaffaire.api.enums.UserRole;
+import com.domiaffaire.api.exceptions.ReservationNotFoundException;
 import com.domiaffaire.api.exceptions.WrongCodeAccountantException;
 import com.domiaffaire.api.exceptions.WrongPasswordException;
 import com.domiaffaire.api.mappers.Mapper;
 import com.domiaffaire.api.repositories.PasswordResetTokenRepository;
+import com.domiaffaire.api.repositories.ReservationRepository;
 import com.domiaffaire.api.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -36,6 +42,11 @@ class DomiAffaireServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+    @Mock
+    private ReservationRepository reservationRepository;
+
+    @InjectMocks
+    private ReservationServiceImpl reservationService;
 
     @BeforeEach
     void setUp() {
@@ -88,6 +99,40 @@ class DomiAffaireServiceImplTest {
 
         // When & Then
         assertThrows(WrongPasswordException.class, () -> domiAffaireService.changePassword(userId, changePasswordRequest));
+    }
+
+    @Test
+    void testCalculateNetPayable() {
+        float pack = 100.0f;
+        int paymentMode = 3;
+        int timbre = 10;
+
+        String expectedResult = "331.300";
+
+        BigDecimal result = domiAffaireService.calculateNetPayable(pack, paymentMode, timbre);
+
+        assertEquals(new BigDecimal(expectedResult), result, "Le montant ne correspond pas au résultat attendu.");
+    }
+
+    @Test
+    void testAcceptReservationRoomAlreadyReserved() throws ReservationNotFoundException {
+        String reservationId = "res1";
+
+        Reservation existingReservation = new Reservation();
+        existingReservation.setId("res1");
+        existingReservation.setStatus(ReservationStatus.IN_PROGRESS);
+
+        Reservation conflictingReservation = new Reservation();
+        conflictingReservation.setId("res2");
+        conflictingReservation.setStatus(ReservationStatus.ACCEPTED);
+
+
+        when(reservationRepository.findById(reservationId)).thenReturn(Optional.of(existingReservation));
+        when(reservationRepository.findAllByStatusIs(ReservationStatus.ACCEPTED)).thenReturn(List.of(conflictingReservation));
+
+        String result = reservationService.acceptReservation(reservationId);
+
+        assertEquals("The room is already reserved in this date", result);
     }
 
 }

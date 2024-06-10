@@ -41,7 +41,6 @@ public class WebSecurityConfiguration{
                                 .anyRequest().authenticated()).sessionManagement(manager->
                         manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .logout((logout) -> logout.logoutUrl("/api/logout"))
                 .authenticationProvider(authenticationProvider()).
                 addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

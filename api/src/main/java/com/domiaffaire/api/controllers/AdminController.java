@@ -7,6 +7,7 @@ import com.domiaffaire.api.events.RegistrationCompleteEvent;
 import com.domiaffaire.api.events.listener.RegistrationCompleteEventListener;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.repositories.DomiciliationRequestRepository;
+import com.domiaffaire.api.repositories.ReservationRepository;
 import com.domiaffaire.api.repositories.UserRepository;
 import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
@@ -37,6 +38,7 @@ public class AdminController {
     private final DomiciliationRequestRepository domiciliationRequestRepository;
     private final ApplicationEventPublisher publisher;
     private final RegistrationCompleteEventListener eventListener;
+    private final ReservationRepository reservationRepository;
 
     @PutMapping(value = "/update-profile/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateUser(@RequestPart("image") MultipartFile file,
@@ -680,11 +682,28 @@ public class AdminController {
     public ResponseEntity<?> acceptReservation(@PathVariable String id){
         try {
             String message = reservationService.acceptReservation(id);
-            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+//            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            User user = reservationRepository.findById(id).get().getClient();
+            publisher.publishEvent(new RegistrationCompleteEvent(user));
+            try {
+                acceptReservationEmail();
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
             return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"" + message + "\"}");
         } catch (ReservationNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
+    }
+
+    private void acceptReservationEmail() throws MessagingException, UnsupportedEncodingException {
+        eventListener.sendAcceptationReservation();
+    }
+
+    private void rejectReservationEmail() throws MessagingException, UnsupportedEncodingException {
+        eventListener.sendRefusalReservation();
     }
 
     @GetMapping("/reservation/reject/{id}")
@@ -692,6 +711,15 @@ public class AdminController {
         try {
             String message = reservationService.rejectReservation(id);
             reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            User user = reservationRepository.findById(id).get().getClient();
+            publisher.publishEvent(new RegistrationCompleteEvent(user));
+            try {
+                rejectReservationEmail();
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
             return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"" + message + "\"}");
         } catch (ReservationNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
@@ -708,5 +736,25 @@ public class AdminController {
         } catch (ReservationNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
+    }
+
+    @GetMapping("/reporting/packs")
+    public List<PackCountDTO> getPackCounts() {
+        return service.getPackCounts();
+    }
+
+    @GetMapping("/reporting/capitaux")
+    public List<CapitalSocialDTO> getCapitalSocialDistribution() {
+        return service.getCapitalSocialDistribution();
+    }
+
+    @GetMapping("/reporting/deadlines")
+    public List<DeadlineCountDTO> getDeadlineDistribution() {
+        return deadlineService.getDeadlineDistribution();
+    }
+
+    @GetMapping("/reporting/reservations-equipments")
+    public List<EquipmentCountDTO> getEquipmentDistribution() {
+        return reservationService.getEquipmentDistribution();
     }
 }

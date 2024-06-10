@@ -25,7 +25,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -219,6 +221,24 @@ public class ReservationServiceImpl implements ReservationService {
             throw new ReservationNotFoundException("Reservation not found");
         }
     }
+
+    @Override
+    public List<EquipmentCountDTO> getEquipmentDistribution() {
+        List<Reservation> reservations = reservationRepository.findAllByStatusIsOrderByCreatedAtDesc(ReservationStatus.ACCEPTED);
+        Map<String, Long> equipmentCount = new HashMap<>();
+
+        for (Reservation reservation : reservations) {
+            List<String> equipments = reservation.getRoom().getEquipments();
+            for (String equipment : equipments) {
+                equipmentCount.put(equipment, equipmentCount.getOrDefault(equipment, 0L) + 1);
+            }
+        }
+
+        return equipmentCount.entrySet().stream()
+                .map(entry -> new EquipmentCountDTO(entry.getKey(), entry.getValue().intValue()))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<ReservationDTO> getAllReservations() {
         List<Reservation> reservations = reservationRepository.findAllByStatusIsOrderByCreatedAtDesc(ReservationStatus.IN_PROGRESS);

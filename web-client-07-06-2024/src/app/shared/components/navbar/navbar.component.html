@@ -1,0 +1,246 @@
+<div
+  class="top-bar-boxed top-bar-boxed--top-menu h-[70px] md:h-[65px] z-[51] border-b border-white/[0.08] mt-12 md:mt-0 -mx-3 sm:-mx-8 md:-mx-0 px-3 md:border-b-0 relative md:fixed md:inset-x-0 md:top-0 sm:px-8 md:px-10 md:pt-10"
+>
+  <nav class="navbar top-nav" clickOutside (clickOutside)="closeMenu()">
+    <div class="navbar-logo">
+      <a href="/" class="flex mr-auto">
+        <img
+          alt="LOGO"
+          class="w-20"
+          [src]="
+            isDarkModeEnabled()
+              ? 'assets/dist/images/LOGO DOMI White.png'
+              : 'assets/dist/images/LOGO DOMI black.png'
+          "
+        />
+      </a>
+    </div>
+    <div class="navbar-toggle" (click)="toggleNavbar()">
+      <i class="fa fa-bars"></i>
+    </div>
+    <ul
+      class="navbar-links"
+      [ngClass]="{
+        active: navbarOpen,
+        'content-dark': isDarkModeEnabled(),
+        'content-light': !isDarkModeEnabled()
+      }"
+    >
+      <li>
+        <a
+          routerLink="/"
+          class="top-menu"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Home</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/register"
+          class="top-menu"
+          *ngIf="!isUserLoggedIn()"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Sign up</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/login"
+          class="top-menu"
+          *ngIf="!isUserLoggedIn()"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Sign in</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/company-creation"
+          class="top-menu"
+          *ngIf="!isAdmin"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Company Creation</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/faq"
+          class="top-menu"
+          *ngIf="!isAdmin"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >FAQ</a
+        >
+      </li>
+      
+
+      <li>
+        <a
+          routerLink="/client/consultations"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Consultation</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/accountant/in-progress-consultations"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isClient && !isAdmin"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Consultation</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/accountant/blogs"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isClient && !isAdmin"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Posted Blogs</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/client/my-domiciliation-requests"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Domiciliation
+          <span
+            *ngIf="userProfile?.domiciliationNotificationCount > 0"
+            class="notification-badge rounded-full"
+            >{{ userProfile.domiciliationNotificationCount }}</span
+          >
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/client/all-blogs"
+          class="top-menu"
+          *ngIf="isUserLoggedIn() && !isAdmin && isClient"
+          [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+          >Blogs
+          <!-- <span *ngIf="userProfile?.domiciliationNotificationCount > 0" class="notification-badge rounded-full">{{ userProfile.domiciliationNotificationCount }}</span> -->
+        </a>
+      </li>
+      <li>
+        <button
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          aria-controls="dropdown-example2"
+          data-collapse-toggle="dropdown-example2"
+          (click)="toggleLanguageList()"
+        >
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+            <div class="user-info top-menu">
+              <img
+                [src]="
+                  currentLanguage === 'en'
+                    ? 'assets/dist/images/en.png'
+                    : 'assets/dist/images/fr.png'
+                "
+                alt="Current Language"
+                class="language-icon"
+              />
+              <span
+                [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+              >
+                {{ currentLanguage === "en" ? "English" : "Français" }}
+              </span>
+            </div>
+          </span>
+        </button>
+        <ul
+          id="dropdown-example2"
+          class="py-2 space-y-2"
+          [class.hidden]="!showLanguages"
+        >
+          <li>
+            <a
+              class="cursor-pointer flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              (click)="changeCurrentLang('fr')"
+            >
+              <img
+                src="assets/dist/images/fr.png"
+                alt="Français"
+                class="language-icon "
+              />
+              Français
+            </a>
+          </li>
+          <li>
+            <a
+              class=" cursor-pointer flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              (click)="changeCurrentLang('en')"
+            >
+              <img
+                src="assets/dist/images/en.png"
+                alt="English"
+                class="language-icon"
+              />
+              English
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li *ngIf="isUserLoggedIn()">
+        <button
+          type="button"
+          class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+          aria-controls="dropdown-example"
+          data-collapse-toggle="dropdown-example"
+        >
+          <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+            ><div class="user-info top-menu" routerLink="/client/profile">
+              <img
+                [src]="'data:image/png;base64,' + userProfile.image"
+                alt="User Image"
+                class="user-image"
+              />
+              <span 
+              [ngStyle]="{ color: isDarkModeEnabled() ? 'white' : 'black' }"
+              >{{ userProfile.firstName }}</span>
+            </div></span
+          >
+        </button>
+        <ul id="dropdown-example" class="hidden py-2 space-y-2">
+          <li *ngIf="isUserLoggedIn() && !isAdmin && isClient">
+            <a
+              routerLink="/client/profile"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >My Profile</a
+            >
+          </li>
+          <li *ngIf="isUserLoggedIn() && !isAdmin && isClient">
+            <a
+              routerLink="/client/favorite-blogs"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >Saved Blogs</a
+            >
+          </li>
+          <li *ngIf="isUserLoggedIn() && !isAdmin && !isClient">
+            <a
+              routerLink="/accountant/profile"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >My Profile</a
+            >
+          </li>
+          <li *ngIf="isUserLoggedIn() && !isAdmin && !isClient">
+            <a
+              routerLink="/accountant/favorite-blogs"
+              class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >Saved Blogs</a
+            >
+          </li>
+          <li>
+            <a
+              (click)="logout()"
+              class="cursor-pointer flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+              >Sign out</a
+            >
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>

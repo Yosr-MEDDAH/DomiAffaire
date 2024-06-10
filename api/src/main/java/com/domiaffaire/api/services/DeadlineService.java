@@ -1,5 +1,6 @@
 package com.domiaffaire.api.services;
 
+import com.domiaffaire.api.dto.DeadlineCountDTO;
 import com.domiaffaire.api.dto.DeadlineDTO;
 import com.domiaffaire.api.dto.DeadlineFilterRequest;
 import com.domiaffaire.api.entities.Deadline;
@@ -22,4 +23,7 @@ public interface DeadlineService {
     void sendEmailFiveDaysLeftWarning() throws MessagingException, UnsupportedEncodingException;
     List<DeadlineDTO> getDeadlinesOfClientAuthenticated()throws UserNotFoundException;
     List<DeadlineDTO> getDeadlinesOfClientById(String id)throws UserNotFoundException;
+
+    List<DeadlineCountDTO> getDeadlineDistribution();
+    String getDelayRange(Deadline deadline);
 }

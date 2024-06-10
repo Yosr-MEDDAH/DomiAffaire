@@ -1,0 +1,186 @@
+<div class="content">
+  <div class="intro-y flex items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Liste des Packs</h2>
+    <button
+      class="btn btn-primary text-slate-600 dark:text-slate-500"
+      type="button"
+      (click)="toggleSlideover()"
+    >
+      Nouveau Pack
+    </button>
+  </div>
+
+  <div
+    *ngFor="let chunk of getChunks(packs, 3)"
+    class="intro-y box flex flex-col lg:flex-row mt-5"
+  >
+    <div class="intro-y flex-1 px-5 py-16" *ngFor="let item of chunk">
+      <i
+        class="fa-regular fa-credit-card block text-5xl text-primary mx-auto text-center"
+      ></i>
+      <div class="text-xl font-medium text-center mt-10">
+        {{ item.designation }}
+      </div>
+      <div class="text-slate-600 dark:text-slate-500 text-center mt-5">
+        {{ item.userCount }} Utilisateurs <span class="mx-1">•</span> ont choisi
+        ce pack pour leur domiciliation.
+      </div>
+      <div class="text-slate-500 px-10 text-center mx-auto mt-2">
+        {{ item.description }}
+      </div>
+      <div class="flex justify-center">
+        <div class="relative text-5xl font-semibold mt-8 mx-auto">
+          <span class="absolute text-2xl top-0 right-0 -mr-5 w-5"> DT </span>
+          {{ item.price }}
+        </div>
+      </div>
+      <div class="text-center">
+        <button
+          type="button"
+          class="btn btn-rounded-primary py-3 px-4 mr-2 mx-auto mt-8 text-slate-600 dark:text-slate-500"
+          style="width: 120px"
+          (click)="editPack(item)"
+        >
+          <i class="fa-solid fa-pen mr-1"></i>
+          Modifier
+        </button>
+        <button
+          type="button"
+          class="btn btn-rounded-primary ml-2 py-3 px-4 mx-auto mt-8 text-slate-600 dark:text-slate-500"
+          style="width: 120px"
+          (click)="confirmModal(item.id)"
+        >
+          <i class="fa-solid fa-circle-minus mr-1"></i>
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    id="slideover-container"
+    [ngClass]="{ invisible: isSlideoverHidden }"
+    class="w-full h-full fixed inset-0 z-50"
+  >
+    <div
+      (click)="handleSlideOverClick($event)"
+      id="slideover-bg"
+      class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900"
+      [ngClass]="{
+        'opacity-0': isSlideoverHidden,
+        'opacity-50': !isSlideoverHidden
+      }"
+    ></div>
+    <div
+      (click)="handleSlideOverClick($event)"
+      id="slideover"
+      class="w-96 bg-white dark:bg-darkmode-600 h-full absolute right-0 duration-300 ease-out transition-all"
+      [ngClass]="{ 'translate-x-full': isSlideoverHidden }"
+    >
+      <div
+        class="absolute cursor-pointer text-gray-600 top-0 w-8 h-8 flex items-center justify-center right-0 mt-5 mr-5"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </div>
+      <div class="p-8">
+        <h2 class="text-lg font-medium mb-4">
+          {{ isEdit ? "Edit Pack" : "New Pack" }}
+        </h2>
+        <form [formGroup]="packForm" (ngSubmit)="onSubmit()">
+          <div>
+            <label for="designation">Désignation</label>
+            <input
+              type="text"
+              formControlName="designation"
+              id="designation"
+              class="form-control"
+              required
+            />
+          </div>
+          <div>
+            <label for="description">Description</label>
+            <textarea
+              formControlName="description"
+              id="description"
+              class="form-control"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label for="price">Prix</label>
+            <input
+              type="number"
+              formControlName="price"
+              id="price"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="flex justify-end mt-6">
+            <button
+              type="button"
+              class="btn btn-outline-secondary mr-2"
+              (click)="cancel()"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary text-primary dark:text-slate-500"
+            >
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="isDeleteModalOpen"
+  class="modal-overlay"
+  [ngClass]="{ show: isDeleteModalOpen }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation de Suppression</h5>
+        <button type="button" class="close" (click)="confirmModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr(e) de vouloir supprimer ce Pack ?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="confirmModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger text-danger"
+          (click)="removePack()"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

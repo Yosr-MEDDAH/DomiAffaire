@@ -1,0 +1,129 @@
+<div class="content">
+    <div class="grid grid-cols-12 gap-6 mt-8">
+      <div class="col-span-12 lg:col-span-3 2xl:col-span-2">
+        <h2 class="intro-y text-lg font-medium mr-auto mt-2">
+          Cas Officiellement Domiciliés
+        </h2>
+        <div class="intro-y box bg-success p-5 mt-6">
+          <button
+            type="button"
+            routerLink="/admin/clients-documents"
+            class="btn text-slate-600 dark:text-slate-300 w-full bg-white dark:bg-darkmode-300 dark:border-darkmode-300 mt-1"
+          >
+          Gérer les Documents des Clients
+          </button>
+          <div
+            class="border-t border-white/10 dark:border-darkmode-400 mt-6 pt-6 text-white"
+          >
+            <a
+              routerLink="/admin/domiciliation-requests"
+              class="flex items-center px-3 py-2 rounded-md"
+            >
+              <i class="w-4 h-4 mr-2 fa-solid fa-inbox"></i> Boîte de Réception
+
+            </a>
+            <a
+              routerLink="/admin/accepted-domiciliation-requests"
+              class="flex items-center px-3 py-2 mt-2 rounded-md "
+            >
+              <i class="w-4 h-4 mr-2 fa-solid fa-spinner"></i> En Attente de Réponse de l'Utilisateur
+            </a>
+            <a
+              routerLink="/admin/domiciliation"
+              class="flex items-center px-3 py-2 mt-2 rounded-md bg-white/10 dark:bg-darkmode-700 font-medium"
+            >
+              <i class="w-4 h-4 mr-2 fa-regular fa-circle-check"></i> Accepté
+            </a>
+            <a
+              routerLink="/admin/rejected-domiciliation-requests"
+              class="flex items-center px-3 py-2 mt-2 rounded-md"
+            >
+              <i class="w-4 h-4 mr-2 fa-solid fa-ban"></i> Rejeté
+            </a>
+           
+          </div>
+        </div>
+      </div>
+      <div class="col-span-12 lg:col-span-9 2xl:col-span-10">
+        <div class="intro-y flex flex-col-reverse sm:flex-row items-center">
+          <div class="w-full sm:w-auto relative mr-auto mt-3 sm:mt-0">
+            <input
+            type="text"
+            name="toSearch"
+            [(ngModel)]="searchFirstName"
+            (ngModelChange)="search()"
+            id=""
+              class="form-control w-full sm:w-64 box px-10"
+              placeholder="Rechercher par prénom du client"
+            />
+          </div>
+          <div class="w-full sm:w-auto flex">
+            <button class="btn btn-outline-success shadow-md mr-2" printSectionId="print-section" ngxPrint [useExistingCss]="true">Imprimer</button>
+          </div>
+        </div>
+  
+        <div class="intro-y inbox box mt-5">
+          <div
+            class="p-5 flex flex-col-reverse sm:flex-row text-slate-500 border-b border-slate-200/60"
+          >
+            <div
+              class="flex items-center mt-3 sm:mt-0 border-t sm:border-0 border-slate-200/60 pt-5 sm:pt-0 mt-5 sm:mt-0 -mx-5 sm:mx-0 px-5 sm:px-0"
+            >
+            Voir les demandes de domiciliation acceptées par l'administration et les utilisateurs.
+          </div>
+          </div>
+          <div class="overflow-x-auto sm:overflow-x-visible" id="print-section">
+            <div
+              class="intro-y"
+              *ngIf="
+                domiciliationRequests && domiciliationRequests.length > 0;
+                else noDomiciliationRequests
+              "
+            >
+              <div
+                *ngFor="let item of domiciliationRequests"
+                class="inbox__item inbox__item--active inline-block sm:block text-slate-600 dark:text-slate-500 bg-slate-100 dark:bg-darkmode-400/70 border-b border-slate-200/60 dark:border-darkmode-400"
+              >
+                <div class="flex px-5 py-3">
+                  <div class="w-48 flex-none flex items-center mr-5">
+                    <div class="w-6 h-6 flex-none image-fit relative ml-5">
+                      <img
+                        alt="user image"
+                        class="rounded-full"
+                        [src]="'data:image/png;base64,' + item.client.image"
+                      />
+                    </div>
+                    <div class="inbox__item--sender truncate ml-3">
+                      {{ item.client.firstName }} {{ item.client.lastName }}
+                    </div>
+                  </div>
+  
+                  <button class="text-success whitespace-nowrap ml-5"
+                  [routerLink]="['details', item.id]"
+                  >
+                    <i class="w-4 h-4 mr-1 fa-solid fa-circle-info"></i> Voir les Détails de Domiciliation
+                  </button>
+                  
+                  <div class="mt-5 inbox__item--time whitespace-nowrap ml-auto pl-10">
+                    <div>{{ item.createdAt | date : "MMM d, y" }}</div>
+                    <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                      {{ item.createdAt | date : "hh:mm a" }}
+                    </div>
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+            <ng-template #noDomiciliationRequests>
+              <div
+                class="intro-y col-span-12 overflow-auto 2xl:overflow-visible text-center"
+              >
+                <div class="alert alert-primary-soft mb-1">
+                  Pas de domiciliation.                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

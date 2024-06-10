@@ -12,24 +12,28 @@ public class NoBadWordsValidator implements ConstraintValidator<NoBadWords, Stri
 
     @Override
     public void initialize(NoBadWords constraintAnnotation) {
-        // Load bad words from your dataset here
-        // You can load it from a CSV file or any other source
-        // For demonstration, I'll initialize it with some sample bad words
-        badWords = Arrays.asList("miboun", "ta7an", "badword3");
+        badWords = Arrays.asList(
+                "merde", "putain", "con", "connard", "salope", "enculé", "fils de pute",
+                "pute", "bordel", "ta gueule", "nique", "niquer", "cul", "chier", "chiant",
+                "pédé", "tapette", "enculer", "enculer", "fdp", "ntm", "tg", "trou du cul",
+                "bite", "couilles", "chatte", "nique ta mère", "pute", "pd", "enfoiré",
+                "connasse", "gouine", "bâtard", "gros con", "grosse merde", "pute",
+                "nique ta race", "ta mère", "sac à foutre"
+        );;
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
-            return true; // Null values are considered valid
+            return true;
         }
 
-        // Check if the value contains any of the bad words
+
         for (String badWord : badWords) {
             if (value.toLowerCase().contains(badWord.toLowerCase())) {
-                return false; // Found a bad word, validation fails
+                return false;
             }
         }
-        return true; // No bad words found, validation passes
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 package com.domiaffaire.api.services;
 
 import ch.qos.logback.core.net.server.Client;
+import com.domiaffaire.api.dto.DeadlineCountDTO;
 import com.domiaffaire.api.dto.DeadlineDTO;
 import com.domiaffaire.api.dto.DeadlineFilterRequest;
 import com.domiaffaire.api.dto.FileDTO;
@@ -26,8 +27,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -181,6 +184,31 @@ public class DeadlineServiceImpl implements DeadlineService{
             return deadlineDTOS;
         }else{
             throw new UserNotFoundException("User not found");
+        }
+    }
+
+    @Override
+    public List<DeadlineCountDTO> getDeadlineDistribution() {
+        List<Deadline> deadlines = deadlineRepository.findAll();
+        Map<String, Long> distribution = deadlines.stream()
+                .collect(Collectors.groupingBy(this::getDelayRange, Collectors.counting()));
+
+        return distribution.entrySet().stream()
+                .map(entry -> new DeadlineCountDTO(entry.getKey(), entry.getValue().intValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getDelayRange(Deadline deadline) {
+        long daysBetween = ChronoUnit.DAYS.between(LocalDateTime.now(), deadline.getLimitedDate());
+        if (daysBetween <= 7) {
+            return "7 jours";
+        } else if (daysBetween <= 15) {
+            return "15 jours";
+        } else if (daysBetween <= 30) {
+            return "30 jours";
+        } else {
+            return ">30 jours";
         }
     }
 }

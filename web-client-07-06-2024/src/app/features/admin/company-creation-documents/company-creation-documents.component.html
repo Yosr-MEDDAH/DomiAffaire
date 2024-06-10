@@ -1,0 +1,152 @@
+<div class="content">
+  <h2 class="intro-y text-lg font-medium mt-10">Documents de Création d'Entreprise</h2>
+  <div class="grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2"
+    >
+      <button class="btn btn-primary shadow-md mr-2" (click)="openAddModal()">
+        Ajouter un Nouveau Document
+      </button>
+
+      <div class="hidden md:block mx-auto text-slate-500"></div>
+      <div class="w-full sm:w-auto mt-3 sm:mt-0 sm:ml-auto md:ml-0"></div>
+    </div>
+
+    <ng-container  *ngIf="files && files.length>0 else noDocs">
+      <div class="intro-y col-span-12 md:col-span-6" *ngFor="let file of files">
+        <div class="box">
+          <div
+            class="flex flex-col lg:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400"
+          >
+            <div class="w-24 h-24 lg:w-12 lg:h-12 lg:mr-1">
+              <i class="custom-icon {{ getFileIcon(file.type) }}"></i>
+            </div>
+            <div
+              class="lg:ml-2 lg:mr-auto text-center lg:text-left mt-3 lg:mt-0"
+            >
+              <ng-container *ngIf="!file.isRenaming; else renameInput">
+                <a href="">{{ file.name }}</a>
+              </ng-container>
+              <ng-template #renameInput>
+                <form (submit)="renameFile(file.newName, file.id)">
+                  <input
+                    type="text"
+                    [(ngModel)]="file.newName"
+                    class="intro-x login__input form-control py-3 px-4 block mt-4"
+                    name="name"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    [disabled]="!file.newName"
+                    class="btn btn-outline-secondary mt-5"
+                  >
+                  Enregistrer
+                  </button>
+                </form>
+              </ng-template>
+              <div class="text-slate-500 text-xs mt-0.5">{{ file.type }}</div>
+            </div>
+            <div
+              class="ml-auto cursor-pointer"
+              (click)="confirmDeleteFile(file.id)"
+            >
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div
+            class="flex flex-wrap lg:flex-nowrap items-center justify-center p-5"
+          >
+            <button
+              class="btn btn-primary py-1 px-2 mr-2"
+              (click)="file.isRenaming = !file.isRenaming"
+            >
+            Renommer
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #noDocs>
+      <div
+        class="intro-y col-span-12 overflow-auto 2xl:overflow-visible text-center"
+      >
+        <div class="alert alert-primary-soft mb-1">
+          Pas de Documents..             </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+<div
+  *ngIf="isDeleteModalOpen"
+  class="modal-overlay"
+  [ngClass]="{ show: isDeleteModalOpen }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation de Suppression</h5>
+        <button type="button" class="close" (click)="cancelDeleteFile()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer ce document ?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelDeleteFile()"
+        >
+        Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger text-danger"
+          (click)="deleteFile()"
+        >
+        Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="isAddModalOpen"
+  class="modal-overlay"
+  [ngClass]="{ show: isAddModalOpen }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajouter un nouveau document</h5>
+        <button type="button" class="close" (click)="openAddModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="submitAddForm()" #fileForm="ngForm">
+          <input
+            class="intro-x login__input form-control py-3 px-4 block mt-4"
+            type="file"
+            id="fileInput"
+            name="file"
+            (change)="onFileSelected($event)"
+            required
+          />
+          <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+            <button
+              class="btn btn-primary text-primary mt-5 py-3 px-4 ml-auto"
+              type="submit"
+              [disabled]="!fileForm.valid"
+            >
+            Uploader
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+  </div>
+</div>

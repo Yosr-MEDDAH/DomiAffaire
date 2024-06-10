@@ -1,0 +1,144 @@
+<div class="content">
+  <h2 class="intro-y text-lg font-medium mt-10">Demandes de Réservation
+  </h2>
+  <div class="grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2"
+    ></div>
+    <div class="intro-y col-span-12 overflow-auto 2xl:overflow-visible">
+      <table class="table table-report -mt-2">
+        <thead>
+          <tr>
+            <th class="whitespace-nowrap">Client</th>
+            <th class="text-center whitespace-nowrap">Salle</th>
+            <th class="text-center whitespace-nowrap">Début</th>
+            <th class="text-center whitespace-nowrap">Fin</th>
+            <th class="text-center whitespace-nowrap">Statut</th>
+            <th class="text-center whitespace-nowrap">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="intro-x" *ngFor="let item of reservations">
+            <td class="!py-3.5">
+              <div class="flex items-center">
+                <div class="w-9 h-9 image-fit zoom-in">
+                  <img
+                    alt="Midone - HTML Admin Template"
+                    class="rounded-lg border-white shadow-md tooltip"
+                    [src]="'data:image/png;base64,' + item.client.image"
+                    title="Uploaded at 26 July 2022"
+                  />
+                </div>
+                <div class="ml-4">
+                  <a href="" class="font-medium whitespace-nowrap"
+                    >{{ item.client.firstName }} {{ item.client.lastName }}</a
+                  >
+                  <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                    {{ item.client.email }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">
+              <a
+                class="flex items-center justify-center underline decoration-dotted"
+                href="javascript:;"
+                >{{ item.room.name }}</a
+              >
+            </td>
+            <td class="text-center">
+              {{ item.dateBegining | date : "dd/MM/yy HH" }}h
+            </td>
+            <td class="text-center">
+              {{ item.dateEnding | date : "dd/MM/yy HH" }}h
+            </td>
+            <td class="w-40">
+              <div class="flex items-center justify-center text-pending">
+                <i class="w-4 h-4 mr-2 fa-solid fa-spinner"></i>
+                {{ item.status }}
+              </div>
+            </td>
+            <td class="table-report__action w-56">
+              <div class="flex justify-center items-center">
+                <a
+                  class="flex items-center mr-3 cursor-pointer"
+                  (click)="confirmAcceptModal(item.id)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-check"></i> Accepter
+                </a>
+                <a
+                  class="flex items-center text-danger cursor-pointer"
+                  (click)="confirmModal(item.id)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-ban"></i> Rejeter
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" [ngClass]="{ show: isRejectModalopen }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation de Rejet</h5>
+        <button type="button" class="close" (click)="confirmModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr(e) de vouloir rejeter cette demande ?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="confirmModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger text-danger"
+          (click)="rejectRequest()"
+        >
+          Rejeter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" [ngClass]="{ show: isAcceptModalopen }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation d'Acceptation</h5>
+        <button type="button" class="close" (click)="confirmAcceptModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr(e) de vouloir accepter cette demande ?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="confirmAcceptModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-success text-success"
+          (click)="acceptRequest()"
+        >
+          Accepter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

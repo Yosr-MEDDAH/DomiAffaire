@@ -1,0 +1,81 @@
+<div class="content">
+  <div class="intro-y flex flex-col sm:flex-row items-center mt-8">
+    <h2 class="text-lg font-medium mr-auto">Uploader Fichiers</h2>
+    <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
+      <a
+        class="btn btn-outline-success shadow-md mr-2"
+        [routerLink]="['/admin/clients-documents', domiId]"
+        >Voir la Domiciliation</a
+      >
+    </div>
+  </div>
+  <div class="intro-y grid grid-cols-12 gap-5 mt-5">
+    <div class="intro-y col-span-12 lg:col-span-8">
+      <div class="lg:flex intro-y">
+        <div class="relative">
+          
+        </div>
+      </div>
+      <div class="grid grid-cols-12 gap-5 mt-5">
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in btn btn-secondary"
+          (click)="openModal('contract')"
+        >
+          <div class="font-medium text-base">Ajouter le Contrat</div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in bg-success"
+          (click)="openModal('ed')"
+        >
+          <div class="font-medium text-base" style="color: white">
+            Ajouter la Déclaration d'Existence
+          </div>
+        </div>
+        <div
+          class="col-span-12 sm:col-span-4 2xl:col-span-3 box p-5 cursor-pointer zoom-in btn btn-secondary"
+          (click)="openModal('patente')"
+        >
+          <div class="font-medium text-base">Ajouter la Patente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" [ngClass]="{ show: isModalOpen }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ modalTitle }}</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="fileInput">Fichier</label>
+            <input
+              class="intro-x login__input form-control py-3 px-4 block mt-4"
+              type="file"
+              id="fileInput"
+              name="file"
+              (change)="onFileSelected($event)"
+              required
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
+            >
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-outline-success">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

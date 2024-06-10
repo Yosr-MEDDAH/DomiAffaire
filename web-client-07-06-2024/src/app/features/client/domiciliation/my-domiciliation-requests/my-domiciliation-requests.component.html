@@ -1,0 +1,380 @@
+<div class="content">
+  <h2 class="intro-y text-lg font-medium mt-10">
+    My Domiciliation Requests List
+  </h2>
+  <div class="grid grid-cols-12 gap-6 mt-5">
+    <div
+      class="intro-y col-span-12 flex flex-wrap xl:flex-nowrap items-center mt-2"
+    >
+      <div class="flex w-full sm:w-auto"></div>
+      <div class="w-full xl:w-auto flex items-center mt-3 xl:mt-0">
+        <button
+          class="btn btn-primary shadow-md mr-2"
+          routerLink="/client/domiciliation-request"
+        >
+          <i class="w-4 h-4 mr-2 fa-solid fa-plus"></i> New Domiciliation
+          Request
+        </button>
+      </div>
+    </div>
+    <div
+      class="intro-y col-span-12 overflow-auto 2xl:overflow-visible"
+      *ngIf="domiciliations && domiciliations.length > 0; else noDomiciliation"
+    >
+      <table class="table table-report -mt-2">
+        <thead>
+          <tr>
+            <th class="whitespace-nowrap">SENT AT</th>
+            <th class="whitespace-nowrap">DENOMINATION</th>
+            <th class="text-center whitespace-nowrap">STATUS</th>
+            <th class="text-center whitespace-nowrap">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="intro-x" *ngFor="let item of domiciliations">
+            <td class="w-40">
+              <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">
+                {{ item.createdAt | date : "MMM d, y 'At' h:mm a" }}
+              </div>
+            </td>
+            <td>
+              <div class="whitespace-nowrap">{{ item.denomination }}</div>
+            </td>
+            <td class="text-center">
+              <div
+                class="flex items-center justify-center whitespace-nowrap"
+                [ngClass]="{
+                  'text-success': item.status === 'ACCEPTED',
+                  'text-danger': item.status === 'REJECTED',
+                  'text-pending': item.status === 'IN_PROGRESS'
+                }"
+              >
+                <i
+                  *ngIf="item.status === 'ACCEPTED'"
+                  class="w-4 h-4 mr-2 fa-regular fa-circle-check"
+                ></i>
+                <i
+                  *ngIf="item.status === 'REJECTED'"
+                  class="w-4 h-4 mr-2 fa-solid fa-ban"
+                ></i>
+                <i
+                  *ngIf="item.status === 'IN_PROGRESS'"
+                  class="w-4 h-4 mr-2 fa-regular fa-clock"
+                ></i>
+                {{ item.status }}
+              </div>
+            </td>
+
+            <td class="text-center">
+              <div class="flex items-center justify-center whitespace-nowrap">
+                <button
+                  class="flex items-center text-primary whitespace-nowrap mr-5"
+                  (click)="openDetailsModal(item)"
+                >
+                  <i class="w-4 h-4 mr-1 fa-regular fa-circle-check"></i> View
+                  Details
+                </button>
+                <button
+                  *ngIf="item.status === 'IN_PROGRESS'"
+                  (click)="openCancelOrCloseModal(item.id)"
+                  class="flex items-center text-primary whitespace-nowrap"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-ban"></i> Cancel
+                </button>
+                <button
+                  *ngIf="item.status === 'ACCEPTED'"
+                  (click)="viewContract(item)"
+                  class="flex items-center text-primary whitespace-nowrap mr-5"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-file-contract"></i> View
+                  Contract
+                </button>
+                <button
+                  *ngIf="item.status === 'ACCEPTED'"
+                  (click)="closeProtestModal(item.id)"
+                  class="flex items-center text-primary whitespace-nowrap"
+                >
+                  <i class="w-4 h-4 mr-1 fa-solid fa-exclamation-triangle"></i>
+                  Protest
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #noDomiciliation>
+      <div
+        class="intro-y col-span-12 overflow-auto 2xl:overflow-visible text-center"
+      >
+        <div class="alert alert-primary-soft mb-1">
+          You have not send any domiciliation request..
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<div
+  *ngIf="isDetailsModalOpen"
+  class="modal-overlay"
+  [ngClass]="{ show: isDetailsModalOpen }"
+>
+  <div
+    class="modal-dialog"
+    style="
+      max-height: 90%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    "
+  >
+    <div
+      class="modal-content"
+      style="
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 90%;
+      "
+    >
+      <div class="modal-header" style="flex-shrink: 0">
+        <h5 class="modal-title">Domiciliation Request Details</h5>
+        <button type="button" class="close" (click)="closeDetailsModal()">
+          &times;
+        </button>
+      </div>
+      <div
+        class="modal-body"
+        style="max-height: 400px; flex-grow: 1; overflow: scroll"
+      >
+        <div class="intro-y grid grid-cols-12 gap-5">
+          <div class="col-span-12 lg:col-span-8 2xl:col-span-6">
+            <div class="box p-5 rounded-md">
+              <div class="flex justify-between items-center mb-4">
+                <div>
+                  <h3 class="text-xl font-bold">
+                    {{ selectedDomiciliation.denomination }}
+                  </h3>
+                  <div class="flex items-center text-slate-500 text-xs">
+                    Sent:
+                    <a class="ml-1 font-medium mr-3">
+                      {{
+                        selectedDomiciliation.createdAt
+                          | date : "MMM d, y 'At' h:mm a"
+                      }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="text-base text-slate-500">Domiciliation Details</div>
+              <table class="table table-report__action">
+                <tr>
+                  <td>Legal Form</td>
+                  <td>{{ selectedDomiciliation.legalForm }}</td>
+                </tr>
+                <tr>
+                  <td>Company Status</td>
+                  <td>{{ selectedDomiciliation.companyStatus }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.draftStatus">
+                  <td>Draft Status</td>
+                  <td>{{ selectedDomiciliation.draftStatus }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.shareCapital">
+                  <td>Share Capital</td>
+                  <td>{{ selectedDomiciliation.shareCapital }}DT</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.management">
+                  <td>Management</td>
+                  <td>{{ selectedDomiciliation.management }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.oldDraftStatus">
+                  <td>Old Draft Status</td>
+                  <td>{{ selectedDomiciliation.oldDraftStatus }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.oldLegalForm">
+                  <td>Old Legal Form</td>
+                  <td>{{ selectedDomiciliation.oldLegalForm }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.oldShareCapital">
+                  <td>Old Share Capital</td>
+                  <td>{{ selectedDomiciliation.oldShareCapital }}</td>
+                </tr>
+                <tr *ngIf="selectedDomiciliation.oldManagement">
+                  <td>Old Management</td>
+                  <td>{{ selectedDomiciliation.oldManagement }}</td>
+                </tr>
+                <tr>
+                  <td>Payment Mode</td>
+                  <td>{{ selectedDomiciliation.paymentMode }}</td>
+                </tr>
+                <tr>
+                  <td>Pack</td>
+                  <td>{{ selectedDomiciliation.pack.designation }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="flex-shrink: 0"></div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isCancelModalOpen"
+  class="modal-overlay"
+  [ngClass]="{ show: isCancelModalOpen }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close" (click)="openCancelOrCloseModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to cancel this domiciliation request?</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="openCancelOrCloseModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmCancelRequest()"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isAcceptModalOpen"
+  [ngClass]="{ show: isAcceptModalOpen }"
+  class="modal-overlay accept-modal"
+>
+  <div class="modal-content accept-modal-content disable-text-selection">
+    <span class="close" (click)="openAcceptOrCloseModal()">&times;</span>
+    <p class="mt-5 mb-5 text-left text-lg">
+      Hello {{ selectedDomiciliation.client.firstName }},<br />
+      Please review the draft contract and accept it by checking the box and
+      clicking "Accept" to start the payment schedule. You can also review the
+      articles and return later to accept.<br /><br />Thank you.
+    </p>
+    <div class="box" [class.obscured]="obscured">
+      <ngx-extended-pdf-viewer
+        [base64Src]="pdfSrc"
+        [useBrowserLocale]="true"
+        [showDownloadButton]="false"
+        [showOpenFileButton]="false"
+        [showDrawEditor]="false"
+        [showStampEditor]="false"
+        [showTextEditor]="false"
+        [showHorizontalScrollButton]="false"
+        [showInfiniteScrollButton]="false"
+        [showPagingButtons]="true"
+        [showPrintButton]="false"
+        [showPresentationModeButton]="false"
+        [showPropertiesButton]="true"
+        [showRotateButton]="'always-visible'"
+        [showBookModeButton]="true"
+        [showSinglePageModeButton]="false"
+        [showVerticalScrollButton]="false"
+        [showHorizontalScrollButton]="false"
+        [showInfiniteScrollButton]="false"
+        [showSpreadButton]="false"
+        [theme]="isDarkModeEnabled() ? 'dark' : 'light'"
+      ></ngx-extended-pdf-viewer>
+      <div class="watermark" *ngIf="!obscured">CONFIDENTIAL</div>
+      <div class="overlay" *ngIf="obscured">
+        <p>
+          This content is protected. Do not attempt to take screenshots as this
+          content is confidential. Unauthorized screenshots can lead to data
+          loss and may harm both your data and the company.
+        </p>
+      </div>
+    </div>
+
+    <div class="form-check mr-4">
+      <input
+        id="shipping-insurance-required"
+        class="form-check-input"
+        type="checkbox"
+        [(ngModel)]="isCheckboxChecked"
+      />
+      <div class="form-check-label">
+        <div class="leading-relaxed text-slate-500 mt-1">
+          I
+          <span class="font-medium text-slate-600 dark:text-slate-300"
+            >accept</span
+          >
+          all the conditions written in the draft contract
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button
+        class="btn btn-secondary py-3 px-4"
+        type="button"
+        (click)="openAcceptOrCloseModal()"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn btn-primary py-3 px-4 ml-auto"
+        type="button"
+        (click)="confirmAccept()"
+        [disabled]="!isCheckboxChecked"
+      >
+        Accept
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" [ngClass]="{ show: isProtest }">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Objection</h5>
+        <button type="button" class="close" (click)="closeProtestModal()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="protestForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="objectionArgument">Objection Argument</label>
+            <textarea
+              id="objectionArgument"
+              formControlName="objectionArgument"
+              class="form-control"
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeProtestModal()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

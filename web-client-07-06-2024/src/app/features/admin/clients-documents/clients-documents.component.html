@@ -1,0 +1,87 @@
+<div class="content">
+  <div class="grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-12 lg:col-span-3 2xl:col-span-2">
+      <h2 class="intro-y text-lg font-medium mr-auto mt-2">
+        Documents des Clients
+      </h2>
+    </div>
+    <div class="col-span-12">
+      <div class="intro-y flex flex-col-reverse sm:flex-row items-center">
+        <div class="w-full sm:w-auto flex"></div>
+      </div>
+      <div class="intro-y grid grid-cols-12 mt-5">
+        <div
+          *ngFor="let item of domiciliationDocs; let i = index"
+          class="intro-y col-span-3 sm:col-span-4 md:col-span-3 2xl:col-span-2 mr-1 mb-1"
+        >
+          <div
+            class="file box rounded-md px-5 pt-8 pb-5 px-3 sm:px-5 relative zoom-in"
+            clickOutside
+            (clickOutside)="closeMenu()"
+          >
+            <a class="w-3/5 file__icon file__icon--directory mx-auto"></a>
+            <a class="block font-medium mt-4 text-center truncate">
+              {{ item.documentCode }}
+            </a>
+            <div class="text-slate-500 text-xs text-center mt-0.5">
+              {{ item.domiciliationDocumentsSize }} Ko
+            </div>
+            <div class="absolute top-0 right-0 mr-2 mt-3 dropdown ml-auto">
+              <div class="flex items-center ms-3">
+                <div>
+                  <button
+                    type="button"
+                    aria-expanded="false"
+                    (click)="toggleDropdown(item.id)"
+                    [attr.data-dropdown-toggle]="'dropdown-' + item.id"
+                  >
+                    <span class="sr-only">Open menu</span>
+                    <i
+                      class="w-5 h-5 text-slate-500 fa-solid"
+                      [ngClass]="{
+                        'fa-solid fa-bars': !isDropdownOpen[item.id]
+                      }"
+                    ></i>
+                    <i
+                      class="w-5 h-5"
+                      [ngClass]="{
+                        'fa-solid fa-times': isDropdownOpen[item.id]
+                      }"
+                    ></i>
+                  </button>
+                </div>
+                <div
+                  class="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                  [attr.id]="'dropdown-' + item.id"
+                  [ngClass]="{ hidden: !isDropdownOpen[item.id] }"
+                >
+                  <ul class="py-1" role="none">
+                    <li>
+                      <a
+                        [routerLink]="['/admin/clients-documents', item.id]"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        role="menuitem"
+                        >Détails</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        [routerLink]="[
+                          '/admin/clients-documents/add-file',
+                          item.id
+                        ]"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        role="menuitem"
+                        >Uploader de nouveaux fichiers</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

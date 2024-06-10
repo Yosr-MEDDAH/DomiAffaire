@@ -1,0 +1,145 @@
+<div class="login">
+  <div class="container sm:px-10">
+    <div class="block xl:grid grid-cols-2 gap-4">
+      <div class="hidden xl:flex flex-col min-h-screen">
+       
+
+        <div class="my-auto">
+          <img
+            alt="login page illustration"
+            class="-intro-x w-1/2 -mt-16"
+            [src]="
+            isDarkModeEnabled()
+              ? 'assets/dist/images/LOGO DOMI White.png'
+              : 'assets/dist/images/LOGO DOMI black.png'
+          "
+          />
+          <div
+            class="-intro-x text-white font-medium text-4xl leading-tight mt-10"
+          >
+            Welcome to DomiAffaire!
+          </div>
+        </div>
+      </div>
+
+      <div class="h-screen xl:h-auto flex py-5 xl:py-0 my-10 xl:my-0">
+        <div
+          class="my-auto mx-auto xl:ml-20 bg-white dark:bg-darkmode-600 xl:bg-transparent px-5 sm:px-8 py-8 xl:p-0 rounded-md shadow-md xl:shadow-none w-full sm:w-3/4 lg:w-2/4 xl:w-auto"
+        >
+          <h2
+            class="intro-x font-bold text-2xl xl:text-3xl text-center xl:text-left"
+          >
+            Sign In
+          </h2>
+
+          <div class="intro-x mt-2 text-slate-400 xl:hidden text-center">
+            Welcome to DomiAffaire
+          </div>
+          <div class="intro-x mt-8">
+            <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+              <input
+                type="email"
+                class="intro-x login__input form-control py-3 px-4 block mt-4"
+                placeholder="Email"
+                formControlName="email"
+                name="email"
+              />
+              <div
+                *ngIf="
+                  signinForm.get('email')!.hasError('required') &&
+                  signinForm.get('email')!.touched
+                "
+                class="text-danger"
+              >
+                Email is required.
+              </div>
+              <div
+                *ngIf="
+                  signinForm.get('email')!.hasError('email') &&
+                  signinForm.get('email')!.touched
+                "
+                class="text-danger"
+              >
+                Invalid email format.
+              </div>
+              <div class="password-input-container">
+                <input
+                  id="passwordInput"
+                  type="password"
+                  class="intro-x login__input form-control py-3 px-4 block mt-4"
+                  placeholder="Password"
+                  formControlName="pwd"
+                  name="pwd"
+                  minlength="8"
+                />
+                <div
+                  class="password-toggle-icon"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i class="fa fa-eye" *ngIf="!passwordHidden"></i>
+                  <i class="fa fa-eye-slash" *ngIf="passwordHidden"></i>
+                </div>
+              </div>
+
+              <div
+                *ngIf="
+                  signinForm.get('pwd')?.touched || signinForm.get('pwd')?.dirty
+                "
+                class="error-container"
+              >
+                <div
+                  *ngIf="signinForm.get('pwd')?.errors?.['required']"
+                  class="error-message required-error"
+                >
+                  <i class="fas fa-exclamation-circle"></i> Password is
+                  required.
+                </div>
+                <div
+                  *ngIf="passwordErrors.remainingLength"
+                  class="error-message length-error"
+                >
+                  <i class="fas fa-exclamation-circle"></i>
+                  {{ signinForm.get('pwd')?.errors?.['remainingLength'] }}
+                </div>
+              </div>
+
+              <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                <input
+                  [disabled]="!signinForm.valid"
+                  type="submit"
+                  value="Sign In"
+                  class="btn btn-primary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-8 align-bottom login__input"
+                />
+
+              </div>
+            </form>
+          </div>
+          <button
+                  routerLink="/register"
+                  class="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 align-bottom login__input"
+                >
+                  Sign Up
+                </button>
+                <!-- <div class="mt-3 text-center text-gray-500">
+                  <span class="line"></span>
+                  <span class="px-2">OR</span>
+                  <span class="line"></span>
+                </div>
+                <button class="btn btn-google py-3 px-4 mt-3 login__input">
+                  <img
+                    src="assets\dist\images\google.png"
+                    alt="Google Logo"
+                    class="inline-block h-6 w-6 mr-2"
+                  />
+                  <span>Continue with Google</span>
+                </button> -->
+          <div
+            class="intro-x flex text-slate-600 dark:text-slate-500 text-xs sm:text-sm mt-4"
+          >
+            <a routerLink="/reset-password-request">Forgot Password?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

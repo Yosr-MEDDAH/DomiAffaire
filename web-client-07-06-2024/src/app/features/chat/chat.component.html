@@ -1,0 +1,94 @@
+<div class="content">
+  <div
+    class="max-w-full md:max-w-none rounded-[30px] md:rounded-[35px_35px_0_0] px-4 md:px-[22px] min-w-0 min-h-screen bg-slate-100 flex-1 pb-10 mt-45 relative dark:bg-darkmode-700 before:content-[''] before:w-full before:h-px before:block"
+  >
+    <div class="intro-y mt-5 grid grid-cols-12 gap-5">
+      <div
+        class="col-span-12 lg:col-span-4 2xl:col-span-3 box mt-5 px-5 pb-5 pt-5 lg:pb-0"
+      >
+        <div class="title">Chat List</div>
+        <ul class="list">
+          <li
+            class="intro-x cursor-pointer box relative flex items-center p-5"
+            *ngFor="let chat of chatsList"
+          >
+            <div (click)="getChat(chat.id)">
+              <div class="image-fit mr-1 h-12 w-12 flex-none">
+                <img
+                  *ngIf="chat.client.id === userId"
+                  [src]="'data:image/png;base64,' + chat.accountant.image"
+                  class="rounded-full"
+                />
+                <img
+                  *ngIf="chat.accountant.id === userId"
+                  [src]="'data:image/png;base64,' + chat.client.image"
+                  class="rounded-full"
+                />
+              </div>
+              <span *ngIf="chat.client.id === userId"
+                >{{ chat.accountant.firstName }}
+                {{ chat.accountant.lastName }}</span
+              >
+              <span *ngIf="chat.accountant.id === userId"
+                >{{ chat.client.firstName }} {{ chat.client.lastName }}</span
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="intro-y col-span-12 lg:col-span-8 2xl:col-span-9 box mt-5 chat_window"
+      >
+        <div class="top_menu">
+          <div class="title">
+            <img
+              src="../../../assets/dist/images/LOGO DOMI black.png"
+              width="30px"
+              height="30px"
+            />
+            Consultation Chat
+          </div>
+        </div>
+
+        <ul class="messages">
+          <li
+            #messageItem
+            class="message"
+            *ngFor="let item of messageList"
+            [ngClass]="item.message_side"
+          >
+            <div class="avatar">
+              <img
+                [src]="'data:image/png;base64,' + item.image"
+                alt=""
+                class="rounded-full"
+              />
+              <!-- <img [src]="getImage(item.user)" alt="" /> -->
+              <!-- <img [src]="'data:image/png;base64,' + userImage" alt="" /> -->
+            </div>
+            <div class="text_wrapper">
+              <div class="text">{{ item.content }}</div>
+              <div class="text-xs whitespace-nowrap mt-0.5">{{ item.sentAt | date : "hh:mm a" }}</div>
+            </div>
+          </li>
+        </ul>
+        <div class="bottom_wrapper clearfix">
+          <div class="message_input_wrapper">
+            <input
+              class="message_input form-control"
+              placeholder="Message..."
+              [(ngModel)]="messageInput"
+            />
+          </div>
+          <!-- <button type="button" class="send_message" (change)="onFileSelected($event)">
+            <div class="icon fa-solid fa-file"></div>
+          </button> -->
+          <button type="button" class="send_message" (click)="sendMessage()">
+            <div class="icon"></div>
+            <div class="text">Send</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
