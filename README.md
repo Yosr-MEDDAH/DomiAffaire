@@ -12,7 +12,12 @@
 - [Running the Application](#running-the-application)
 - [Running Tests](#running-tests)
 ## Introduction
-A brief introduction about your project. Describe the purpose and functionalities provided by the project.
+We designed a web application to improve company 
+domiciliation, integrating a mobile component for managing workspace reservations. The 
+reservation management was achieved through a recommendation algorithm, adding essential 
+features such as deadline management, notifications, and support and advice for entrepreneurs in 
+company creation and domiciliation via real-time chat with accountants. We used technologies such 
+as Angular, Spring Boot, MongoDB, and Flutter, as well as testing tools like JMeter and Cypress. 
 
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
