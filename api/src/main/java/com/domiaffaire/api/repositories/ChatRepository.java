@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface ChatRepository  extends MongoRepository<Chat,String> {
     List<Chat> findAllByAccountantIsOrClientIs(User user1, User user2);
-    List<Chat> findAllByClientIs(User user);
     List<Chat> findAllByAccountantIs(User user);
 }

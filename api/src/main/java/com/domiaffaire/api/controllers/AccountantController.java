@@ -6,7 +6,6 @@ import com.domiaffaire.api.dto.UpdateProfileRequest;
 import com.domiaffaire.api.dto.UserDTO;
 import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.exceptions.*;
-import com.domiaffaire.api.mappers.Mapper;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -209,11 +208,6 @@ public class AccountantController {
         } catch (FaqNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
-    }
-
-    @GetMapping("/faqs")
-    public ResponseEntity<?> findAllFaqs(){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getAllFaqs());
     }
 
     @GetMapping("/blogs-accountant")

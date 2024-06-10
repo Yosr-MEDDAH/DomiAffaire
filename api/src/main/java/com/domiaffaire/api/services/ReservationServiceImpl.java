@@ -58,16 +58,10 @@ public class ReservationServiceImpl implements ReservationService {
             date = LocalDate.parse(elmt.getDate());
             startTime = LocalTime.parse(elmt.getStart_time());
             endTime = LocalTime.parse(elmt.getEnd_time());
-
-            // Setting dateBegining correctly
             LocalDateTime dateBegining = LocalDateTime.of(date, startTime);
             reservation.setDateBegining(dateBegining);
-
-            // Setting dateEnding correctly
             LocalDateTime dateEnding = LocalDateTime.of(date, endTime);
             reservation.setDateEnding(dateEnding);
-
-            // Saving the reservation
             reservationRepository.save(reservation);
         }
         return "Reservations are saved";
@@ -138,14 +132,11 @@ public class ReservationServiceImpl implements ReservationService {
             List<Room> rooms = roomRepository.findAll();
 
             for (Room room : rooms) {
-                // Join equipments list into a single string with commas
                 String equipments = room.getEquipments().stream()
                         .collect(Collectors.joining(","));
 
-                // Add a single set of quotes around the equipments string
                 equipments = "\"" + equipments + "\"";
 
-                // Write the formatted line to the file
                 writer.write(room.getId() + "," + room.getNbrPlaces() + "," + equipments + "\n");
             }
             System.out.println("CSV file created successfully!");

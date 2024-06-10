@@ -1,9 +1,7 @@
 package com.domiaffaire.api.services.jwt;
 
-import com.domiaffaire.api.entities.PasswordResetToken;
 import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.entities.VerificationToken;
-import com.domiaffaire.api.repositories.PasswordResetTokenRepository;
 import com.domiaffaire.api.repositories.UserRepository;
 import com.domiaffaire.api.repositories.VerificationTokenRepository;
 import com.domiaffaire.api.services.AuthServiceImpl;
@@ -13,16 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Calendar;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private  final PasswordResetTokenRepository passwordResetTokenRepository;
     private final AuthServiceImpl authService;
 
     @Override

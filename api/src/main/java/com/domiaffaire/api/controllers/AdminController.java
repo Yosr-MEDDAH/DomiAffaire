@@ -40,23 +40,6 @@ public class AdminController {
     private final RegistrationCompleteEventListener eventListener;
     private final ReservationRepository reservationRepository;
 
-    @PutMapping(value = "/update-profile/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> updateUser(@RequestPart("image") MultipartFile file,
-                                        @RequestPart("updateRequest") @Valid UpdateAdminProfileRequest updateAdminProfileRequest,
-                                        @PathVariable String id) {
-
-        try {
-            byte[] imageBytes = file.getBytes();
-            UserDTO createdUserDto = service.updateAdmin(updateAdminProfileRequest, imageBytes,id);
-            if (createdUserDto != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Failed to update user.\"}");
-            }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Failed to process image file.\"}");
-        }
-    }
 
     @PutMapping("/clients/archive/{id}")
     public ResponseEntity<?> archiveUser(@PathVariable String id,final HttpServletRequest request){
@@ -135,7 +118,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }
-    //mezelt fazet l compression
+
     @PostMapping("/company-creation/documents")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         if (file != null && (file.getContentType().equals("application/pdf")
@@ -157,22 +140,6 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/company-creation/documents/update-file/{id}")
-    public ResponseEntity<?> updateFile(@RequestParam("file") MultipartFile file, @PathVariable String id){
-        try {
-            if (file != null && (file.getContentType().equals("application/pdf")
-                    || file.getContentType().equals("application/msword"))
-                    || file.getContentType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-                return ResponseEntity.status(HttpStatus.OK).body(service.updateFile(file, id));
-            }else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"Error: Only PDF or DOC files are allowed\"}");
-            }
-        }catch (FileNotFoundException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + ex.getMessage() + "\"}");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @GetMapping("/company-creation/documents")
     public List<FileDTO> findAllFiles(){
@@ -583,15 +550,6 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/delete/{email}")
-    public ResponseEntity<?> deleteUser(@PathVariable String email){
-        try {
-            service.deleteAccount(email);
-            return ResponseEntity.ok().body("{\"message\": \"User has been deleted successfully\"}");
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
-        }
-    }
 
     @GetMapping("/domiciliation-request/client-response/{id}")
     public ResponseEntity<?> findClientResponse(@PathVariable String id){
@@ -682,7 +640,7 @@ public class AdminController {
     public ResponseEntity<?> acceptReservation(@PathVariable String id){
         try {
             String message = reservationService.acceptReservation(id);
-//            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
+            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
             User user = reservationRepository.findById(id).get().getClient();
             publisher.publishEvent(new RegistrationCompleteEvent(user));
             try {

@@ -28,11 +28,6 @@ public class PasswordResetToken {
         this.user = user;
         this.expirationTime = this.getTokenExpirationTime();
     }
-    public PasswordResetToken(String token) {
-        super();
-        this.token = token;
-        this.expirationTime = this.getTokenExpirationTime();
-    }
 
     private Date getTokenExpirationTime() {
         Calendar calendar = Calendar.getInstance();

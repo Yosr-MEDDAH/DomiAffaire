@@ -31,7 +31,6 @@ public class SignupRequest {
     @NotBlank(message="phone number shouldn't be blank")
     @Pattern(regexp = "^[2-5-4-7|9]\\d{7}$", message = "Invalid phone number")
     private String phoneNumber;
-//    @NotNull(message="birthdate shouldn't be null")
     @MinimumAge(message = "Age must be 18 years or older")
     private Date birthDate;
     private String role;

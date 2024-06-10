@@ -14,22 +14,17 @@ import java.util.List;
 import java.util.Set;
 
 public interface DomiAffaireService {
-    List<UserDTO> findAllUsers();
     void changePassword(String id, ChangePasswordRequest changePasswordRequest) throws WrongPasswordException;
     List<ClientDTO> findAllClientsArchived() throws NoContentException;
     List<ClientDTO> findAllClients() throws NoContentException;
     List<AccountantDTO> findAllAccountants() throws NoContentException;
     User findUserByEmail(String email) throws UserNotFoundException;
     UserDTO updateUser(UpdateProfileRequest updateProfileRequest, byte[] imageBytes,String role, String id);
-    UserDTO updateAdmin(UpdateAdminProfileRequest updateAdminProfileRequest, byte[] imageBytes, String id );
     void archiveProfile(String id) throws UserNotFoundException;
     void unarchiveProfile(String id) throws UserNotFoundException;
-    String uploadFile(MultipartFile file)throws IOException;
     String uploadFileCompanyCreation(MultipartFile file)throws IOException;
     FileDTO renameFile(RenameFileRequest renameFileRequest, String id) throws FileNotFoundException;
     FileDTO getFileById(String id) throws FileNotFoundException;
-    FileDTO updateFile(MultipartFile file, String id) throws FileNotFoundException, IOException;
-    List<FileDTO> findAllFiles();
     List<FileDTO> findAllFilesCompanyCreation();
     void deleteFile(String id) throws FileNotFoundException;
     ConsultationRequestDTO addConsultationRequest(ConsultationPostRequest consultationPostRequest) throws UserNotFoundException;
@@ -46,7 +41,6 @@ public interface DomiAffaireService {
     ChatDTO validateConsultationRequest(String id) throws UserNotFoundException, ConsultationRequestNotFoundException;
     String rejectConsultationRequest(String id) throws UserNotFoundException, ConsultationRequestNotFoundException;
 
-    ChatMessage sendMessage(String chatId, ChatMessage chatMessage) throws ChatNotFoundException, UserNotFoundException;
     ChatDTO createChat(String clientId, String accountantId) throws UserNotFoundException;
     List<ChatDTO> getAllChatsByAuthenticatedUserClient() throws UserNotFoundException;
     List<ChatDTO> getAllChatsByAuthenticatedUserAccountant() throws UserNotFoundException;

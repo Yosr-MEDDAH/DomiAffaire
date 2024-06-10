@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends MongoRepository<Reservation,String> {
-    List<Reservation> findAllByOrderByCreatedAtDesc();
     List<Reservation> findAllByStatusIsOrderByCreatedAtDesc(ReservationStatus status);
     List<Reservation> findAllByStatusIs(ReservationStatus status);
 }

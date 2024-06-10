@@ -28,11 +28,6 @@ public class VerificationToken {
         this.user = user;
         this.expirationTime = this.getTokenExpirationTime();
     }
-    public VerificationToken(String token) {
-        super();
-        this.token = token;
-        this.expirationTime = this.getTokenExpirationTime();
-    }
 
     private Date getTokenExpirationTime() {
         Calendar calendar = Calendar.getInstance();

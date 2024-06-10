@@ -13,11 +13,6 @@ public class Mapper {
         return userDTO;
     }
 
-    public User fromUserDTOtoUser(UserDTO userDTO){
-        User user = new User();
-        BeanUtils.copyProperties(userDTO,user);
-        return user;
-    }
 
     public ClientDTO fromUserToClientDTO(User user){
         ClientDTO clientDTO = new ClientDTO();
@@ -31,22 +26,10 @@ public class Mapper {
         return comptableDTO;
     }
 
-    public AdminDTO fromUserToAdminDTO(User user){
-        AdminDTO adminDTO = new AdminDTO();
-        BeanUtils.copyProperties(user,adminDTO);
-        return adminDTO;
-    }
-
     public FileDTO fromFileToFileDTO(File file){
         FileDTO fileDTO = new FileDTO();
         BeanUtils.copyProperties(file,fileDTO);
         return fileDTO;
-    }
-
-    public File fromFileDTOToFile(FileDTO fileDTO){
-        File file = new File();
-        BeanUtils.copyProperties(fileDTO,file);
-        return file;
     }
 
     public ConsultationRequestDTO fromConsultationRequestToConsultationRequestDTO(ConsultationRequest consultationRequest){
@@ -55,11 +38,6 @@ public class Mapper {
         return consultationRequestDTO;
     }
 
-    public ConsultationRequest fromConsultationRequestDTOToConsultationRequest(ConsultationRequestDTO consultationRequestDTO){
-        ConsultationRequest consultationRequest = new ConsultationRequest();
-        BeanUtils.copyProperties(consultationRequestDTO,consultationRequest);
-        return consultationRequest;
-    }
 
     public ChatDTO fromChatToChatDTO(Chat chat){
         ChatDTO chatDTO = new ChatDTO();
@@ -116,17 +94,6 @@ public class Mapper {
         return deadlineDTO;
     }
 
-    public Deadline fromDeadlineDTOToDeadline(DeadlineDTO deadlineDTO){
-        Deadline deadline = new Deadline();
-        BeanUtils.copyProperties(deadlineDTO,deadline);
-        return deadline;
-    }
-
-    public ReservationRequestDTO fromReservationRequestToReservationRequestDTO(ReservationRequest reservationRequest){
-        ReservationRequestDTO reservationRequestDTO = new ReservationRequestDTO();
-        BeanUtils.copyProperties(reservationRequest,reservationRequestDTO);
-        return reservationRequestDTO;
-    }
 
     public ReservationDTO fromReservationToReservationDTO(Reservation reservation){
         ReservationDTO reservationDTO = new ReservationDTO();

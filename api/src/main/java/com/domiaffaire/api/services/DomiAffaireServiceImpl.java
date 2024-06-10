@@ -4,20 +4,17 @@ import com.domiaffaire.api.dto.*;
 import com.domiaffaire.api.dto.ClientResponse;
 import com.domiaffaire.api.entities.*;
 import com.domiaffaire.api.enums.*;
-import com.domiaffaire.api.events.listener.RegistrationCompleteEventListener;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.mappers.Mapper;
 import com.domiaffaire.api.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,7 +27,6 @@ import java.util.stream.Collectors;
 public class DomiAffaireServiceImpl implements DomiAffaireService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
-    private final RoomRepository roomRepository;
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final ConsultationRequestRepository consultationRequestRepository;
@@ -43,8 +39,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     private final BlogCategoryRepository blogCategoryRepository;
     private final FaqRepository faqRepository;
     private final DeadlineRepository deadlineRepository;
-    private final RegistrationCompleteEventListener eventListener;
-    private final ApplicationEventPublisher publisher;
 
     @Override
     public User findUserByEmail(String email) throws UserNotFoundException {
@@ -68,19 +62,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         }
     }
 
-
-
-    @Override
-    public List<UserDTO> findAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDTO> userDTOS = users.stream()
-                .map(user->mapper.fromUserToUserDTO(user))
-                .collect(Collectors.toList());
-        return userDTOS;
-    }
-
-
-
     @Override
     public List<ClientDTO> findAllClientsArchived() throws NoContentException {
         List<User> users = userRepository.findAllByUserRole(UserRole.CLIENT);
@@ -99,14 +80,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         return clientsDTOS;
     }
 
-    @Override
-    public List<FileDTO> findAllFiles() {
-        List<File> files = fileRepository.findAll();
-        List<FileDTO> fileDTOS = files.stream()
-                .map(file->mapper.fromFileToFileDTO(file))
-                .collect(Collectors.toList());
-        return fileDTOS;
-    }
 
     @Override
     public List<FileDTO> findAllFilesCompanyCreation() {
@@ -300,26 +273,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         return "Consultation Request Rejected";
     }
 
-    @Override
-    public ChatMessage sendMessage(String chatId, ChatMessage chatMessage) throws ChatNotFoundException, UserNotFoundException {
-        Chat chat = chatRepository.findById(chatId).orElseThrow(()->new ChatNotFoundException("Chat not found"));
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User authenticatedUser = userRepository.findFirstByEmail(authentication.getName()).orElse(null);
-
-        if (authenticatedUser == null) {
-            throw new UserNotFoundException("Authenticated user not found.");
-        }
-
-        Message message = new Message();
-        message.setContent(chatMessage.getMessage());
-        message.setSender(authenticatedUser);
-        message.setChat(chat);
-        chat.getMessages().add(message);
-        messageRepository.save(message);
-        chatRepository.save(chat);
-        return chatMessage;
-    }
 
     @Override
     public ChatDTO createChat(String clientId, String accountantId) throws UserNotFoundException {
@@ -832,11 +785,10 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         Optional<DomiciliationRequest> domiciliationRequestOptional = domiciliationRequestRepository.findById(id);
         if(domiciliationRequestOptional.isPresent()){
             if(domiciliationRequestOptional.get().getProtestCount()>=2){
-//                domiciliationRequestRepository.delete(domiciliationRequestOptional.get());
                 domiciliationRequestOptional.get().setStatus(DomiciliationRequestStatus.REJECTED);
                 domiciliationRequestOptional.get().calculateDocumentsSize();
                 domiciliationRequestRepository.save(domiciliationRequestOptional.get());
-                return "saye maadch njmou ne9blou hata protest sakarna";
+                return "Your request is rejected.";
             }else{
                 DomiciliationRequest domiciliationRequest = domiciliationRequestOptional.get();
                 ResponseClient responseClient = new ResponseClient();
@@ -868,12 +820,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         BigDecimal scaledNet = net.setScale(3, BigDecimal.ROUND_HALF_UP);
         return scaledNet;
     }
-
-
-
-
-
-
 
 
     @Override
@@ -1416,17 +1362,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         }
     }
 
-    @Override
-    public String uploadFile(MultipartFile file) throws IOException {
-        File newFile = new File();
-        fileRepository.save(newFile.builder()
-                .name(file.getOriginalFilename())
-                .type(file.getContentType())
-                .fileData(file.getBytes()).build());
-        if(newFile != null)
-            return "File uploaded successfully : "+file.getOriginalFilename();
-        return null;
-    }
 
     @Override
     public String uploadFileCompanyCreation(MultipartFile file) throws IOException {
@@ -1502,23 +1437,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
         }
     }
 
-    @Override
-    public UserDTO updateAdmin(UpdateAdminProfileRequest updateAdminProfileRequest, byte[] imageBytes, String id) {
-        User admin = userRepository.findById(id).get();
-        if(admin!=null){
-            admin.setId(id);
-            admin.setEmail(admin.getEmail());
-            admin.setPwd(admin.getPwd());
-            admin.setName(updateAdminProfileRequest.getUsername());
-            admin.setImage(imageBytes);
-            admin.setUserRole(UserRole.ADMIN);
-            User createdAdmin = userRepository.save(admin);
-            UserDTO createdAdminDTO = new UserDTO();
-            BeanUtils.copyProperties(createdAdmin,createdAdminDTO);
-            return createdAdminDTO;
-        }
-        return null;
-    }
 
 
     @Override
@@ -1546,24 +1464,6 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
     }
 
     @Override
-    public FileDTO updateFile(MultipartFile file, String id) throws FileNotFoundException, IOException {
-        Optional<File> fileOptional = fileRepository.findById(id);
-        if (fileOptional.isPresent()) {
-            File savedFile = fileOptional.get();
-            savedFile.setFileData(file.getBytes());
-            savedFile.setName(file.getOriginalFilename());
-            savedFile.setType(file.getContentType());
-            fileRepository.save(savedFile);
-            return mapper.fromFileToFileDTO(savedFile);
-        } else {
-            throw new FileNotFoundException("File not found");
-        }
-    }
-
-
-
-
-    @Override
     public void changePassword(String id, ChangePasswordRequest changePasswordRequest) throws WrongPasswordException {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -1583,7 +1483,5 @@ public class DomiAffaireServiceImpl implements DomiAffaireService {
 
         }
     }
-
-
 
 }

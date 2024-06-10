@@ -1,22 +1,13 @@
 package com.domiaffaire.api.controllers;
 
-import com.domiaffaire.api.dto.ChangePasswordRequest;
 import com.domiaffaire.api.dto.RecommendationRequest;
-import com.domiaffaire.api.dto.UpdateProfileRequest;
-import com.domiaffaire.api.dto.UserDTO;
-import com.domiaffaire.api.entities.User;
 import com.domiaffaire.api.exceptions.*;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
 import com.domiaffaire.api.services.ReservationServiceImpl;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

@@ -9,5 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface PackRepository extends MongoRepository<Pack,String> {
-    Optional<Pack> findByDesignation(String designation);
 }

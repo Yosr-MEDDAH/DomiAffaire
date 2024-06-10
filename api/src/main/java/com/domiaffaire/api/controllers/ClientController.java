@@ -1,27 +1,17 @@
 package com.domiaffaire.api.controllers;
-
 import com.domiaffaire.api.dto.*;
-import com.domiaffaire.api.entities.DomiciliationRequest;
 import com.domiaffaire.api.entities.User;
-import com.domiaffaire.api.events.RegistrationCompleteEvent;
 import com.domiaffaire.api.exceptions.*;
-import com.domiaffaire.api.repositories.DeadlineRepository;
 import com.domiaffaire.api.services.DeadlineServiceImpl;
 import com.domiaffaire.api.services.DomiAffaireServiceImpl;
 import com.domiaffaire.api.services.ReservationServiceImpl;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 @RestController
@@ -70,7 +60,15 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"" + e.getMessage() + "\"}");
         }
     }
-
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<?> deleteUser(@PathVariable String email){
+        try {
+            service.deleteAccount(email);
+            return ResponseEntity.ok().body("{\"message\": \"User has been deleted successfully\"}");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
+        }
+    }
     @PostMapping("/consultion-request")
     public ResponseEntity<?> addConsultationRequest(@RequestBody @Valid ConsultationPostRequest consultationPostRequest){
         try {
@@ -233,11 +231,6 @@ public class ClientController {
         }
     }
 
-    @GetMapping("/faqs")
-    public ResponseEntity<?> findAllFaqs(){
-        return ResponseEntity.status(HttpStatus.OK).body(service.getAllFaqs());
-    }
-
     @GetMapping("/blogs/save/{id}")
     public ResponseEntity<?> saveBlog(@PathVariable String id){
         try {
@@ -299,17 +292,4 @@ public class ClientController {
         }
     }
 
-    @PostMapping("/reservations")
-    public ResponseEntity<?> saveRecommendation(@RequestBody RecommendationRequest recommendationRequest){
-        String message = "";
-        try {
-            message = reservationService.addReservation(recommendationRequest);
-            reservationService.exportReservationsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/reservations.csv");
-            reservationService.exportRoomsToCSV("C:/PFE/DomiAffaire/room-recommendation-system/data/rooms.csv");
-            return ResponseEntity.ok().body("{\"message\":\"" + message + "\"}");
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\":\"" + e.getMessage() + "\"}");
-        }
-
-    }
 }

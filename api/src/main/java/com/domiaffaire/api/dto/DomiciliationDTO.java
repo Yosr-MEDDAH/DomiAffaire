@@ -26,7 +26,6 @@ public class DomiciliationDTO {
     private String management;
     private Double shareCapital;
     private File pvChangeAddress;
-    //ancien patente
     private File oldBusinessLicence;
     private File oldExistenceDeclaration;
     private String oldDraftStatus;

@@ -9,6 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface FileRepository extends MongoRepository<File,String> {
-    Optional<File> findByName(String fileName);
     List<File> findAllByCompanyCreationIsTrue();
 }

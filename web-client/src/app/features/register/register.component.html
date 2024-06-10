@@ -1,0 +1,620 @@
+<div class="login">
+  <div class="container sm:px-10">
+    <div class="block xl:grid grid-cols-2 gap-4">
+      <div class="hidden xl:flex flex-col min-h-screen">
+        <div class="my-auto">
+          <img
+            alt="login page illustration"
+            class="-intro-x w-1/2 -mt-16"
+            [src]="
+              isDarkModeEnabled()
+                ? 'assets/dist/images/LOGO DOMI White.png'
+                : 'assets/dist/images/LOGO DOMI black.png'
+            "
+          />
+          <div
+            class="-intro-x text-white font-medium text-4xl leading-tight mt-10"
+          >
+            Welcome to DomiAffaire!
+          </div>
+        </div>
+      </div>
+
+      <div class="h-screen xl:h-auto flex py-5 xl:py-0 my-10 xl:my-0">
+        <div
+          class="my-auto mx-auto xl:ml-20 bg-white dark:bg-darkmode-600 xl:bg-transparent px-5 sm:px-8 py-8 xl:p-0 rounded-md shadow-md xl:shadow-none w-full sm:w-3/4 lg:w-2/4 xl:w-auto"
+        >
+          <h2
+            class="intro-x font-bold text-2xl xl:text-3xl text-center xl:text-left"
+          >
+            Sign Up
+          </h2>
+
+          <div class="intro-x mt-2 text-slate-400 xl:hidden text-center">
+            Welcome to DomiAffaire
+          </div>
+          <div class="intro-x mt-8">
+            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+              <div class="ng-container-step">
+                <ng-container *ngIf="currentStep === 0">
+                  <div class="role-buttons">
+                    <div class="role-button-container">
+                      <button
+                        type="button"
+                        class="role-button client"
+                        [class.selected]="data.role === 'client'"
+                        (click)="selectRole('client')"
+                      >
+                        <i class="fas fa-user-tie"></i>
+                      </button>
+                      <span>Client</span>
+                    </div>
+                    <div class="role-button-container">
+                      <button
+                        type="button"
+                        class="role-button accountant"
+                        [class.selected]="data.role === 'accountant'"
+                        (click)="selectRole('accountant')"
+                      >
+                        <i class="fas fa-calculator"></i>
+                      </button>
+                      <span> Accountant</span>
+                    </div>
+                  </div>
+
+                  <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                    <button
+                      class="btn btn-primary py-3 px-4 ml-auto"
+                      type="button"
+                      [disabled]="!data.role"
+                      (click)="goToStep(1)"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="currentStep === 1">
+                  <input
+                    type="text"
+                    class="intro-x login__input form-control py-3 px-4 block"
+                    placeholder="First Name"
+                    formControlName="firstName"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('firstName')!.hasError('required') &&
+                      signupForm.get('firstName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    First Name is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('firstName')!.hasError('minlength') &&
+                      signupForm.get('firstName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    First Name must be at least 3 characters long.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('firstName')!.hasError('pattern') &&
+                      signupForm.get('firstName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    First Name must contain only letters, numbers, and
+                    underscores.
+                  </div>
+
+                  <input
+                    type="text"
+                    class="intro-x login__input form-control py-3 px-4 block mt-4"
+                    placeholder="Last Name"
+                    formControlName="lastName"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('lastName')!.hasError('required') &&
+                      signupForm.get('lastName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Last Name is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('lastName')!.hasError('minlength') &&
+                      signupForm.get('lastName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Last Name must be at least 3 characters long.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('lastName')!.hasError('pattern') &&
+                      signupForm.get('lastName')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Last Name must contain only letters, numbers, and
+                    underscores.
+                  </div>
+
+                  <input
+                    *ngIf="!hideBirthDate"
+                    type="date"
+                    formControlName="birthDate"
+                    placeholder="Birth Date"
+                    class="intro-x login__input form-control py-3 px-4 mt-4"
+                  />
+                  <div
+                    *ngIf="
+                      !signupForm.get('birthDate')!.touched && !hideBirthDate
+                    "
+                    class="text-muted"
+                  >
+                    You must be at least 18 years old.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('birthDate')!.hasError('required') &&
+                      signupForm.get('birthDate')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Birth Date is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('birthDate')!.hasError('invalidDate') &&
+                      signupForm.get('birthDate')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    You must be at least 18 years old.
+                  </div>
+                  <div class="button-container">
+                    <button
+                      class="btn btn-primary py-3 px-4 ml-auto"
+                      type="button"
+                      (click)="goToStep(2)"
+                      [disabled]="
+                        signupForm.get('firstName')!.invalid ||
+                        signupForm.get('lastName')!.invalid ||
+                        (!hideBirthDate && signupForm.get('birthDate')!.invalid)
+                      "
+                    >
+                      Next
+                    </button>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentStep === 2">
+                  <input
+                    type="email"
+                    class="intro-x login__input form-control py-3 px-4 block mt-4"
+                    placeholder="Email"
+                    formControlName="email"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('email')!.hasError('required') &&
+                      signupForm.get('email')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Email is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('email')!.hasError('email') &&
+                      signupForm.get('email')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Invalid email format.
+                  </div>
+
+                  <input
+                    type="text"
+                    formControlName="phoneNumber"
+                    placeholder="Phone Number"
+                    class="intro-x login__input form-control py-3 px-4 mt-4"
+                    maxlength="8"
+                  />
+                  <div
+                    *ngIf="
+                      signupForm.get('phoneNumber')!.hasError('required') &&
+                      signupForm.get('phoneNumber')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Phone Number is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('phoneNumber')!.hasError('pattern') &&
+                      signupForm.get('phoneNumber')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Invalid phone number format. Please enter only numeric
+                    characters.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('phoneNumber')!.hasError('minlength') &&
+                      signupForm.get('phoneNumber')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Phone Number must be at least 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('phoneNumber')!.hasError('maxlength') &&
+                      signupForm.get('phoneNumber')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Phone Number must be exactly 8 digits long.
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('phoneNumber')!.hasError('pattern') &&
+                      signupForm.get('phoneNumber')!.touched
+                    "
+                    class="text-danger"
+                  >
+                    Phone Number must start with 2, 4, 5, 7 or 9.
+                  </div>
+
+                  <div class="button-container">
+                    <button
+                      class="btn btn-secondary py-3 px-4"
+                      type="button"
+                      (click)="goToStep(1)"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="btn btn-primary py-3 px-4 ml-auto"
+                      type="button"
+                      (click)="goToStep(3)"
+                      [disabled]="
+                        signupForm.get('email')!.invalid ||
+                        signupForm.get('phoneNumber')!.invalid
+                      "
+                    >
+                      Next
+                    </button>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentStep === 10">
+                  <div class="intro-x mt-8 text-center">
+                    <h2 class="font-bold text-2xl xl:text-3xl">
+                      Enter Secret Code
+                    </h2>
+                    <p class="mt-4 text-lg">
+                      Please enter the code that verifies you are an accountant.
+                    </p>
+                  </div>
+                  <div class="password-input-container">
+                    <input
+                      id="passwordInput"
+                      type="password"
+                      class="intro-x login__input form-control py-3 px-4 block"
+                      placeholder="Enter Your Secret Code"
+                      formControlName="code"
+                      (input)="onSecretCodeChange()"
+                    />
+                    <div
+                      class="password-toggle-icon"
+                      (click)="togglePasswordVisibility()"
+                    >
+                      <i class="fa fa-eye" *ngIf="!passwordHidden"></i>
+                      <i class="fa fa-eye-slash" *ngIf="passwordHidden"></i>
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="
+                      signupForm.get('secretCode')?.hasError('invalidCode') &&
+                      signupForm.get('secretCode')?.touched
+                    "
+                    class="text-danger"
+                  >
+                    Invalid code. Please try again.
+                  </div>
+                  <div *ngIf="verifyingCode" class="text-primary">
+                    <i class="fas fa-spinner fa-spin"></i> Verifying code...
+                  </div>
+
+                  <div class="button-container">
+                    <button
+                      class="btn btn-secondary py-3 px-4 mr-2"
+                      type="button"
+                      [disabled]="previousButtonDisabled"
+                      (click)="onPreviousButtonClick(); goToStep(0)"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="btn btn-primary py-3 px-4"
+                      type="button"
+                      [disabled]="
+                        !signupForm.get('secretCode')!.valid || verifyingCode
+                      "
+                      (click)="verifyCode()"
+                    >
+                      Next
+                    </button>
+                  </div>
+
+                  <div *ngIf="codeVerificationError" class="text-danger mt-4">
+                    Invalid code. Please ensure the code is correct or return to
+                    the previous step to verify your role as an accountant.
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentStep === 3">
+                  <div class="password-input-container">
+                    <input
+                      id="passwordInput"
+                      type="password"
+                      class="intro-x login__input form-control py-3 px-4 block mt-4"
+                      placeholder="Password"
+                      formControlName="pwd"
+                      name="pwd"
+                      minlength="8"
+                    />
+                    <div
+                      class="password-toggle-icon"
+                      (click)="togglePasswordVisibility()"
+                    >
+                      <i class="fa fa-eye" *ngIf="!passwordHidden"></i>
+                      <i class="fa fa-eye-slash" *ngIf="passwordHidden"></i>
+                    </div>
+                  </div>
+
+                  <div
+                    *ngIf="
+                      signupForm.get('pwd')?.touched ||
+                      signupForm.get('pwd')?.dirty
+                    "
+                    class="error-container"
+                  >
+                    <div
+                      *ngIf="signupForm.get('pwd')?.errors?.['required']"
+                      class="error-message required-error"
+                    >
+                      <i class="fas fa-exclamation-circle"></i> Password is
+                      required.
+                    </div>
+                    <div
+                      *ngIf="passwordErrors.remainingLength"
+                      class="error-message length-error"
+                    >
+                      <i class="fas fa-exclamation-circle"></i>
+                      {{ signupForm.get('pwd')?.errors?.['remainingLength'] }}
+                    </div>
+                    <div *ngIf="passwordErrors.lowercase" class="error-message">
+                      Password must contain at least one lowercase letter.
+                    </div>
+                    <div *ngIf="passwordErrors.uppercase" class="error-message">
+                      Password must contain at least one uppercase letter.
+                    </div>
+                    <div *ngIf="passwordErrors.number" class="error-message">
+                      Password must contain at least one number.
+                    </div>
+                    <div *ngIf="passwordErrors.symbol" class="error-message">
+                      Password must contain at least one symbol.
+                    </div>
+                  </div>
+                  <div class="button-container">
+                    <button
+                      class="btn btn-secondary py-3 px-4 mr-2"
+                      type="button"
+                      (click)="goToStep(2)"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="btn btn-primary py-3 px-4"
+                      type="button"
+                      [disabled]="signupForm.get('pwd')!.invalid"
+                      (click)="goToStep(4)"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="currentStep === 4">
+                  <div class="flex items-center justify-center p-3">
+                    <div
+                      class="w-full max-w-md p-9 rounded-lg shadow-lg"
+                      [ngClass]="
+                        isDarkModeEnabled() ? 'bigzone-dark' : 'bigzone-light'
+                      "
+                    >
+                      <h3 class="text-center text-2xl sm:text-2xl mb-2">
+                        Upload your image
+                      </h3>
+                      <div
+                        class="p-8 text-center rounded-lg border-dashed border-2 border-primary transition duration-300 ease-in-out transform"
+                        id="dropzone"
+                        [ngClass]="
+                          isDarkModeEnabled()
+                            ? 'dropzone-dark'
+                            : 'dropzone-light'
+                        "
+                        (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event)"
+                      >
+                        <label
+                          for="fileInput"
+                          class="cursor-pointer flex flex-col items-center space-y-2"
+                        >
+                          <svg
+                            class="w-16 h-16 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                            ></path>
+                          </svg>
+                          <span class="text-gray-600"
+                            >Drag and drop your image here</span
+                          >
+                          <span class="text-gray-500 text-sm"
+                            >(or click to select)</span
+                          >
+                        </label>
+                        <input
+                          type="file"
+                          id="fileInput"
+                          class="hidden"
+                          name="image"
+                          (change)="onFileSelected($event)"
+                        />
+                      </div>
+                      <div class="mt-6 text-center" id="fileList">
+                        <div
+                          *ngIf="selectedFile"
+                          class="mt-2 mb-5 flex align-center justify-center"
+                          [ngClass]="{ 'file-blur': blurFiles }"
+                        >
+                          <span *ngIf="isImageType(selectedFile.type)">
+                            <img
+                              [src]="getImgSrc(selectedFile)"
+                              class="inline-block w-6 h-6 mr-2"
+                              [alt]="selectedFile.name"
+                            />
+                            {{ selectedFile.name }} ({{
+                              formatBytes(selectedFile.size)
+                            }})
+                          </span>
+                          <span *ngIf="selectedFile.type === 'application/pdf'">
+                            <img
+                              [src]="'assets/dist/images/pdf-icon.png'"
+                              class="inline-block w-6 h-6 mr-2"
+                              alt="PDF icon"
+                            />
+                            {{ selectedFile.name }} ({{
+                              formatBytes(selectedFile.size)
+                            }})
+                          </span>
+                          <button
+                            class="ml-5 btn-rmv text-primary flex items-center justify-center p-1 rounded-md bg-transparent transition duration-300 ease-in-out relative overflow-hidden"
+                            (click)="removeFile()"
+                          >
+                            <svg
+                              class="w-6 h-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
+                        <div
+                          class="rounded-lg bg-red-900 text-center py-4 lg:px-4 mt-2 text-white"
+                          *ngIf="fileErrorMessage !== '' && showErrorMessage"
+                        >
+                          <div
+                            class="p-2 bg-red-800 items-center text-red-100 leading-none lg:rounded-full flex lg:inline-flex"
+                            role="alert"
+                          >
+                            <span
+                              class="flex rounded-full bg-red-500 uppercase px-2 py-1 text-xs font-bold mr-3"
+                              >Error</span
+                            >
+                            <span
+                              class="font-semibold mr-2 text-left flex-auto leading-relaxed"
+                              [innerHTML]="fileErrorMessage"
+                            ></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="button-container">
+                    <button
+                      class="btn btn-secondary py-3 px-4 mr-2"
+                      type="button"
+                      (click)="goToStep(3)"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="btn btn-primary py-3 px-4"
+                      type="submit"
+                      [disabled]="!uploadedImage || fileErrorMessage != ''"
+                    >
+                      Next
+                    </button>
+                  </div>
+                  <div
+                    class="text-center flex items-center justify-center mb-5"
+                  >
+                    <span class="line"></span>
+                    <span class="px-2">OR</span>
+                    <span class="line"></span>
+                  </div>
+                  <div class="text-center flex items-center justify-center">
+                    <button
+                      class="btn btn-outline-secondary py-3 px-4"
+                      type="submit"
+                      (click)="skipUpload()"
+                    >
+                      Skip
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="currentStep === 5">
+                  <div class="intro-x mt-8 text-center">
+                    <h2 class="font-bold text-2xl xl:text-3xl">Thank You!</h2>
+                    <p class="mt-4 text-lg">You have successfully signed up.</p>
+                    <p class="mt-2 text-lg">
+                      Please check your email for confirmation.
+                    </p>
+                  </div>
+                </ng-container>
+              </div>
+              <div id="mail-container"></div>
+            </form>
+
+            <div
+              class="mt-3 text-center text-gray-500"
+              *ngIf="currentStep === 0"
+            >
+              <button
+                routerLink="/login"
+                class="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 align-bottom login__input"
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

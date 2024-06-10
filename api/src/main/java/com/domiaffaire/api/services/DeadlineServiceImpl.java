@@ -57,9 +57,6 @@ public class DeadlineServiceImpl implements DeadlineService{
             Deadline deadline = request.getDeadline();
             if (deadline != null && !request.isEmailSent()) {
                 LocalDateTime limitedDate = deadline.getLimitedDate();
-
-                // Check if it's 5 days before the limited date
-//                limitedDate.minusDays(5).isBefore(now) && limitedDate.isAfter(now)
                 if (now.compareTo(limitedDate.minusDays(5)) > 0 && !request.isEmailSent()) {
                     log.info("Reminder: Payment Due Your payment is due in 5 days.");
                     request.setEmailSent(true);
@@ -72,17 +69,12 @@ public class DeadlineServiceImpl implements DeadlineService{
                     } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(e);
                     }
-
                     request.setEmailSent(false);
-
                 }
-//                if limitedDate.isBefore(now)
-                // Check if the limited date has passed
                 if (now.compareTo(limitedDate) > 0 && !request.isEmailSent()) {
                     log.info("Alert: Payment Overdue Your payment is overdue.");
                     request.setEmailSent(true);
                     publisher.publishEvent(new RegistrationCompleteEvent(request.getClient()));
-
                     request.setEmailSent(true);
                     if (request.getPaymentMode() == PaymentMode.QUARTER) {
                         request.getDeadline().setDateBeginig(request.getDeadline().getDateBeginig().plusMonths(3));

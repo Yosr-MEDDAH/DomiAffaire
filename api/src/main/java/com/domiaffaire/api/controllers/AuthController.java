@@ -7,7 +7,6 @@ import com.domiaffaire.api.events.RegistrationCompleteEvent;
 import com.domiaffaire.api.events.listener.RegistrationCompleteEventListener;
 import com.domiaffaire.api.exceptions.UserNotFoundException;
 import com.domiaffaire.api.exceptions.WrongCodeAccountantException;
-import com.domiaffaire.api.mappers.Mapper;
 import com.domiaffaire.api.repositories.UserRepository;
 import com.domiaffaire.api.repositories.VerificationTokenRepository;
 import com.domiaffaire.api.services.AuthService;
@@ -187,12 +186,5 @@ public class AuthController {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
-
-
-
-
-
-
-
 
 }

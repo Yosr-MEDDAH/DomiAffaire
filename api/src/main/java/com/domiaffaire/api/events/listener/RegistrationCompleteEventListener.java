@@ -26,34 +26,15 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     private String url;
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
-        //1. Get the newly registered user
         theUser =  event.getUser();
-        //2. Create a verification token for the user
         String verificationToken = UUID.randomUUID().toString();
-        //3. Save the verification token for the user
         userService.saveUserVerificationToken(theUser, verificationToken);
-        //4. Build the verification url to be sent to the user
         url = event.getApplicationUrl()+"/api/auth/verifyEmail?token="+verificationToken;
-        //5. Send the email
-//        try {
-//            sendVerificationEmail(url);
-//        } catch (MessagingException | UnsupportedEncodingException e) {
-//            throw new RuntimeException(e);
-//        }
         log.info("Click the link to verify your registration: {} ",url);
-
-        //6. send the sms
     }
     public void sendVerificationEmail() throws MessagingException, UnsupportedEncodingException {
         String subject = "Email Verification";
         String senderName = "Domi Affaire";
-//        String mailContent = "<p> Hi, "+ theUser.getUsername()+ ", </p>"+
-//                "<p>Thank you for registering with us,"+"" +
-//                "Please, follow the link below to complete your registration.</p>"+
-//                "<a href=\"" +url+ "\">Verify your email to activate your account</a>"+
-//                "<p>Domi Affaire";
-
-        // Create an adaptable email template
         String mailContent = "<html><body style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;\">" +
                 "<div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\">" +
                 "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">" +
@@ -67,11 +48,6 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 "<p style=\"text-align: center; margin-top: 20px;\"><a href=\""+url+"\" style=\"display: inline-block; padding: 12px 24px; background-color: #ff8c00; color: #ffffff; text-decoration: none; border-radius: 5px;\">Valider votre e-mail pour activer votre compte</a></p>" +
                 "<p style=\"color: #555; font-size: 16px; line-height: 1.5;\">Cordialement,<br/>L'équipe Domi Affaire</p>" +
                 "</td></tr></table></div></body></html>";
-
-
-
-
-
 
         MimeMessage message = mailSender.createMimeMessage();
         var messageHelper = new MimeMessageHelper(message);
